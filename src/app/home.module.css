@@ -332,24 +332,25 @@
 .categoryGrid {
   display: grid;
   grid-template-columns: 2fr repeat(4, 1fr);
-  gap: 16px;
+  gap: 20px;
 }
 
 .categoryCard {
-  --image-position: 50%;
+  --category-image: url("/assets/home/category1.jpg");
   position: relative;
-  height: 530px;
+  height: 500px;
   overflow: hidden;
-  background-image: url("/assets/home/product-strip.png");
-  background-position: var(--image-position) center;
-  background-size: 500% auto;
+  background-color: #1a2030;
+  background-image: var(--category-image);
+  background-position: center;
+  background-size: cover;
   isolation: isolate;
 }
 
 .categoryCard::before {
   content: "";
   position: absolute;
-  z-index: -1;
+  z-index: 0;
   inset: 0;
   background: inherit;
   transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -359,14 +360,25 @@
   transform: scale(1.05);
 }
 
+.categoryCard::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
 .categoryShade {
   position: absolute;
+  z-index: 2;
   inset: 35% 0 0;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));
 }
 
 .categoryLabel {
   position: absolute;
+  z-index: 2;
   right: 24px;
   bottom: 25px;
   left: 24px;

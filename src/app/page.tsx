@@ -21,11 +21,11 @@ const navItems = [
 ] as const;
 
 const categories = [
-  { name: "Мясо", position: "0%", className: styles.categoryFeatured },
-  { name: "Птица", position: "25%", className: "" },
-  { name: "Пиво", position: "50%", className: "" },
-  { name: "Вода", position: "75%", className: "" },
-  { name: "Снеки", position: "100%", className: "" },
+  { name: "Мясо", image: "/assets/home/category1.jpg", className: styles.categoryFeatured, href: "#contacts" },
+  { name: "Птица", image: "/assets/home/category2.jpg", className: "", href: "#contacts" },
+  { name: "Пиво", image: "/assets/home/category3.jpg", className: "", href: "#contacts" },
+  { name: "Вода", image: "/assets/home/category4.jpg", className: "", href: "#contacts" },
+  { name: "Снеки", image: "/assets/home/category5.jpg", className: "", href: "#contacts" },
 ] as const;
 
 const news = [
@@ -151,10 +151,10 @@ export default function Home() {
           <div className={styles.categoryGrid}>
             {categories.map((category) => (
               <a
-                className={`${styles.categoryCard} ${category.className ?? ""}`}
-                href="#contacts"
+                className={`${styles.categoryCard} ${category.className}`}
+                href={category.href}
                 key={category.name}
-                style={{ "--image-position": category.position } as CSSProperties}
+                style={{ "--category-image": `url("${category.image}")` } as CSSProperties}
               >
                 <span className={styles.categoryShade} />
                 <span className={styles.categoryLabel}>{category.name}<i /></span>
