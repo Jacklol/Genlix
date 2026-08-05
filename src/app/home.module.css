@@ -635,24 +635,20 @@
 .newsGrid {
   display: grid;
   grid-template-columns: 1.35fr 0.9fr;
-  grid-auto-rows: 300px;
+  grid-auto-rows: 400px;
   gap: 16px;
 }
 
 .newsCard {
-  --image-position: 50%;
+  --news-image: url("/assets/home/news_item1.jpg");
   position: relative;
   overflow: hidden;
-  background-image: url("/assets/home/product-strip.png");
-  background-position: var(--image-position) center;
-  background-size: 500% auto;
+  background-color: #1a2030;
+  background-image: var(--news-image);
+  background-position: center;
+  background-size: cover;
   color: #fff;
   isolation: isolate;
-}
-
-.newsCard:nth-child(2) {
-  background-image: linear-gradient(rgba(5, 23, 55, .12), rgba(5, 23, 55, .28)), url("/assets/home/hero-map.png");
-  background-size: cover;
 }
 
 .newsCard::before {

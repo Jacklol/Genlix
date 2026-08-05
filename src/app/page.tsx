@@ -63,10 +63,26 @@ const advantages: {
 ];
 
 const news = [
-  { title: "Новый отруб Primebeef для стейк-хаусов", position: "0%" },
-  { title: "Контроль качества на каждом этапе поставки", position: "25%" },
-  { title: "Новая линейка премиальных напитков", position: "75%" },
-  { title: "Расширяем ассортимент для ресторанных групп", position: "50%" },
+  {
+    title: "Новый отруб Primebeef для стейк-хаусов",
+    tag: "Поставки и качество",
+    image: "/assets/home/news_item1.jpg",
+  },
+  {
+    title: "Контроль качества на каждом этапе поставки",
+    tag: "Поставки и качество",
+    image: "/assets/home/news_item2.jpg",
+  },
+  {
+    title: "Новая линейка премиальных напитков",
+    tag: "Новая линейка",
+    image: "/assets/home/news_item3.jpg",
+  },
+  {
+    title: "Расширяем ассортимент для ресторанных групп",
+    tag: "Поставки и качество",
+    image: "/assets/home/news_item4.jpg",
+  },
 ] as const;
 
 const footerColumns = [
@@ -255,10 +271,13 @@ export default function Home() {
               <article
                 className={`${styles.newsCard} ${index === 0 || index === 3 ? styles.newsWide : ""}`}
                 key={`${item.title}-${index}`}
-                style={{ "--image-position": item.position } as CSSProperties}
+                style={{ "--news-image": `url("${item.image}")` } as CSSProperties}
               >
                 <span className={styles.newsShade} />
-                <div><span>{index === 2 ? "Новая линейка" : "Поставки и качество"}</span><h3>{item.title}</h3></div>
+                <div>
+                  <span>{item.tag}</span>
+                  <h3>{item.title}</h3>
+                </div>
               </article>
             ))}
           </div>
