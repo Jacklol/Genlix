@@ -269,7 +269,7 @@ export default function Home() {
           <div className={styles.newsGrid} id="news-grid">
             {news.map((item, index) => (
               <article
-                className={`${styles.newsCard} ${index === 0 || index === 3 ? styles.newsWide : ""}`}
+                className={styles.newsCard}
                 key={`${item.title}-${index}`}
                 style={{ "--news-image": `url("${item.image}")` } as CSSProperties}
               >
