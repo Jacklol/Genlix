@@ -5,6 +5,10 @@ import { AdvantageIndividualTermsIcon } from "@/components/icons/AdvantageIndivi
 import { AdvantageLogisticsIcon } from "@/components/icons/AdvantageLogisticsIcon";
 import { AdvantageManagerIcon } from "@/components/icons/AdvantageManagerIcon";
 import { AdvantageQualityIcon } from "@/components/icons/AdvantageQualityIcon";
+import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
+import { ContactHoursIcon } from "@/components/icons/ContactHoursIcon";
+import { ContactLocationIcon } from "@/components/icons/ContactLocationIcon";
+import { ContactPhoneIcon } from "@/components/icons/ContactPhoneIcon";
 import styles from "./home.module.css";
 
 const navItems = [
@@ -291,10 +295,42 @@ export default function Home() {
             <h2 id="contacts-title">Обсудим <span>условия поставок?</span></h2>
             <p>Заполните форму, и наш категорийный менеджер подготовит коммерческое предложение под ваше меню.</p>
             <address>
-              <a href="tel:+74951234567"><i>☎</i><span><small>Телефон для связи</small><strong>+7 (495) 123-45-67</strong></span></a>
-              <a href="mailto:b2b@gildia-dist.ru"><i>✉</i><span><small>Email подразделения продаж</small><strong>b2b@gildia-dist.ru</strong></span></a>
-              <span><i>⌖</i><span><small>Центральный офис и склад</small><strong>г. Москва, ул. Кутузовский проспект, д. 12, стр. 4</strong></span></span>
-              <span><i>◷</i><span><small>Режим работы склада</small><strong>Круглосуточный приём и отгрузка заказов 24/7</strong></span></span>
+              <a href="tel:+74951234567">
+                <i aria-hidden="true">
+                  <ContactPhoneIcon />
+                </i>
+                <span>
+                  <small>Телефон для связи</small>
+                  <strong>+7 (495) 123-45-67</strong>
+                </span>
+              </a>
+              <a href="mailto:b2b@gildia-dist.ru">
+                <i aria-hidden="true">
+                  <ContactEmailIcon />
+                </i>
+                <span>
+                  <small>Email подразделения продаж</small>
+                  <strong>b2b@gildia-dist.ru</strong>
+                </span>
+              </a>
+              <span>
+                <i aria-hidden="true">
+                  <ContactLocationIcon />
+                </i>
+                <span>
+                  <small>Центральный офис и склад</small>
+                  <strong>г. Москва, ул. Кутузовский проспект, д. 12, стр. 4</strong>
+                </span>
+              </span>
+              <span>
+                <i aria-hidden="true">
+                  <ContactHoursIcon />
+                </i>
+                <span>
+                  <small>Режим работы склада</small>
+                  <strong>Круглосуточный приём и отгрузка заказов 24/7</strong>
+                </span>
+              </span>
             </address>
           </div>
           <form className={styles.contactForm}>
