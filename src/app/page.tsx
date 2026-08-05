@@ -9,6 +9,10 @@ import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
 import { ContactHoursIcon } from "@/components/icons/ContactHoursIcon";
 import { ContactLocationIcon } from "@/components/icons/ContactLocationIcon";
 import { ContactPhoneIcon } from "@/components/icons/ContactPhoneIcon";
+import { FooterFacebookIcon } from "@/components/icons/FooterFacebookIcon";
+import { FooterInstagramIcon } from "@/components/icons/FooterInstagramIcon";
+import { FooterXIcon } from "@/components/icons/FooterXIcon";
+import { FooterYoutubeIcon } from "@/components/icons/FooterYoutubeIcon";
 import styles from "./home.module.css";
 
 const navItems = [
@@ -366,7 +370,23 @@ export default function Home() {
         </div>
         <div className={`${styles.shell} ${styles.footerBottom}`}>
           <span>© 2026 ООО «Гильдия Дистрибуция». Все права защищены.</span>
-          <div aria-label="Социальные сети"><a href="#contacts">in</a><a href="#contacts">tg</a><a href="#contacts">vk</a></div>
+          <p className={styles.footerCredit}>
+            <span>Developed by</span> <a href="https://localmindstudio.site/" target="_blank" rel="noopener">localmindstudio</a>
+          </p>
+          <div className={styles.footerSocial} aria-label="Социальные сети">
+            <a href="#contacts" aria-label="Instagram">
+              <FooterInstagramIcon />
+            </a>
+            <a href="#contacts" aria-label="Facebook">
+              <FooterFacebookIcon />
+            </a>
+            <a href="#contacts" aria-label="X">
+              <FooterXIcon />
+            </a>
+            <a href="#contacts" aria-label="YouTube">
+              <FooterYoutubeIcon />
+            </a>
+          </div>
         </div>
       </footer>
     </main>
