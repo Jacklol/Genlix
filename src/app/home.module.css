@@ -217,7 +217,7 @@
 .headingBlock > p {
   margin: 0 0 24px;
   color: var(--red);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -253,7 +253,7 @@
 .heroLead {
   margin: 38px 0 0;
   color: rgba(255, 255, 255, 0.76);
-  font-size: clamp(15px, 1vw, 19px);
+  font-size: clamp(24px, 1vw, 19px);
   line-height: 1.55;
 }
 
@@ -309,7 +309,7 @@
 
 .headingBlock h2 {
   max-width: 980px;
-  font-size: clamp(43px, 3vw, 61px);
+  font-size: clamp(64px, 3vw, 61px);
   color: var(--ink);
 }
 
@@ -321,10 +321,10 @@
 }
 
 .catalogHeading > p {
-  max-width: 440px;
+  max-width: 540px;
   margin: 0 0 4px;
   color: var(--muted);
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1.55;
   text-align: right;
 }
@@ -426,7 +426,7 @@
   max-width: 880px;
   margin: 30px 0 34px;
   color: rgba(255, 255, 255, 0.66);
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1.65;
 }
 
@@ -509,10 +509,9 @@
 }
 
 .advantage h3 {
-  min-height: 48px;
-  margin: 30px 0 12px;
+  margin: 24px 0 16px;
   font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  font-size: 25px;
+  font-size: 32px;
   font-weight: 400;
   letter-spacing: 0.03em;
   line-height: 1.02;
@@ -522,7 +521,7 @@
 .advantage p {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 18px;
   line-height: 1.5;
 }
 
@@ -543,18 +542,19 @@
 
 .testimonials blockquote {
   margin: 0;
+  max-width: 720px;
 }
 
 .quoteRule {
-  width: 100%;
+  width: 90%;
   height: 1px;
-  margin-bottom: 34px;
-  background: linear-gradient(90deg, rgba(255,255,255,.62) 0 32%, var(--red) 32% 52%, transparent 52%);
+  margin-bottom: 20px;
+  background: #b9b9b9;
 }
 
 .testimonials blockquote h3 {
   margin: 0;
-  font-size: clamp(25px, 2.1vw, 42px);
+  font-size: clamp(25px, 2.1vw, 32px);
   letter-spacing: -0.025em;
 }
 
@@ -563,8 +563,7 @@
 }
 
 .testimonials blockquote > p {
-  max-width: 900px;
-  margin: 22px 0 30px;
+  margin: 12px 0 50px;
   color: rgba(255, 255, 255, 0.67);
   font-size: 15px;
   line-height: 1.65;
@@ -607,7 +606,7 @@
 .quoteControls {
   display: flex;
   gap: 12px;
-  margin-top: 34px;
+  margin-top: 50px;
 }
 
 .quoteControls i {
