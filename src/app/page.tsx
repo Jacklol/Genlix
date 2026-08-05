@@ -1,10 +1,6 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties } from "react";
 
-import { AdvantageDocumentsIcon } from "@/components/icons/AdvantageDocumentsIcon";
-import { AdvantageIndividualTermsIcon } from "@/components/icons/AdvantageIndividualTermsIcon";
-import { AdvantageLogisticsIcon } from "@/components/icons/AdvantageLogisticsIcon";
-import { AdvantageManagerIcon } from "@/components/icons/AdvantageManagerIcon";
-import { AdvantageQualityIcon } from "@/components/icons/AdvantageQualityIcon";
+import { AdvantagesSlider } from "@/components/AdvantagesSlider";
 import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
 import { ContactHoursIcon } from "@/components/icons/ContactHoursIcon";
 import { ContactLocationIcon } from "@/components/icons/ContactLocationIcon";
@@ -31,44 +27,6 @@ const categories = [
   { name: "Вода", position: "75%", className: "" },
   { name: "Снеки", position: "100%", className: "" },
 ] as const;
-
-const advantages: {
-  index: string;
-  icon: ReactNode;
-  title: string;
-  text: string;
-}[] = [
-  {
-    index: "01",
-    icon: <AdvantageLogisticsIcon />,
-    title: "Собственная логистика",
-    text: "Рефрижераторы и точные температурные режимы на всём маршруте.",
-  },
-  {
-    index: "02",
-    icon: <AdvantageIndividualTermsIcon />,
-    title: "Индивидуальные условия",
-    text: "Гибкие лимиты, графики поставок и цены под объём вашего бизнеса.",
-  },
-  {
-    index: "03",
-    icon: <AdvantageDocumentsIcon />,
-    title: "Полный пакет документов",
-    text: "Сертификация, ветеринарные и таможенные документы к каждой партии.",
-  },
-  {
-    index: "04",
-    icon: <AdvantageManagerIcon />,
-    title: "Личный менеджер",
-    text: "Один контакт для заказов, остатков, срочных задач и консультаций.",
-  },
-  {
-    index: "05",
-    icon: <AdvantageQualityIcon />,
-    title: "Стабильное качество",
-    text: "Одинаковая калибровка и органолептика от поставки к поставке.",
-  },
-];
 
 const news = [
   {
@@ -232,16 +190,7 @@ export default function Home() {
       <section className={styles.advantagesSection} id="partners" aria-labelledby="advantages-title">
         <div className={styles.shell}>
           <Heading eyebrow="Почему выбирают нас" first="Преимущества для" accent="партнёров" id="advantages-title" />
-          <div className={styles.advantagesGrid}>
-            {advantages.map((item) => (
-              <article className={styles.advantage} key={item.title}>
-                <span className={styles.advantageIndex}>{item.index}</span>
-                <span className={styles.advantageIcon} aria-hidden="true">{item.icon}</span>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </article>
-            ))}
-          </div>
+          <AdvantagesSlider />
           <div className={styles.centeredCta}>
             <a className={styles.outlineButton} href="#contacts">Стать партнёром</a>
           </div>
