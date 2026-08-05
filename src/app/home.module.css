@@ -465,12 +465,14 @@
   text-align: center;
 }
 
+.advantagesSection .headingBlock h2 {
+  max-width: 100%;
+}
+
 .advantagesGrid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   margin-top: 68px;
-  border-top: 1px solid rgba(7, 30, 77, 0.25);
-  border-bottom: 1px solid rgba(7, 30, 77, 0.25);
 }
 
 .advantage {
@@ -493,9 +495,17 @@
 }
 
 .advantageIcon {
+  display: inline-flex;
+  width: 62px;
+  height: 62px;
   color: var(--red);
-  font-size: 42px;
   line-height: 1;
+}
+
+.advantageIcon svg {
+  display: block;
+  width: 62px;
+  height: 62px;
 }
 
 .advantage h3 {

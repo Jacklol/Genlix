@@ -1,5 +1,10 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
+import { AdvantageDocumentsIcon } from "@/components/icons/AdvantageDocumentsIcon";
+import { AdvantageIndividualTermsIcon } from "@/components/icons/AdvantageIndividualTermsIcon";
+import { AdvantageLogisticsIcon } from "@/components/icons/AdvantageLogisticsIcon";
+import { AdvantageManagerIcon } from "@/components/icons/AdvantageManagerIcon";
+import { AdvantageQualityIcon } from "@/components/icons/AdvantageQualityIcon";
 import styles from "./home.module.css";
 
 const navItems = [
@@ -19,38 +24,43 @@ const categories = [
   { name: "Снеки", position: "100%", className: "" },
 ] as const;
 
-const advantages = [
+const advantages: {
+  index: string;
+  icon: ReactNode;
+  title: string;
+  text: string;
+}[] = [
   {
     index: "01",
-    icon: "▦",
+    icon: <AdvantageLogisticsIcon />,
     title: "Собственная логистика",
     text: "Рефрижераторы и точные температурные режимы на всём маршруте.",
   },
   {
     index: "02",
-    icon: "▤",
+    icon: <AdvantageIndividualTermsIcon />,
     title: "Индивидуальные условия",
     text: "Гибкие лимиты, графики поставок и цены под объём вашего бизнеса.",
   },
   {
     index: "03",
-    icon: "▱",
+    icon: <AdvantageDocumentsIcon />,
     title: "Полный пакет документов",
     text: "Сертификация, ветеринарные и таможенные документы к каждой партии.",
   },
   {
     index: "04",
-    icon: "◉",
+    icon: <AdvantageManagerIcon />,
     title: "Личный менеджер",
     text: "Один контакт для заказов, остатков, срочных задач и консультаций.",
   },
   {
     index: "05",
-    icon: "◎",
+    icon: <AdvantageQualityIcon />,
     title: "Стабильное качество",
     text: "Одинаковая калибровка и органолептика от поставки к поставке.",
   },
-] as const;
+];
 
 const news = [
   { title: "Новый отруб Primebeef для стейк-хаусов", position: "0%" },
