@@ -1,36 +1,6 @@
 .main {
-  padding: 48px 0 96px;
+  padding: 0 0 80px;
   background: #fff;
-}
-
-.breadcrumbs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 40px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.breadcrumbs a {
-  color: var(--muted);
-  transition: color 160ms ease;
-}
-
-.breadcrumbs a:hover {
-  color: var(--ink);
-}
-
-.breadcrumbs span {
-  color: #000;
-  font-size: 18px;
-  line-height: 1.2;
-}
-
-.breadcrumbs strong {
-  color: var(--ink);
-  font-weight: 600;
 }
 
 .pageHeading h1 {

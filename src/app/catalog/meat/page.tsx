@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { FooterInstagramIcon } from "@/components/icons/FooterInstagramIcon";
 import { FooterFacebookIcon } from "@/components/icons/FooterFacebookIcon";
 import { FooterXIcon } from "@/components/icons/FooterXIcon";
@@ -28,7 +29,7 @@ const brands = [
     name: "Primebeef",
     audience: "Для HoReCa и Ритейла",
     text: "Премиум, сухое вызревание, высокая мраморность.",
-    href: "/#contacts",
+    href: "/catalog/meat/primebeef",
     image: "/assets/home/category1.jpg",
     position: "center",
     size: "cover",
@@ -130,16 +131,16 @@ export default function MeatCatalogPage() {
         </div>
       </header>
 
+      <Breadcrumbs
+        items={[
+          { label: "Главная", href: "/" },
+          { label: "Каталог", href: "/#catalog" },
+          { label: "Мясо" },
+        ]}
+      />
+
       <section className={styles.main}>
         <div className={homeStyles.shell}>
-          <nav className={styles.breadcrumbs} aria-label="Хлебные крошки">
-            <a href="/">Главная</a>
-            <span aria-hidden="true">›</span>
-            <a href="/#catalog">Каталог</a>
-            <span aria-hidden="true">›</span>
-            <strong>Мясо</strong>
-          </nav>
-
           <div className={styles.pageHeading}>
             <h1>Мясо</h1>
             <p>Выберите бренд для перехода к соответствующему каталогу поставок</p>

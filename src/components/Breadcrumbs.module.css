@@ -1,0 +1,35 @@
+.bar {
+  padding: 24px 0;
+  background: #fff;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted, #6e7888);
+  font-size: 13px;
+}
+
+.nav a {
+  color: var(--muted, #6e7888);
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.nav a:hover {
+  color: var(--ink, #102953);
+}
+
+.separator {
+  color: #000;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.current {
+  color: var(--ink, #102953);
+  font-weight: 600;
+}
