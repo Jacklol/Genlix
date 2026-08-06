@@ -33,7 +33,7 @@
   --brand-position: center;
   --brand-size: cover;
   position: relative;
-  min-height: 560px;
+  min-height: 500px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
