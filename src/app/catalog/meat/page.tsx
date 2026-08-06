@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { FooterInstagramIcon } from "@/components/icons/FooterInstagramIcon";
+import { SubscribeSection } from "@/components/SubscribeSection";
 import homeStyles from "@/app/home.module.css";
 import styles from "./meat.module.css";
 
@@ -83,28 +83,7 @@ export default function MeatCatalogPage() {
         </div>
       </section>
 
-      <section className={styles.subscribeSection} aria-labelledby="subscribe-title">
-        <div className={homeStyles.shell}>
-          <div className={styles.subscribeGrid}>
-            <div className={styles.subscribeHeading}>
-              <h2 id="subscribe-title">
-                Подпишитесь <span>на обновления</span>
-              </h2>
-              <p>
-                Получайте новости о поставках, сезонных предложениях и обновлениях ассортимента
-                для HoReCa и ритейла.
-              </p>
-            </div>
-            <form className={styles.subscribeForm}>
-              <input name="email" placeholder="Ваша почта" type="email" />
-              <button type="submit">Подписаться</button>
-              <a className={styles.subscribeSocial} href="/#contacts" aria-label="Instagram">
-                <FooterInstagramIcon />
-              </a>
-            </form>
-          </div>
-        </div>
-      </section>
+      <SubscribeSection />
 
       <Footer />
     </main>

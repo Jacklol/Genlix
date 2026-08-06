@@ -1,0 +1,131 @@
+.section {
+  --navy: #071e4d;
+  --red: #d15450;
+  --red-bright: #e0605d;
+
+  padding: 72px 0 80px;
+  background: var(--navy);
+  color: #fff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+}
+
+.heading h2 {
+  margin: 0;
+  font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(42px, 3.4vw, 64px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+.heading h2 span {
+  color: var(--red);
+}
+
+.heading p {
+  max-width: 520px;
+  margin: 18px 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0;
+  align-items: stretch;
+}
+
+.form input {
+  min-width: 0;
+  height: 48px;
+  padding: 0 18px;
+  border: 0;
+  outline: none;
+  background: rgba(255, 255, 255, 0.92);
+  color: #18243a;
+  font: 13px var(--font-montserrat), "Montserrat", Arial, sans-serif;
+}
+
+.form input::placeholder {
+  color: rgba(24, 36, 58, 0.45);
+}
+
+.form button {
+  min-height: 48px;
+  padding: 14px 24px 12px;
+  border: 0;
+  background: var(--red);
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background-color 180ms ease;
+}
+
+.form button:hover {
+  background: var(--red-bright);
+}
+
+.social {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  margin-left: 32px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  text-decoration: none;
+  transition: transform 160ms ease, background-color 160ms ease;
+}
+
+.social:hover {
+  transform: translateY(-2px);
+  background: var(--red-bright);
+}
+
+.social svg {
+  display: block;
+}
+
+@media (max-width: 920px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form {
+    grid-template-columns: 1fr auto;
+  }
+
+  .social {
+    grid-column: 2;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .form button,
+  .social {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .social {
+    border-radius: 0;
+  }
+}
