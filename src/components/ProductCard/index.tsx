@@ -48,6 +48,27 @@ function BeerIcon() {
   );
 }
 
+function ChevronDownIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className={styles.recommendationChevron}
+      fill="none"
+      height="16"
+      viewBox="0 0 16 16"
+      width="16"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clipRule="evenodd"
+        d="M7.95768 9.28893L11.4553 5.76884C11.6711 5.55174 12.0223 5.55174 12.238 5.76884C12.4518 5.98399 12.4518 6.33136 12.238 6.54651L8.34652 10.4629C8.24339 10.5667 8.10352 10.625 7.95768 10.625C7.81184 10.625 7.67198 10.5667 7.56884 10.4629L3.67737 6.54651C3.4636 6.33136 3.46359 5.98399 3.67737 5.76884C3.89309 5.55174 4.24431 5.55174 4.46003 5.76884L7.95768 9.28893Z"
+        fill="currentColor"
+        fillRule="evenodd"
+      />
+    </svg>
+  );
+}
+
 export function ProductCard({
   image,
   badge,
@@ -101,9 +122,7 @@ export function ProductCard({
           <div className={styles.recommendation}>
             <BeerIcon />
             <span className={styles.recommendationText}>{recommendation}</span>
-            <span aria-hidden="true" className={styles.recommendationChevron}>
-              ⌄
-            </span>
+            <ChevronDownIcon />
           </div>
         ) : null}
 
