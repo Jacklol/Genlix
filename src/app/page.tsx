@@ -21,7 +21,7 @@ const navItems = [
 ] as const;
 
 const categories = [
-  { name: "Мясо", image: "/assets/home/category1.jpg", className: styles.categoryFeatured, href: "#contacts" },
+  { name: "Мясо", image: "/assets/home/category1.jpg", className: styles.categoryFeatured, href: "/catalog/meat" },
   { name: "Птица", image: "/assets/home/category2.jpg", className: "", href: "#contacts" },
   { name: "Пиво", image: "/assets/home/category3.jpg", className: "", href: "#contacts" },
   { name: "Вода", image: "/assets/home/category4.jpg", className: "", href: "#contacts" },
