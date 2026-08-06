@@ -12,7 +12,7 @@ import styles from "./home.module.css";
 const categories = [
   { name: "Мясо", image: "/assets/home/category1.jpg", className: styles.categoryFeatured, href: "/catalog/meat" },
   { name: "Птица", image: "/assets/home/category2.jpg", className: "", href: "#contacts" },
-  { name: "Пиво", image: "/assets/home/category3.jpg", className: "", href: "#contacts" },
+  { name: "Пиво", image: "/assets/home/category3.jpg", className: "", href: "/catalog/beer" },
   { name: "Вода", image: "/assets/home/category4.jpg", className: "", href: "#contacts" },
   { name: "Снеки", image: "/assets/home/category5.jpg", className: "", href: "#contacts" },
 ] as const;
