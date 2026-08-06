@@ -1,24 +1,13 @@
 import type { CSSProperties } from "react";
 
 import { AdvantagesSlider } from "@/components/AdvantagesSlider";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
 import { ContactHoursIcon } from "@/components/icons/ContactHoursIcon";
 import { ContactLocationIcon } from "@/components/icons/ContactLocationIcon";
 import { ContactPhoneIcon } from "@/components/icons/ContactPhoneIcon";
-import { FooterFacebookIcon } from "@/components/icons/FooterFacebookIcon";
-import { FooterInstagramIcon } from "@/components/icons/FooterInstagramIcon";
-import { FooterXIcon } from "@/components/icons/FooterXIcon";
-import { FooterYoutubeIcon } from "@/components/icons/FooterYoutubeIcon";
 import styles from "./home.module.css";
-
-const navItems = [
-  ["Главная", "#top"],
-  ["О компании", "#about"],
-  ["Каталог", "#catalog"],
-  ["Партнёры", "#partners"],
-  ["Новости", "#news"],
-  ["Контакты", "#contacts"],
-] as const;
 
 const categories = [
   { name: "Мясо", image: "/assets/home/category1.jpg", className: styles.categoryFeatured, href: "/catalog/meat" },
@@ -51,30 +40,6 @@ const news = [
   },
 ] as const;
 
-const footerColumns = [
-  {
-    title: "Каталог",
-    links: ["Мраморная говядина", "Фермерская птица", "Премиальные соки", "Импортная вода", "Деликатесы"],
-  },
-  {
-    title: "Компания",
-    links: ["О компании", "Стандарты качества", "Логистика 24/7", "Условия оплаты", "Контакты"],
-  },
-  {
-    title: "Связь",
-    links: ["b2b@gildia-dist.ru", "+7 (495) 123-45-67", "Адрес склада", "Заявка на прайс", "Telegram-канал"],
-  },
-] as const;
-
-function Brand() {
-  return (
-    <a className={styles.brand} href="#top" aria-label="Genlix — на главную">
-      <span aria-hidden="true" />
-      <strong>Genlix</strong>
-    </a>
-  );
-}
-
 function Heading({
   eyebrow,
   first,
@@ -99,29 +64,7 @@ function Heading({
 export default function Home() {
   return (
     <main className={styles.page} id="top">
-      <header className={styles.header}>
-        <div className={styles.headerInner}>
-          <Brand />
-          <nav className={styles.desktopNav} aria-label="Основная навигация">
-            {navItems.map(([label, href], index) => (
-              <a className={index === 0 ? styles.activeLink : undefined} href={href} key={label}>
-                {label}
-              </a>
-            ))}
-          </nav>
-          <div className={styles.headerActions}>
-            <a className={styles.phone} href="tel:+74951234567">+7 (495) 123-45-67</a>
-            <a className={styles.primaryButton} href="#contacts">Стать партнёром</a>
-          </div>
-          <details className={styles.mobileMenu}>
-            <summary aria-label="Открыть меню"><span /><span /><span /></summary>
-            <nav aria-label="Мобильная навигация">
-              {navItems.map(([label, href]) => <a href={href} key={label}>{label}</a>)}
-              <a href="tel:+74951234567">+7 (495) 123-45-67</a>
-            </nav>
-          </details>
-        </div>
-      </header>
+      <Header />
 
       <section className={styles.hero} aria-labelledby="hero-title">
         <div className={styles.heroGlow} aria-hidden="true" />
@@ -304,40 +247,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className={styles.footer}>
-        <div className={`${styles.shell} ${styles.footerGrid}`}>
-          <div className={styles.footerAbout}>
-            <Brand />
-            <p>Импорт и комплексная дистрибуция мяса и премиальных напитков для ресторанных холдингов и элитного ритейла.</p>
-          </div>
-          {footerColumns.map((column) => (
-            <div className={styles.footerColumn} key={column.title}>
-              <h3>{column.title}</h3>
-              {column.links.map((link) => <a href="#contacts" key={link}>{link}</a>)}
-            </div>
-          ))}
-        </div>
-        <div className={`${styles.shell} ${styles.footerBottom}`}>
-          <span>© 2026 ООО «Гильдия Дистрибуция». Все права защищены.</span>
-          <p className={styles.footerCredit}>
-            <span>Developed by</span> <a href="https://localmindstudio.site/" target="_blank" rel="noopener">localmindstudio</a>
-          </p>
-          <div className={styles.footerSocial} aria-label="Социальные сети">
-            <a href="#contacts" aria-label="Instagram">
-              <FooterInstagramIcon />
-            </a>
-            <a href="#contacts" aria-label="Facebook">
-              <FooterFacebookIcon />
-            </a>
-            <a href="#contacts" aria-label="X">
-              <FooterXIcon />
-            </a>
-            <a href="#contacts" aria-label="YouTube">
-              <FooterYoutubeIcon />
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }

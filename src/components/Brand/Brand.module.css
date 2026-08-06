@@ -1,0 +1,25 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.brand > span {
+  width: 12px;
+  height: 28px;
+  display: block;
+  background: var(--red, #d15450);
+}
+
+.brand strong {
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+@media (max-width: 600px) {
+  .brand strong {
+    font-size: 19px;
+  }
+}

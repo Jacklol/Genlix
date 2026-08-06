@@ -226,10 +226,6 @@
   display: block;
 }
 
-.headerStatic {
-  margin-bottom: 0 !important;
-}
-
 @media (max-width: 920px) {
   .brandGrid {
     grid-template-columns: 1fr;

@@ -1,0 +1,129 @@
+.footer {
+  --navy: #071e4d;
+  --red: #d15450;
+  --red-bright: #e0605d;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 74px;
+  background: var(--navy);
+  color: #fff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 0.72fr);
+  gap: 70px;
+  padding-bottom: 64px;
+}
+
+.about p {
+  max-width: 320px;
+  margin: 24px 0 0;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.column h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.column a {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.column a:hover {
+  color: #fff;
+}
+
+.bottom {
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 13px;
+}
+
+.credit {
+  margin: 0;
+  font-size: 11px;
+}
+
+.credit a {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: inherit;
+}
+
+.social {
+  display: flex;
+  gap: 12px;
+}
+
+.social a {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  text-decoration: none;
+  transition: transform 160ms ease, background-color 160ms ease;
+}
+
+.social a:hover {
+  transform: translateY(-2px);
+  background: var(--red-bright);
+}
+
+.social a svg {
+  display: block;
+}
+
+@media (max-width: 920px) {
+  .grid {
+    grid-template-columns: 1.3fr repeat(2, 1fr);
+  }
+
+  .column:last-child {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 42px 24px;
+  }
+
+  .about {
+    grid-column: 1 / -1;
+  }
+
+  .column:last-child {
+    grid-column: auto;
+  }
+
+  .bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 24px 0;
+  }
+}
