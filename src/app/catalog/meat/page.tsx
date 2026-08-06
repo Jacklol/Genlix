@@ -29,7 +29,7 @@ const brands = [
     name: "Мираторг",
     audience: "Только для Ритейла",
     text: "Доступное качество и готовая упаковка для вашей витрины.",
-    href: "/#contacts",
+    href: "/catalog/meat/miratorg",
     image: "/assets/home/news_item2.jpg",
     position: "center",
     size: "cover",
