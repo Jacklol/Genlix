@@ -5,6 +5,8 @@ import { CatalogProductsSection } from "@/components/CatalogProductsSection";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { PartnersSection } from "@/components/PartnersSection";
+import type { ProductCardData } from "@/components/ProductCard";
+import { ProductCardsSection } from "@/components/ProductCardsSection";
 import { SubscribeSection } from "@/components/SubscribeSection";
 import homeStyles from "@/app/home.module.css";
 import styles from "./primebeef.module.css";
@@ -55,6 +57,51 @@ const retailProducts = [
   },
 ] as const;
 
+const detailedProducts: ProductCardData[] = [
+  {
+    image: "/assets/home/news_item2.jpg",
+    badge: "хит",
+    brand: "Мираторг",
+    title: "Говяжий фарш домашний",
+    specs: [
+      { label: "Фасовка", value: "блок 5+ кг / вакуум 0,8 кг" },
+      { label: "Мраморность", value: "5" },
+      { label: "Вызревание", value: "сухое вызревание 28 дней" },
+      { label: "Хранение", value: "0...+4°C" },
+    ],
+    tags: ["гриль", "жарка"],
+    recommendation: "Рекомендуемое пиво: IPA, Porter",
+  },
+  {
+    image: "/assets/home/category1.jpg",
+    badge: "new",
+    brand: "Primebeef",
+    title: "Стейк Рибай премиум",
+    specs: [
+      { label: "Фасовка", value: "вакуум 0,8 кг" },
+      { label: "Мраморность", value: "4+" },
+      { label: "Вызревание", value: "сухое вызревание 21 день" },
+      { label: "Хранение", value: "0...+4°C" },
+    ],
+    tags: ["гриль", "запекание"],
+    recommendation: "Рекомендуемое пиво: Lager, Stout",
+  },
+  {
+    image: "/assets/home/news_item4.jpg",
+    badge: "витрина",
+    brand: "Мираторг",
+    title: "Оковалок говяжий",
+    specs: [
+      { label: "Фасовка", value: "блок 5+ кг" },
+      { label: "Мраморность", value: "3+" },
+      { label: "Вызревание", value: "влажное вызревание 14 дней" },
+      { label: "Хранение", value: "0...+4°C" },
+    ],
+    tags: ["тушение", "запекание"],
+    recommendation: "Рекомендуемое пиво: Wheat, Ale",
+  },
+];
+
 export default function PrimebeefPage() {
   return (
     <main className={homeStyles.page}>
@@ -86,6 +133,8 @@ export default function PrimebeefPage() {
           </p>
         </div>
       </section>
+
+      <ProductCardsSection products={detailedProducts} />
 
       <CatalogProductsSection
         variant="dark"

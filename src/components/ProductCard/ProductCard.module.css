@@ -1,0 +1,166 @@
+.card {
+  --ink: #05204c;
+  --muted: #6e7888;
+
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.051);
+  color: var(--ink);
+}
+
+.media {
+  position: relative;
+  height: 286px;
+  background-color: #f4f4f4;
+  background-image: var(--product-image);
+  background-position: center;
+  background-size: cover;
+}
+
+.badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  min-width: 52px;
+  padding: 6px 12px 4px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.brand {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 8px 12px 6px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 22px 22px 24px;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.specs {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 0;
+}
+
+.spec {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.spec dt {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.spec dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tag {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f0f2f5;
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.recommendation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #e5e7eb;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.recommendationIcon {
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.recommendationText {
+  flex: 1;
+  min-width: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.recommendationChevron {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.button {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 20px;
+  padding: 14px 18px 12px;
+  border: 1px solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.button:hover {
+  background: var(--ink);
+  color: #fff;
+}
