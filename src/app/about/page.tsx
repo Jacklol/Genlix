@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { AboutPhilosophySection } from "@/components/AboutPhilosophySection";
 import { AboutTeamSlider } from "@/components/AboutTeamSlider";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
@@ -86,7 +87,9 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className={styles.geography} id="about-content" aria-labelledby="about-geography-title">
+      <AboutPhilosophySection />
+
+      <section className={styles.geography} aria-labelledby="about-geography-title">
         <div className={homeStyles.shell}>
           <div className={styles.geographyLayout}>
             <div className={styles.geographyCopy}>
