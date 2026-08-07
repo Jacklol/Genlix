@@ -7,7 +7,7 @@ import { Header } from "@/components/Header";
 import { ProductDetailHero } from "@/components/ProductDetailHero";
 import { ProductCardsSection } from "@/components/ProductCardsSection";
 import { SubscribeSection } from "@/components/SubscribeSection";
-import { getAllProductSlugs, getProductBySlug, getSimilarProducts } from "@/lib/products";
+import { getAllProductSlugs, getProductBySlug, getSimilarProducts } from "@/lib/catalog";
 import homeStyles from "@/app/home.module.css";
 
 type ProductPageProps = {

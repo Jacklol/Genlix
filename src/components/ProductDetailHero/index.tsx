@@ -1,4 +1,4 @@
-import type { ProductDetailData } from "@/lib/products";
+import type { ProductDetailData } from "@/lib/catalog";
 import homeStyles from "@/app/home.module.css";
 
 import { ProductDetailGallery } from "@/components/ProductDetailGallery";

@@ -47,19 +47,36 @@ export function CatalogProductsSection({
         </div>
 
         <div className={`${styles.grid} ${columnsClass}`}>
-          {products.map((product) => (
-            <article
-              className={styles.card}
-              key={`${product.name}-${product.image}`}
-              style={{ "--card-image": `url("${product.image}")` } as CSSProperties}
-            >
-              <div className={styles.image} aria-hidden="true" />
-              <div className={styles.body}>
-                <h3 className={styles.name}>{product.name}</h3>
-                <p className={styles.meta}>{product.meta}</p>
-              </div>
-            </article>
-          ))}
+          {products.map((product) => {
+            const cardContent = (
+              <>
+                <div className={styles.image} aria-hidden="true" />
+                <div className={styles.body}>
+                  <h3 className={styles.name}>{product.name}</h3>
+                  <p className={styles.meta}>{product.meta}</p>
+                </div>
+              </>
+            );
+
+            return product.href ? (
+              <a
+                className={styles.card}
+                href={product.href}
+                key={`${product.name}-${product.image}`}
+                style={{ "--card-image": `url("${product.image}")` } as CSSProperties}
+              >
+                {cardContent}
+              </a>
+            ) : (
+              <article
+                className={styles.card}
+                key={`${product.name}-${product.image}`}
+                style={{ "--card-image": `url("${product.image}")` } as CSSProperties}
+              >
+                {cardContent}
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
