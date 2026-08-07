@@ -27,7 +27,7 @@
 }
 
 .prevButton {
-  align-self: center;
+  align-self: flex-end;
   flex-shrink: 0;
   width: 277px;
 }
@@ -37,12 +37,10 @@
   width: 277px;
   height: 290px;
   object-fit: cover;
-  opacity: 0.72;
   transition: opacity 160ms ease, transform 160ms ease;
 }
 
 .prevButton:hover .prevImage {
-  opacity: 1;
   transform: scale(1.03);
 }
 
