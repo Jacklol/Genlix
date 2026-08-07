@@ -1,12 +1,8 @@
 .footer {
-  --navy: #071e4d;
-  --red: #d15450;
-  --red-bright: #e0605d;
-
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding-top: 74px;
   background: var(--navy);
-  color: #fff;
+  color: var(--paper);
 }
 
 .grid {
@@ -45,7 +41,7 @@
 }
 
 .column a:hover {
-  color: #fff;
+  color: var(--paper);
 }
 
 .bottom {
@@ -55,7 +51,7 @@
   justify-content: space-between;
   gap: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
-  color: #fff;
+  color: var(--paper);
   font-size: 13px;
 }
 
@@ -83,7 +79,7 @@
   place-items: center;
   border-radius: 50%;
   background: var(--red);
-  color: #fff;
+  color: var(--paper);
   text-decoration: none;
   transition: transform 160ms ease, background-color 160ms ease;
 }

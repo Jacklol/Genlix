@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  color: #fff;
+  color: var(--paper);
   text-decoration: none;
 }
 
@@ -10,7 +10,7 @@
   width: 12px;
   height: 28px;
   display: block;
-  background: var(--red, #d15450);
+  background: var(--red);
 }
 
 .brand strong {

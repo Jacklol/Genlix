@@ -1,11 +1,7 @@
 .section {
-  --navy: #071e4d;
-  --red: #d15450;
-  --red-bright: #e0605d;
-
   padding: 72px 0 80px;
   background: var(--navy);
-  color: #fff;
+  color: var(--paper);
 }
 
 .grid {
@@ -51,7 +47,7 @@
   border: 0;
   outline: none;
   background: rgba(255, 255, 255, 0.92);
-  color: #18243a;
+  color: var(--input-text);
   font: 13px var(--font-montserrat), "Montserrat", Arial, sans-serif;
 }
 
@@ -64,7 +60,7 @@
   padding: 14px 24px 12px;
   border: 0;
   background: var(--red);
-  color: #fff;
+  color: var(--paper);
   cursor: pointer;
   font-size: 12px;
   font-weight: 700;
@@ -85,7 +81,7 @@
   margin-left: 32px;
   border-radius: 50%;
   background: var(--red);
-  color: #fff;
+  color: var(--paper);
   text-decoration: none;
   transition: transform 160ms ease, background-color 160ms ease;
 }

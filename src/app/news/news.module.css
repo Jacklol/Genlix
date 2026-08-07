@@ -1,11 +1,6 @@
 .section {
-  --ink: #102953;
-  --navy: #071e4d;
-  --red: #d15450;
-  --muted: #6e7888;
-
   padding: 48px 0 80px;
-  background: #fff;
+  background: var(--paper);
   color: var(--ink);
 }
 
@@ -34,7 +29,7 @@
   min-height: 48px;
   padding: 14px 20px 12px;
   border: 1px solid rgba(16, 41, 83, 0.64);
-  background: #fff;
+  background: var(--paper);
   color: var(--ink);
   font-family: inherit;
   font-size: 12px;
@@ -48,14 +43,14 @@
 .filterButton:hover {
   border-color: var(--navy);
   background: var(--navy);
-  color: #fff;
+  color: var(--paper);
 }
 
 .filterButtonActive,
 .filterButtonActive:hover {
   border-color: var(--navy);
   background: var(--navy);
-  color: #fff;
+  color: var(--paper);
 }
 
 .featured {
@@ -68,7 +63,7 @@
 .featuredMedia {
   grid-column: span 2;
   height: 100%;
-  background-color: #1a120e;
+  background-color: var(--hero-overlay);
   background-image: var(--featured-image);
   background-position: center;
   background-size: cover;
@@ -82,7 +77,7 @@
   height: 100%;
   padding: 32px 28px;
   background: var(--navy);
-  color: #fff;
+  color: var(--paper);
 }
 
 .featuredLabel {
@@ -117,7 +112,7 @@
   min-height: 50px;
   padding: 14px 75px 12px;
   background: var(--red);
-  color: #fff !important;
+  color: var(--paper) !important;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -126,7 +121,7 @@
 }
 
 .featuredButton:hover {
-  background: #e0605d;
+  background: var(--red-bright);
   transform: translateY(-2px);
 }
 
@@ -143,8 +138,8 @@
   min-width: 0;
   height: 100%;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
-  background: #fff;
+  border: 1px solid var(--border);
+  background: var(--paper);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.051);
 }
 
@@ -157,7 +152,7 @@
 
 .cardMedia {
   height: 286px;
-  background-color: #f4f4f4;
+  background-color: var(--surface-muted);
   background-image: var(--card-image);
   background-position: center;
   background-size: cover;
@@ -252,7 +247,7 @@
   padding: 14px 40px 12px;
   border: none;
   background: var(--red);
-  color: #fff;
+  color: var(--paper);
   font-family: inherit;
   font-size: 12px;
   font-weight: 700;
@@ -263,7 +258,7 @@
 }
 
 .loadMoreButton:hover {
-  background: #e0605d;
+  background: var(--red-bright);
   transform: translateY(-2px);
 }
 

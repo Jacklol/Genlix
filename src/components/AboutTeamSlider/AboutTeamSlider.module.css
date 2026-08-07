@@ -1,7 +1,5 @@
 .slider {
-  --ink: #102953;
-  --red: #cf4444;
-  --muted: #6e7888;
+  overflow: hidden;
 }
 
 .swiper {
@@ -29,7 +27,7 @@
 }
 
 .prevButton {
-  align-self: flex-end;
+  align-self: center;
   flex-shrink: 0;
   width: 277px;
 }
@@ -39,6 +37,7 @@
   width: 277px;
   height: 290px;
   object-fit: cover;
+  opacity: 0.72;
   transition: opacity 160ms ease, transform 160ms ease;
 }
 
@@ -90,7 +89,7 @@
 
 .description {
   margin: 12px 0 0;
-  color: #201e1e;
+  color: var(--text);
   font-family: var(--font-montserrat), "Montserrat", Arial, Helvetica, sans-serif;
   font-size: 18px;
   line-height: 1.3;
@@ -129,7 +128,7 @@
   height: 8px;
   margin: 0 !important;
   border-radius: 0;
-  background: #d9d9d9;
+  background: var(--pagination-inactive);
   opacity: 1;
   transition: background-color 160ms ease;
 }

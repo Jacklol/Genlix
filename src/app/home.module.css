@@ -1,12 +1,4 @@
 .page {
-  --navy: #071e4d;
-  --navy-deep: #041632;
-  --navy-soft: #102b5b;
-  --red: #d15450;
-  --red-bright: #e0605d;
-  --ink: #102953;
-  --paper: #ffffff;
-  --muted: #6e7888;
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
@@ -63,7 +55,7 @@
 
 .primaryButton {
   background: var(--red);
-  color: #fff !important;
+  color: var(--paper) !important;
 }
 
 .primaryButton:hover,
@@ -78,11 +70,11 @@
 
 .secondaryButton {
   border-color: rgba(255, 255, 255, 0.74);
-  color: #fff !important;
+  color: var(--paper) !important;
 }
 
 .secondaryButton:hover {
-  border-color: #fff;
+  border-color: var(--paper);
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -106,7 +98,7 @@
     linear-gradient(90deg, rgba(3, 19, 45, 0.98) 0%, rgba(3, 19, 45, 0.9) 28%, rgba(3, 19, 45, 0.32) 65%, rgba(3, 19, 45, 0.16) 100%),
     linear-gradient(180deg, rgba(2, 15, 35, 0.15), rgba(2, 15, 35, 0.45)),
     url("/assets/home/hero-map.png") center / cover no-repeat;
-  color: #fff;
+  color: var(--paper);
 }
 
 .hero::after {
@@ -222,7 +214,7 @@
 .advantagesSection,
 .newsSection {
   padding: 112px 0 120px;
-  background: #fff;
+  background: var(--paper);
 }
 
 .catalogHeading,
@@ -267,7 +259,7 @@
   position: relative;
   height: 500px;
   overflow: hidden;
-  background-color: #1a2030;
+  background-color: var(--surface-dark);
   background-image: var(--category-image);
   background-position: center;
   background-size: cover;
@@ -312,7 +304,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  color: #fff;
+  color: var(--paper);
   font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: 26px;
   letter-spacing: 0.03em;
@@ -342,7 +334,7 @@
 .testimonials,
 .contactSection {
   background: var(--navy);
-  color: #fff;
+  color: var(--paper);
 }
 
 .philosophy {
@@ -503,7 +495,7 @@
   width: 90%;
   height: 1px;
   margin-bottom: 20px;
-  background: #b9b9b9;
+  background: var(--partner-border);
 }
 
 .testimonials blockquote h3 {
@@ -536,7 +528,7 @@
   place-items: center;
   border: 1px solid rgba(255,255,255,.35);
   border-radius: 50%;
-  background: #0f2855;
+  background: var(--navy-soft);
   color: var(--red);
   font-size: 12px;
   font-weight: 800;
@@ -597,11 +589,11 @@
   --news-image: url("/assets/home/news_item1.jpg");
   position: relative;
   overflow: hidden;
-  background-color: #1a2030;
+  background-color: var(--surface-dark);
   background-image: var(--news-image);
   background-position: center;
   background-size: cover;
-  color: #fff;
+  color: var(--paper);
   isolation: isolate;
 }
 
@@ -759,7 +751,7 @@
   border: 1px solid rgba(255,255,255,.15);
   outline: none;
   background: rgba(255,255,255,.88);
-  color: #18243a;
+  color: var(--input-text);
   font: 13px var(--font-montserrat), "Montserrat", Arial, sans-serif;
   transition: border-color 160ms ease, box-shadow 160ms ease;
 }

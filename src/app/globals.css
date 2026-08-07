@@ -2,17 +2,33 @@
 
 :root {
   --background: #f8f8f8;
-  --surface: #ffffff;
   --surface-soft: #f0f0f0;
   --line: rgba(5, 32, 76, 0.16);
-  --muted: #666666;
-  --foreground: #05204c;
-  --gold: #cf4444;
-  --gold-light: #cf4444;
-  --route: #cf4444;
-  --route-hot: #e45b5b;
-  --navy: #05204c;
-  --brand-red: #cf4444;
+  --muted: #6e7888;
+
+  /* Brand palette */
+  --red: #cf4444;
+  --red-bright: #e0605d;
+  --navy: #071e4d;
+  --navy-deep: #041632;
+  --navy-soft: #102b5b;
+  --ink: #102953;
+  --ink-deep: #05204c;
+  --paper: #ffffff;
+  --border: #e5e7eb;
+  --surface-muted: #f4f4f4;
+  --text: #201e1e;
+  --text-secondary: #111827;
+  --text-on-dark: #dddddd;
+  --hero-overlay: #1a120e;
+  --pagination-inactive: #d9d9d9;
+  --input-text: #18243a;
+  --section-muted-bg: #f3f4f6;
+  --card-accent-bg: #f0f2f5;
+  --partner-border: #b9b9b9;
+  --surface-dark: #1a2030;
+  --category-hero-bg: #2a1712;
+
   --font-display: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, sans-serif;
   --font-sans: var(--font-montserrat), "Montserrat", Arial, Helvetica, sans-serif;
 }
@@ -29,7 +45,7 @@ body {
   margin: 0;
   overflow-x: hidden;
   background: var(--background);
-  color: var(--foreground);
+  color: var(--ink-deep);
   font-family: var(--font-montserrat), "Montserrat", Arial, Helvetica, sans-serif;
 }
 
@@ -777,7 +793,7 @@ button {
   height: 34px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--brand-red);
+  border: 1px solid var(--red);
   color: #ffffff;
   font-family: Georgia, serif;
   font-size: 18px;
@@ -803,7 +819,7 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: var(--gold-light);
+  color: var(--red);
 }
 
 .status-dot::before {
@@ -811,8 +827,8 @@ button {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--gold);
-  box-shadow: 0 0 14px var(--gold);
+  background: var(--red);
+  box-shadow: 0 0 14px var(--red);
 }
 
 .intro-replay {
@@ -834,8 +850,8 @@ button {
 }
 
 .intro-replay:hover {
-  border-color: var(--brand-red);
-  background: var(--brand-red);
+  border-color: var(--red);
+  background: var(--red);
   color: #ffffff;
 }
 
@@ -907,11 +923,11 @@ button {
   top: 20%;
   bottom: 20%;
   width: 2px;
-  background: var(--gold);
+  background: var(--red);
 }
 
 .menu-number {
-  color: var(--gold);
+  color: var(--red);
   font-family: Georgia, serif;
   font-size: 12px;
 }
@@ -941,7 +957,7 @@ button {
 
 .menu-button.is-active .menu-arrow,
 .menu-button:hover .menu-arrow {
-  color: var(--gold-light);
+  color: var(--red);
   opacity: 1;
   transform: translateX(0);
 }
@@ -990,7 +1006,7 @@ button {
 }
 
 .replay-button:hover {
-  color: var(--foreground);
+  color: var(--ink-deep);
 }
 
 .replay-button span {
@@ -1009,7 +1025,7 @@ button {
   min-height: 650px;
   overflow: hidden;
   border: 1px solid var(--line);
-  background: var(--surface);
+  background: var(--paper);
   box-shadow: 0 30px 90px rgba(5, 32, 76, 0.11);
   animation: frameIn 420ms ease both;
 }
@@ -1026,7 +1042,7 @@ button {
 
 .demo-kicker {
   margin: 0;
-  color: var(--gold-light);
+  color: var(--red);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.24em;
@@ -1225,7 +1241,7 @@ button {
 
 .product-copy p {
   margin: 0 0 7px;
-  color: var(--gold);
+  color: var(--red);
   font-size: 9px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1247,7 +1263,7 @@ button {
 }
 
 .product-card:hover .card-arrow {
-  color: var(--gold-light);
+  color: var(--red);
   transform: translate(3px, -3px);
 }
 
@@ -1326,7 +1342,7 @@ button {
 
 .marquee-group span::after {
   content: "✦";
-  color: var(--gold);
+  color: var(--red);
   font-size: 10px;
 }
 
@@ -1346,7 +1362,7 @@ button {
 }
 
 .fact-row strong {
-  color: var(--gold-light);
+  color: var(--red);
   font-family: Georgia, serif;
   font-size: 34px;
   font-weight: 400;
@@ -1395,7 +1411,7 @@ button {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--gold-light);
+  color: var(--red);
   font-size: 9px;
   letter-spacing: .16em;
 }
@@ -1404,7 +1420,7 @@ button {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--gold);
+  background: var(--red);
   animation: livePulse 1.5s ease-out infinite;
 }
 
@@ -1435,8 +1451,8 @@ button {
   padding: 0 22px;
   overflow: hidden;
   border: 0;
-  background: var(--foreground);
-  color: var(--surface);
+  background: var(--ink-deep);
+  color: var(--paper);
   cursor: pointer;
   font-size: 11px;
   font-weight: 700;
@@ -1465,19 +1481,14 @@ button {
 
 .shine-button:hover {
   transform: translateY(-3px);
-  background: var(--brand-red);
+  background: var(--red);
 }
 
 .belarus-map-demo {
   --tech-bg: #edf0f5;
   --tech-surface: rgba(255, 255, 255, 0.68);
-  --tech-white: #ffffff;
   --tech-blue: #73809a;
-  --tech-blue-deep: #05204c;
   --tech-line: rgba(5, 32, 76, 0.2);
-  --tech-ink: #05204c;
-  --route: #cf4444;
-  --route-hot: #e45b5b;
   position: relative;
   min-height: 650px;
   overflow: hidden;
@@ -1486,7 +1497,7 @@ button {
     radial-gradient(circle at 67% 42%, rgba(255, 255, 255, 0.96), transparent 25%),
     radial-gradient(circle at 72% 46%, color-mix(in srgb, var(--tech-blue) 15%, transparent), transparent 43%),
     linear-gradient(145deg, #ffffff 0%, var(--tech-bg) 54%, #dde3ed 100%);
-  color: var(--tech-ink);
+  color: var(--ink-deep);
 }
 
 .map-heading {
@@ -1507,7 +1518,7 @@ button {
 }
 
 .map-heading > span {
-  color: color-mix(in srgb, var(--tech-blue-deep) 72%, transparent);
+  color: color-mix(in srgb, var(--ink-deep) 72%, transparent);
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1530,7 +1541,7 @@ button {
   padding: 0 12px;
   border: 1px solid var(--tech-line);
   background: rgba(248, 252, 252, 0.48);
-  color: var(--tech-ink);
+  color: var(--ink-deep);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.82),
     0 8px 24px rgba(38, 76, 89, 0.07);
@@ -1541,8 +1552,8 @@ button {
 }
 
 .map-controls button:hover {
-  background: var(--tech-ink);
-  color: var(--tech-white);
+  background: var(--ink-deep);
+  color: var(--paper);
   transform: translateY(-2px);
 }
 
@@ -1558,7 +1569,7 @@ button {
   inset: 0;
   width: 100%;
   height: 100%;
-  color: var(--gold);
+  color: var(--red);
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -1646,7 +1657,7 @@ button {
 }
 
 .country-shadow {
-  fill: color-mix(in srgb, var(--tech-blue-deep) 9%, transparent);
+  fill: color-mix(in srgb, var(--ink-deep) 9%, transparent);
   stroke: none;
   transform: translateY(17px);
 }
@@ -1657,7 +1668,7 @@ button {
 
 .country-glass-depth {
   fill: color-mix(in srgb, var(--tech-blue) 9%, transparent);
-  stroke: color-mix(in srgb, var(--tech-blue-deep) 21%, transparent);
+  stroke: color-mix(in srgb, var(--ink-deep) 21%, transparent);
   stroke-width: 2.5;
   stroke-linejoin: round;
 }
@@ -1689,7 +1700,7 @@ button {
 }
 
 .tech-mesh-dot {
-  fill: var(--tech-blue-deep);
+  fill: var(--ink-deep);
   opacity: 0.42;
 }
 
@@ -1708,7 +1719,7 @@ button {
 
 .map-district {
   fill: rgba(255, 255, 255, 0.035);
-  stroke: color-mix(in srgb, var(--tech-blue-deep) 34%, transparent);
+  stroke: color-mix(in srgb, var(--ink-deep) 34%, transparent);
   stroke-width: 0.52;
   stroke-linejoin: round;
   opacity: 0;
@@ -1719,15 +1730,15 @@ button {
 
 .map-district:hover,
 .map-district.is-active {
-  fill: color-mix(in srgb, var(--route) 12%, rgba(255, 255, 255, 0.36));
-  stroke: var(--route);
+  fill: color-mix(in srgb, var(--red) 12%, rgba(255, 255, 255, 0.36));
+  stroke: var(--red);
   stroke-width: 1.15;
   opacity: 0.92;
 }
 
 .country-outline {
   fill: none;
-  stroke: color-mix(in srgb, var(--tech-blue-deep) 62%, transparent);
+  stroke: color-mix(in srgb, var(--ink-deep) 62%, transparent);
   stroke-width: 1.45;
   stroke-linejoin: round;
   stroke-linecap: round;
@@ -1754,7 +1765,7 @@ button {
 }
 
 .road-surface {
-  stroke: color-mix(in srgb, var(--route) 88%, var(--tech-blue-deep));
+  stroke: color-mix(in srgb, var(--red) 88%, var(--ink-deep));
   stroke-width: 1.7;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
@@ -1765,7 +1776,7 @@ button {
 }
 
 .road-data-flow {
-  stroke: var(--tech-white);
+  stroke: var(--paper);
   stroke-width: 1.2;
   stroke-dasharray: 0.008 0.038;
   stroke-dashoffset: 0;
@@ -1781,12 +1792,12 @@ button {
 }
 
 .road-route.is-active .road-casing {
-  stroke: color-mix(in srgb, var(--route) 18%, var(--tech-white));
+  stroke: color-mix(in srgb, var(--red) 18%, var(--paper));
   stroke-width: 9;
 }
 
 .road-route.is-active .road-surface {
-  stroke: var(--route-hot);
+  stroke: var(--red-bright);
   stroke-width: 3.6;
 }
 
@@ -1796,7 +1807,7 @@ button {
 }
 
 .network-radars {
-  color: var(--route);
+  color: var(--red);
   pointer-events: none;
 }
 
@@ -1809,7 +1820,7 @@ button {
 }
 
 .tech-radar-halo {
-  fill: color-mix(in srgb, var(--route) 7%, transparent);
+  fill: color-mix(in srgb, var(--red) 7%, transparent);
   stroke: none;
   transform-box: fill-box;
   transform-origin: center;
@@ -1837,7 +1848,7 @@ button {
 }
 
 .tech-radar-ring.ring-inner {
-  fill: color-mix(in srgb, var(--route) 8%, transparent);
+  fill: color-mix(in srgb, var(--red) 8%, transparent);
   opacity: 0.78;
 }
 
@@ -1874,7 +1885,7 @@ button {
 }
 
 .district-center-dot {
-  fill: var(--route);
+  fill: var(--red);
   opacity: 0.38;
   transform-box: fill-box;
   transform-origin: center;
@@ -1889,13 +1900,13 @@ button {
 .district-center:hover .district-center-dot,
 .district-center:focus-visible .district-center-dot,
 .district-center.is-active .district-center-dot {
-  fill: var(--route);
+  fill: var(--red);
   opacity: 1;
   transform: scale(2.25);
 }
 
 .district-center-label {
-  fill: var(--tech-ink);
+  fill: var(--ink-deep);
   stroke: rgba(248, 252, 252, 0.92);
   stroke-width: 3px;
   paint-order: stroke;
@@ -1916,7 +1927,7 @@ button {
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: var(--foreground);
+  color: var(--ink-deep);
   cursor: pointer;
   opacity: 0;
   transform: scale(0.25);
@@ -1928,7 +1939,7 @@ button {
 .city-ring::after {
   position: absolute;
   inset: 11px;
-  border: 1px solid var(--route);
+  border: 1px solid var(--red);
   border-radius: 50%;
   content: "";
 }
@@ -1950,19 +1961,19 @@ button {
   z-index: 2;
   width: 8px;
   height: 8px;
-  border: 2px solid var(--tech-white);
+  border: 2px solid var(--paper);
   border-radius: 50%;
-  background: var(--route);
+  background: var(--red);
   box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--route) 34%, transparent),
-    0 0 18px color-mix(in srgb, var(--route) 32%, transparent);
+    0 0 0 3px color-mix(in srgb, var(--red) 34%, transparent),
+    0 0 18px color-mix(in srgb, var(--red) 32%, transparent);
   transition: transform 220ms ease, background 220ms ease;
 }
 
 .city-marker:hover .city-core,
 .city-marker:focus-visible .city-core,
 .city-group.is-active .city-core {
-  background: var(--route-hot);
+  background: var(--red-bright);
   transform: scale(1.7);
 }
 
@@ -1973,21 +1984,21 @@ button {
 .city-group.is-regional .city-ring {
   inset: 8px;
   border-width: 2px;
-  background: color-mix(in srgb, var(--route) 9%, transparent);
+  background: color-mix(in srgb, var(--red) 9%, transparent);
 }
 
 .city-group.is-regional .city-core {
   width: 12px;
   height: 12px;
-  background: var(--route);
+  background: var(--red);
   box-shadow:
     0 0 0 4px rgba(255, 255, 255, 0.78),
-    0 0 0 7px color-mix(in srgb, var(--route) 30%, transparent),
-    0 0 22px color-mix(in srgb, var(--route) 38%, transparent);
+    0 0 0 7px color-mix(in srgb, var(--red) 30%, transparent),
+    0 0 22px color-mix(in srgb, var(--red) 38%, transparent);
 }
 
 .city-label {
-  fill: var(--tech-ink);
+  fill: var(--ink-deep);
   font-family: Arial, Helvetica, sans-serif;
   font-size: 11px;
   font-weight: 700;
@@ -1999,11 +2010,11 @@ button {
 }
 
 .city-group.is-active .city-label {
-  fill: var(--gold);
+  fill: var(--red);
 }
 
 .city-group.is-regional .city-label {
-  fill: var(--tech-ink);
+  fill: var(--ink-deep);
   stroke: rgba(248, 252, 252, 0.92);
   stroke-width: 3px;
   paint-order: stroke;
@@ -2021,7 +2032,7 @@ button {
 
 .truck-light-trail {
   fill: none;
-  stroke: var(--route-hot);
+  stroke: var(--red-bright);
   stroke-width: 3.8;
   stroke-linecap: round;
   stroke-dasharray: 0.085 0.915;
@@ -2032,7 +2043,7 @@ button {
 }
 
 .truck-light-trail.is-arrived {
-  stroke: var(--gold-light);
+  stroke: var(--red);
 }
 
 .truck-symbol {
@@ -2055,7 +2066,7 @@ button {
 
 .truck-unit:focus-visible .truck-hitbox,
 .truck-unit.is-active .truck-hitbox {
-  stroke: var(--gold);
+  stroke: var(--red);
 }
 
 .truck-unit.is-manual .truck-trailer {
@@ -2073,23 +2084,23 @@ button {
 
 .truck-trailer {
   fill: url("#truck-body-gradient");
-  stroke: color-mix(in srgb, var(--tech-blue-deep) 48%, transparent);
+  stroke: color-mix(in srgb, var(--ink-deep) 48%, transparent);
   stroke-width: 1;
 }
 
 .truck-cab {
   fill: url("#truck-cab-gradient");
-  stroke: color-mix(in srgb, var(--tech-blue-deep) 56%, transparent);
+  stroke: color-mix(in srgb, var(--ink-deep) 56%, transparent);
   stroke-width: 1;
 }
 
 .truck-window {
-  fill: color-mix(in srgb, var(--tech-blue-deep) 88%, var(--tech-blue));
+  fill: color-mix(in srgb, var(--ink-deep) 88%, var(--tech-blue));
   opacity: 0.9;
 }
 
 .truck-ground-shadow {
-  fill: color-mix(in srgb, var(--tech-blue-deep) 19%, transparent);
+  fill: color-mix(in srgb, var(--ink-deep) 19%, transparent);
 }
 
 .truck-cargo-stripe {
@@ -2098,7 +2109,7 @@ button {
 }
 
 .truck-brand-name {
-  fill: var(--tech-ink);
+  fill: var(--ink-deep);
   font-family: Arial, Helvetica, sans-serif;
   font-size: 4.5px;
   font-weight: 700;
@@ -2116,13 +2127,13 @@ button {
 
 .truck-front-line {
   fill: none;
-  stroke: color-mix(in srgb, var(--tech-blue-deep) 48%, transparent);
+  stroke: color-mix(in srgb, var(--ink-deep) 48%, transparent);
   stroke-width: 0.8;
   stroke-linecap: round;
 }
 
 .truck-wheel {
-  fill: var(--tech-ink);
+  fill: var(--ink-deep);
   stroke: rgba(255, 255, 255, 0.75);
   stroke-width: 0.65;
 }
@@ -2148,7 +2159,7 @@ button {
   width: min(250px, 32%);
   padding: 18px 20px;
   border: 1px solid var(--tech-line);
-  border-left: 2px solid var(--route);
+  border-left: 2px solid var(--red);
   background: rgba(247, 251, 251, 0.58);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.86),
@@ -2211,8 +2222,8 @@ button {
   gap: 7px;
   padding: 5px 8px;
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  color: var(--foreground);
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  color: var(--ink-deep);
   cursor: pointer;
   font-size: 8px;
   line-height: 1.15;
@@ -2232,17 +2243,17 @@ button {
 }
 
 .dispatch-cargo-grid button[aria-pressed="true"] {
-  border-color: var(--foreground);
-  background: var(--foreground);
-  color: var(--surface);
+  border-color: var(--ink-deep);
+  background: var(--ink-deep);
+  color: var(--paper);
 }
 
 .dispatch-submit {
   width: 100%;
   min-height: 36px;
   border: 0;
-  background: var(--gold);
-  color: var(--surface);
+  background: var(--red);
+  color: var(--paper);
   cursor: pointer;
   font-size: 9px;
   font-weight: 700;
@@ -2252,13 +2263,13 @@ button {
 
 .dispatch-feedback {
   margin-top: 8px;
-  color: var(--foreground);
+  color: var(--ink-deep);
   font-size: 9px;
   line-height: 1.3;
 }
 
 .map-city-card > span {
-  color: color-mix(in srgb, var(--tech-blue-deep) 68%, transparent);
+  color: color-mix(in srgb, var(--ink-deep) 68%, transparent);
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -2267,7 +2278,7 @@ button {
 .map-city-card strong {
   display: block;
   margin: 6px 0 3px;
-  color: var(--tech-ink);
+  color: var(--ink-deep);
   font-family: Arial, Helvetica, sans-serif;
   font-size: clamp(24px, 2.5vw, 36px);
   font-weight: 400;
@@ -2275,7 +2286,7 @@ button {
 
 .map-city-card p {
   margin: 0;
-  color: var(--gold);
+  color: var(--red);
   font-size: 10px;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -2288,7 +2299,7 @@ button {
   bottom: 28px;
   display: flex;
   gap: 18px;
-  color: color-mix(in srgb, var(--tech-blue-deep) 66%, transparent);
+  color: color-mix(in srgb, var(--ink-deep) 66%, transparent);
   font-size: 8px;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -2305,7 +2316,7 @@ button {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--route);
+  background: var(--red);
 }
 
 .map-attribution {
@@ -2313,7 +2324,7 @@ button {
   z-index: 7;
   right: 16px;
   bottom: 8px;
-  color: color-mix(in srgb, var(--tech-blue-deep) 62%, transparent);
+  color: color-mix(in srgb, var(--ink-deep) 62%, transparent);
   font-size: 7px;
   letter-spacing: 0.04em;
 }

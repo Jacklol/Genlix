@@ -1,6 +1,6 @@
 .bar {
   padding: 24px 0;
-  background: #fff;
+  background: var(--paper);
 }
 
 .nav {
@@ -9,27 +9,27 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  color: var(--muted, #6e7888);
+  color: var(--muted);
   font-size: 13px;
 }
 
 .nav a {
-  color: var(--muted, #6e7888);
+  color: var(--muted);
   text-decoration: none;
   transition: color 160ms ease;
 }
 
 .nav a:hover {
-  color: var(--ink, #102953);
+  color: var(--ink);
 }
 
 .separator {
-  color: #000;
+  color: var(--text-secondary);
   font-size: 18px;
   line-height: 1.2;
 }
 
 .current {
-  color: var(--ink, #102953);
+  color: var(--ink);
   font-weight: 600;
 }

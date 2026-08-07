@@ -25,18 +25,18 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: #0d1c34;
+  color: var(--ink);
   cursor: pointer;
   line-height: 1;
   transition: color 160ms ease, opacity 160ms ease;
 }
 
 .navButton:hover {
-  color: #05204c;
+  color: var(--ink-deep);
 }
 
 .navButton:disabled {
-  color: #c5cad3;
+  color: var(--muted);
   cursor: default;
   opacity: 0.6;
 }
@@ -56,13 +56,13 @@
   width: 100px;
   height: 100px;
   padding: 0;
-  border: 1px solid #e5e7eb;
-  background: #f4f4f4 center / cover no-repeat;
+  border: 1px solid var(--border);
+  background: var(--surface-muted) center / cover no-repeat;
   cursor: pointer;
 }
 
 .thumbButtonActive {
-  border-color: #05204c;
+  border-color: var(--ink-deep);
 }
 
 .mainSwiper {
@@ -75,7 +75,7 @@
   align-items: center;
   justify-content: center;
   min-height: 600px;
-  background: #f4f4f4;
+  background: var(--surface-muted);
 }
 
 .mainImage {

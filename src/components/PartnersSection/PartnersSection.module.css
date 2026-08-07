@@ -1,11 +1,11 @@
 .section {
   padding: 100px 0;
-  background: #fff;
+  background: var(--paper);
 }
 
 .title {
   margin: 0 0 40px;
-  color: #05204c;
+  color: var(--ink-deep);
   font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: 64px;
   font-weight: 400;
@@ -16,7 +16,7 @@
 }
 
 .title span {
-  color: #cf4444;
+  color: var(--red);
 }
 
 .grid {
@@ -29,8 +29,8 @@
   height: 120px;
   display: grid;
   place-items: center;
-  border: 1px solid #b9b9b9;
-  color: #05204c;
+  border: 1px solid var(--partner-border);
+  color: var(--ink-deep);
   font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: 32px;
   font-weight: 400;

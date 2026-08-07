@@ -1,24 +1,20 @@
 .section {
-  --ink: #102953;
-  --muted: #6e7888;
-  --navy: #071e4d;
-  --red: #d15450;
   padding: 72px 0 80px;
 }
 
 .light {
-  background: #fff;
+  background: var(--paper);
   color: var(--ink);
 }
 
 .muted {
-  background: #f3f4f6;
+  background: var(--section-muted-bg);
   color: var(--ink);
 }
 
 .dark {
   background: var(--navy);
-  color: #fff;
+  color: var(--paper);
 }
 
 .header {
@@ -48,7 +44,7 @@
 }
 
 .dark .title {
-  color: #fff;
+  color: var(--paper);
 }
 
 .link {
@@ -64,12 +60,12 @@
 }
 
 .dark .link {
-  color: #fff;
+  color: var(--paper);
 }
 
 .light .link,
 .muted .link {
-  color: #05204c;
+  color: var(--ink-deep);
 }
 
 .link:hover {

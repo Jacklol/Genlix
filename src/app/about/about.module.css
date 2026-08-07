@@ -1,16 +1,14 @@
 .hero {
-  --red: #d15450;
-
   position: relative;
   height: 500px;
   overflow: hidden;
-  background-color: #1a120e;
+  background-color: var(--hero-overlay);
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
     url("/assets/about/hero.png");
   background-position: center;
   background-size: cover;
-  color: #fff;
+  color: var(--paper);
 }
 
 .heroInner {
@@ -66,33 +64,30 @@
 .primaryButton {
   border: 1px solid transparent;
   background: var(--red);
-  color: #fff !important;
+  color: var(--paper) !important;
 }
 
 .primaryButton:hover {
-  background: #e0605d;
+  background: var(--red-bright);
   transform: translateY(-2px);
 }
 
 .secondaryButton {
   border: 1px solid rgba(255, 255, 255, 0.74);
   background: transparent;
-  color: #fff !important;
+  color: var(--paper) !important;
 }
 
 .secondaryButton:hover {
-  border-color: #fff;
+  border-color: var(--paper);
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-2px);
 }
 
 .geography {
-  --navy: #071e4d;
-  --red: #d15450;
-
   padding: 100px 0 120px;
   background: var(--navy);
-  color: #fff;
+  color: var(--paper);
 }
 
 .geographyLayout {
@@ -107,7 +102,7 @@
 
 .geographyKicker {
   margin: 0 0 20px;
-  color: #CF4444;
+  color: var(--red);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -125,7 +120,7 @@
 }
 
 .geographyTitle span {
-  color: #CF4444;
+  color: var(--red);
 }
 
 .geographyText {
@@ -134,7 +129,7 @@
   font-size: 18px;
   font-weight: 500;
   line-height: 1.3;
-  color: #DDDDDD;
+  color: var(--text-on-dark);
 }
 
 .geographyMapWrap {
@@ -151,13 +146,9 @@
 }
 
 .control {
-  --ink: #102953;
-  --red: #cf4444;
-  --muted: #6e7888;
-
   padding: 100px 0 120px;
-  background: #fff;
-  color: #05204C;
+  background: var(--paper);
+  color: var(--ink-deep);
 }
 
 .controlHeader {
@@ -174,7 +165,7 @@
 
 .controlKicker {
   margin: 0 0 20px;
-  color: #CF4444;
+  color: var(--red);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -192,12 +183,12 @@
 }
 
 .controlTitle span {
-  color: #CF4444;
+  color: var(--red);
 }
 
 .controlText {
   margin: 20px 0 0;
-  color: #201E1E;
+  color: var(--text);
   font-family: var(--font-montserrat), "Montserrat", Arial, Helvetica, sans-serif;
   font-size: 18px;
   line-height: 1.3;
@@ -236,7 +227,7 @@
 
 .controlCardTag {
   margin: 0 0 8px;
-  color: #cf4444;
+  color: var(--red);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -254,13 +245,9 @@
 }
 
 .certificates {
-  --ink: #102953;
-  --red: #cf4444;
-  --muted: #6e7888;
-
   padding: 72px 0 80px;
-  background: #fff;
-  color: #05204c;
+  background: var(--paper);
+  color: var(--ink-deep);
 }
 
 .certificatesHeader {
@@ -300,7 +287,7 @@
 
 .certificatesText {
   margin: 20px 0 0;
-  color: #201e1e;
+  color: var(--text);
   font-family: var(--font-montserrat), "Montserrat", Arial, Helvetica, sans-serif;
   font-size: 18px;
   line-height: 1.3;
@@ -325,8 +312,8 @@
   flex-direction: column;
   min-width: 0;
   height: 100%;
-  border: 1px solid #e5e7eb;
-  background: #fff;
+  border: 1px solid var(--border);
+  background: var(--paper);
 }
 
 .certificateImageWrap {
@@ -360,7 +347,7 @@
 
 .certificateDescription {
   margin: 16px 0 0;
-  color: #05204C;
+  color: var(--ink-deep);
   font-size: 18px;
   line-height: 1.45;
 }
@@ -382,12 +369,9 @@
 }
 
 .team {
-  --ink: #102953;
-  --red: #cf4444;
-
   padding: 72px 0 80px;
-  background: #fff;
-  color: #05204c;
+  background: var(--paper);
+  color: var(--ink-deep);
 }
 
 .teamHeader {
@@ -427,7 +411,7 @@
 
 .teamText {
   margin: 20px 0 0;
-  color: #201e1e;
+  color: var(--text);
   font-family: var(--font-montserrat), "Montserrat", Arial, Helvetica, sans-serif;
   font-size: 18px;
   line-height: 1.3;

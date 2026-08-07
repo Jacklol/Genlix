@@ -1,6 +1,6 @@
 .main {
   padding: 0 0 80px;
-  background: #fff;
+  background: var(--paper);
 }
 
 .pageHeading h1 {
@@ -41,7 +41,7 @@
   gap: 32px;
   padding: 42px 40px;
   overflow: hidden;
-  color: #fff;
+  color: var(--paper);
   isolation: isolate;
 }
 
@@ -57,7 +57,7 @@
   position: absolute;
   z-index: -2;
   inset: 0;
-  background-color: #2a1712;
+  background-color: var(--category-hero-bg);
   background-image: var(--brand-image);
   background-position: var(--brand-position, center);
   background-size: var(--brand-size, cover);
@@ -79,7 +79,7 @@
 
 .brandEyebrow {
   margin: 0 0 12px;
-  color: #fff;
+  color: var(--paper);
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -88,7 +88,7 @@
 
 .brandName {
   margin: 0;
-  color: #fff;
+  color: var(--paper);
   font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: clamp(48px, 3.8vw, 72px);
   font-weight: 800;
@@ -99,14 +99,14 @@
 
 .brandAudience {
   margin: 16px 0 0;
-  color: #fff;
+  color: var(--paper);
   font-size: 18px;
   font-weight: 600;
 }
 
 .brandText {
   margin: 8px 0 0;
-  color: #fff;
+  color: var(--paper);
   font-size: 14px;
   line-height: 1.55;
 }
@@ -118,8 +118,8 @@
   align-items: center;
   justify-content: center;
   padding: 14px 70px 12px;
-  background: var(--brand-red);
-  color: #fff;
+  background: var(--red);
+  color: var(--paper);
   font-size: 15px;
   font-weight: 600;
   text-transform: uppercase;
@@ -127,7 +127,7 @@
 }
 
 .brandCard:hover .brandButton {
-  background: #d15450;
+  background: var(--red);
 }
 
 @media (max-width: 920px) {

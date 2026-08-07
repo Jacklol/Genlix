@@ -1,15 +1,12 @@
 .header {
-  --red: #d15450;
-  --red-bright: #e0605d;
-
   position: sticky;
   z-index: 50;
   top: 0;
   height: 88px;
   margin-bottom: -88px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--foreground, #05204c);
-  color: #fff;
+  background: var(--ink-deep);
+  color: var(--paper);
   backdrop-filter: blur(18px) saturate(130%);
 }
 
@@ -45,7 +42,7 @@
 
 .desktopNav a:hover,
 .desktopNav .activeLink {
-  color: #fff;
+  color: var(--paper);
 }
 
 .activeLink::after {
@@ -65,7 +62,7 @@
 }
 
 .phone {
-  color: #fff;
+  color: var(--paper);
   font-size: 14px;
   font-weight: 700;
   white-space: nowrap;
@@ -80,7 +77,7 @@
   padding: 14px 28px 12px;
   border: 1px solid transparent;
   background: var(--red);
-  color: #fff !important;
+  color: var(--paper) !important;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -159,7 +156,7 @@
     width: 18px;
     height: 1px;
     display: block;
-    background: #fff;
+    background: var(--paper);
   }
 
   .mobileMenu nav {
