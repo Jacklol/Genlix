@@ -4,6 +4,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { CatalogProductsSection } from "@/components/CatalogProductsSection";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { MeatCutsMap } from "@/components/MeatCutsMap";
 import { PartnersSection } from "@/components/PartnersSection";
 import { ProductCardsSection } from "@/components/ProductCardsSection";
 import { SubscribeSection } from "@/components/SubscribeSection";
@@ -51,6 +52,8 @@ export default function PrimebeefPage() {
           </p>
         </div>
       </section>
+
+      <MeatCutsMap />
 
       <ProductCardsSection products={getPrimebeefDetailedProducts()} />
 
