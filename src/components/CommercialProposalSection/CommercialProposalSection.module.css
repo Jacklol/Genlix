@@ -1,0 +1,50 @@
+.section {
+  --navy: #071e4d;
+  --red: #d15450;
+  --red-bright: #e0605d;
+
+  padding: 72px 24px 80px;
+  background: var(--navy);
+  color: #fff;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: min(1760px, 100%);
+  margin-inline: auto;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(42px, 3.4vw, 64px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 14px 130px 12px;
+  background: #CF4444;
+  color: #fff !important;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+
+.button:hover {
+  background: var(--red-bright);
+  transform: translateY(-2px);
+}

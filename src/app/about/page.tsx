@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 
+import { AboutTeamSlider } from "@/components/AboutTeamSlider";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { SubscribeSection } from "@/components/SubscribeSection";
+import { CommercialProposalSection } from "@/components/CommercialProposalSection";
 import homeStyles from "@/app/home.module.css";
 
 import styles from "./about.module.css";
@@ -187,7 +188,29 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <SubscribeSection />
+      <section className={styles.team} aria-labelledby="about-team-title">
+        <div className={homeStyles.shell}>
+          <div className={styles.teamHeader}>
+            <div className={styles.teamIntro}>
+              <p className={styles.teamKicker}>Команда</p>
+              <h2 className={styles.teamTitle} id="about-team-title">
+                <span>Люди,</span> которые отвечают за результат
+              </h2>
+              <p className={styles.teamText}>
+                Мы строим сотрудничество на стабильном качестве, прозрачных условиях и внимании к
+                задачам каждого партнёра — от ресторана до торговой сети.
+              </p>
+            </div>
+            <span className={styles.teamMarker} aria-hidden="true">
+              05
+            </span>
+          </div>
+
+          <AboutTeamSlider />
+        </div>
+      </section>
+
+      <CommercialProposalSection />
       <Footer />
     </main>
   );
