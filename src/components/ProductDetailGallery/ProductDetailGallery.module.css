@@ -1,0 +1,117 @@
+.gallery {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+  min-width: 0;
+}
+
+.thumbsColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100px;
+  min-height: 0;
+}
+
+.navButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #0d1c34;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 160ms ease, opacity 160ms ease;
+}
+
+.navButton:hover {
+  color: #05204c;
+}
+
+.navButton:disabled {
+  color: #c5cad3;
+  cursor: default;
+  opacity: 0.6;
+}
+
+.thumbsSwiper {
+  width: 100px;
+  height: 436px;
+}
+
+.thumbSlide {
+  width: 100px !important;
+  height: 100px !important;
+  cursor: pointer;
+}
+
+.thumbButton {
+  width: 100px;
+  height: 100px;
+  padding: 0;
+  border: 1px solid #e5e7eb;
+  background: #f4f4f4 center / cover no-repeat;
+  cursor: pointer;
+}
+
+.thumbButtonActive {
+  border-color: #05204c;
+}
+
+.mainSwiper {
+  width: 100%;
+  min-width: 0;
+}
+
+.mainSlide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 600px;
+  background: #f4f4f4;
+}
+
+.mainImage {
+  display: block;
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+}
+
+@media (max-width: 920px) {
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .thumbsColumn {
+    flex-direction: row;
+    order: 2;
+    gap: 12px;
+  }
+
+  .thumbsSwiper {
+    width: 100%;
+    height: auto;
+  }
+
+  .thumbSlide {
+    width: 72px !important;
+    height: 72px !important;
+  }
+
+  .navButton {
+    transform: rotate(-90deg);
+  }
+
+  .mainSlide,
+  .mainImage {
+    min-height: 360px;
+  }
+}
