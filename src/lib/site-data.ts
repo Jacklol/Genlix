@@ -1,6 +1,6 @@
 export const navItems = [
   { label: "Главная", href: "/" },
-  { label: "О компании", href: "/#about" },
+  { label: "О компании", href: "/about" },
   { label: "Каталог", href: "/#catalog" },
   { label: "Партнёры", href: "/#partners" },
   { label: "Новости", href: "/news" },
@@ -21,7 +21,7 @@ export const footerColumns = [
   {
     title: "Компания",
     links: [
-      { label: "О компании", href: "/#about" },
+      { label: "О компании", href: "/about" },
       { label: "Стандарты качества", href: "/#about" },
       { label: "Логистика 24/7", href: "/#partners" },
       { label: "Условия оплаты", href: "/#contacts" },
