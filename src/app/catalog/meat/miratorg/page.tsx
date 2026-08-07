@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import type { ProductCardData } from "@/components/ProductCard";
 import { ProductCardsSection } from "@/components/ProductCardsSection";
 import { SubscribeSection } from "@/components/SubscribeSection";
+import { GOVYAZHIJ_FARSH_SLUG } from "@/lib/products";
 import homeStyles from "@/app/home.module.css";
 import styles from "./miratorg.module.css";
 
@@ -24,6 +25,7 @@ const sharedProductSpecs = [
 const detailedProducts: ProductCardData[] = [
   {
     image: "/assets/catalog/meat/miratorg/mt_pr1.png",
+    slug: GOVYAZHIJ_FARSH_SLUG,
     brand: "Мираторг",
     title: "Говяжий фарш домашний",
     specs: [...sharedProductSpecs],
@@ -82,6 +84,7 @@ const hitProducts: ProductCardData[] = [
   {
     image: "/assets/catalog/meat/miratorg/mt_hits1.png",
     badge: "хит",
+    slug: GOVYAZHIJ_FARSH_SLUG,
     brand: "Мираторг",
     title: "Говяжий фарш домашний",
     specs: [...sharedProductSpecs],
@@ -148,6 +151,7 @@ const showcaseProducts: ProductCardData[] = [
   {
     image: "/assets/catalog/meat/miratorg/mt_ideal1.png",
     badge: "витрина",
+    slug: GOVYAZHIJ_FARSH_SLUG,
     brand: "Мираторг",
     title: "Говяжий фарш домашний",
     specs: [...sharedProductSpecs],

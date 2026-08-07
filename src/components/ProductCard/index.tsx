@@ -11,6 +11,8 @@ export type ProductSpec = {
 
 export type ProductCardData = {
   image: string;
+  slug?: string;
+  href?: string;
   badge?: ProductBadge;
   brand?: string;
   title: string;
@@ -71,6 +73,8 @@ function ChevronDownIcon() {
 
 export function ProductCard({
   image,
+  slug,
+  href,
   badge,
   brand,
   title,
@@ -81,23 +85,43 @@ export function ProductCard({
   buttonHref = "/#contacts",
 }: ProductCardData) {
   const badgeData = badge ? badgeStyles[badge] : null;
+  const productHref = href ?? (slug ? `/catalog/product/${slug}` : undefined);
+
+  const mediaContent = (
+    <>
+      <div
+        className={styles.mediaImage}
+        style={{ "--product-image": `url("${image}")` } as CSSProperties}
+      />
+      {badgeData ? (
+        <span className={styles.badge} style={{ backgroundColor: badgeData.color }}>
+          {badgeData.label}
+        </span>
+      ) : null}
+      {brand ? <span className={styles.brand}>{brand}</span> : null}
+    </>
+  );
 
   return (
-    <article
-      className={styles.card}
-      style={{ "--product-image": `url("${image}")` } as CSSProperties}
-    >
-      <div className={styles.media}>
-        {badgeData ? (
-          <span className={styles.badge} style={{ backgroundColor: badgeData.color }}>
-            {badgeData.label}
-          </span>
-        ) : null}
-        {brand ? <span className={styles.brand}>{brand}</span> : null}
-      </div>
+    <article className={styles.card}>
+      {productHref ? (
+        <a className={styles.mediaLink} href={productHref}>
+          <div className={styles.media}>{mediaContent}</div>
+        </a>
+      ) : (
+        <div className={styles.media}>{mediaContent}</div>
+      )}
 
       <div className={styles.body}>
-        <h3 className={styles.title}>{title}</h3>
+        <h3 className={styles.title}>
+          {productHref ? (
+            <a className={styles.titleLink} href={productHref}>
+              {title}
+            </a>
+          ) : (
+            title
+          )}
+        </h3>
 
         <dl className={styles.specs}>
           {specs.map((spec) => (

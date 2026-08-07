@@ -98,3 +98,5 @@ export function getAllProductSlugs() {
 export function getSimilarProducts(slug: string) {
   return similarProductsBySlug[slug] ?? [];
 }
+
+export const GOVYAZHIJ_FARSH_SLUG = "govyazhij-farsh-domashnij";
