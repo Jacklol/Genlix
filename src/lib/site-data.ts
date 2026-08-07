@@ -3,7 +3,7 @@ export const navItems = [
   { label: "О компании", href: "/#about" },
   { label: "Каталог", href: "/#catalog" },
   { label: "Партнёры", href: "/#partners" },
-  { label: "Новости", href: "/#news" },
+  { label: "Новости", href: "/news" },
   { label: "Контакты", href: "/#contacts" },
 ] as const;
 

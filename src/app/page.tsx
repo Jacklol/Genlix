@@ -120,7 +120,7 @@ export default function Home() {
               безупречного качества. Благодаря прямому импорту мы гарантируем гибкую ценовую
               политику и непрерывность поставок.
             </p>
-            <a className={styles.primaryButton} href="#news">Все новости</a>
+            <a className={styles.primaryButton} href="/news">Все новости</a>
           </div>
           <div className={styles.statCard}>
             <span>01</span>
@@ -164,7 +164,7 @@ export default function Home() {
         <div className={styles.shell}>
           <div className={styles.newsHeading}>
             <Heading eyebrow="Новости & статьи" first="События индустрии" accent="и новости компании" id="news-title" />
-            <a className={styles.outlineButton} href="#news-grid">Все новости</a>
+            <a className={styles.outlineButton} href="/news">Все новости</a>
           </div>
           <div className={styles.newsGrid} id="news-grid">
             {news.map((item, index) => (
