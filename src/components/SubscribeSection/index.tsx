@@ -5,7 +5,10 @@ import styles from "./SubscribeSection.module.css";
 
 export function SubscribeSection() {
   return (
-    <section className={styles.section} aria-labelledby="subscribe-title">
+    <section
+      className={`${styles.section} ${homeStyles.pageFooterAnchor}`}
+      aria-labelledby="subscribe-title"
+    >
       <div className={homeStyles.shell}>
         <div className={styles.grid}>
           <div className={styles.heading}>
