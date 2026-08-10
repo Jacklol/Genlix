@@ -7,6 +7,7 @@ import { HomeHero } from "@/components/HomeHero";
 import { PhilosophyStat } from "@/components/PhilosophyStat";
 import { Reveal } from "@/components/Reveal";
 import { TestimonialsSlider } from "@/components/TestimonialsSlider";
+import { YandexMap } from "@/components/YandexMap";
 import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
 import { ContactHoursIcon } from "@/components/icons/ContactHoursIcon";
 import { ContactLocationIcon } from "@/components/icons/ContactLocationIcon";
@@ -222,6 +223,10 @@ export default function Home() {
             </form>
           </Reveal>
         </div>
+      </section>
+
+      <section className={styles.yandexMapSection} aria-label="Карта офиса Genlix">
+        <YandexMap />
       </section>
 
       <Footer />

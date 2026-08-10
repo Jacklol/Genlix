@@ -5,6 +5,12 @@ export const footerCompanyInfo = [
   "Банк",
 ] as const;
 
+export const officeLocation = {
+  latitude: 55.744037,
+  longitude: 37.539522,
+  address: "г. Москва, ул. Кутузовский проспект, д. 12, стр. 4",
+} as const;
+
 export const navItems = [
   { label: "Главная", href: "/" },
   { label: "О компании", href: "/about" },

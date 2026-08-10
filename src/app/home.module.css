@@ -778,6 +778,11 @@
   padding: 112px 0 118px;
 }
 
+.yandexMapSection {
+  width: 100%;
+  background: var(--navy);
+}
+
 .contactGrid {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(460px, 0.78fr);
