@@ -490,6 +490,21 @@
 .testimonials blockquote {
   margin: 0;
   max-width: 720px;
+  min-width: 0;
+}
+
+.testimonialsTrack {
+  overflow: hidden;
+  width: 100%;
+}
+
+.testimonialsTrack :global(.swiper-wrapper) {
+  align-items: stretch;
+}
+
+.testimonialsTrack :global(.swiper-slide) {
+  height: auto;
+  box-sizing: border-box;
 }
 
 .quoteRule {
@@ -509,7 +524,7 @@
   color: var(--red);
 }
 
-.testimonials blockquote > p {
+.testimonials blockquote p {
   margin: 12px 0 50px;
   color: rgba(255, 255, 255, 0.67);
   font-size: 15px;
@@ -556,17 +571,51 @@
   margin-top: 50px;
 }
 
-.quoteControls i {
+.quoteControl {
+  display: block;
   width: 100px;
+  flex-shrink: 0;
+  min-height: 18px;
+  padding: 10px 0 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.quoteControls i {
+  display: block;
+  width: 100%;
   height: 1px;
   position: relative;
   color: rgba(255,255,255,.6);
   background: currentColor;
   font-style: normal;
-  line-height: 0;
+  font-size: 18px;
+  line-height: 1;
+  overflow: visible;
 }
 
-.quoteControls i:last-child {
+.quoteControl:first-child i::before {
+  content: "←";
+  position: absolute;
+  left: 0;
+  top: -9px;
+  color: rgba(255, 255, 255, 0.6);
+  background: none;
+}
+
+.quoteControl:last-child i::before {
+  content: "→";
+  position: absolute;
+  right: 0;
+  top: -9px;
+  color: var(--red);
+  background: none;
+}
+
+.quoteControl:last-child i {
   color: var(--red);
   text-align: right;
 }

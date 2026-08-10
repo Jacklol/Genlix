@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { AdvantagesSlider } from "@/components/AdvantagesSlider";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { TestimonialsSlider } from "@/components/TestimonialsSlider";
 import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
 import { ContactHoursIcon } from "@/components/icons/ContactHoursIcon";
 import { ContactLocationIcon } from "@/components/icons/ContactLocationIcon";
@@ -140,20 +141,7 @@ export default function Home() {
       <section className={styles.testimonials} aria-labelledby="testimonials-title">
         <div className={`${styles.shell} ${styles.testimonialGrid}`}>
           <h2 id="testimonials-title">Что говорят о нас<br /><span>наши клиенты</span></h2>
-          <blockquote>
-            <div className={styles.quoteRule} />
-            <h3>Стабильность, <span>которой можно доверять</span></h3>
-            <p>
-              «Сотрудничаем по пивной и водной картам уже более четырёх лет. Для нас, как
-              управляющих холдингом, критически важна бесперебойность. Гильдия ни разу не
-              сорвала поставку даже в праздничные дни».
-            </p>
-            <footer>
-              <span className={styles.avatar}>ЕМ</span>
-              <span><strong>Екатерина Миронова</strong><small>Управляющая HoReCa Group</small></span>
-            </footer>
-            <div className={styles.quoteControls} aria-hidden="true"><i>←</i><i>→</i></div>
-          </blockquote>
+          <TestimonialsSlider />
         </div>
       </section>
 
