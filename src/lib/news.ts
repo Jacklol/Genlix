@@ -1,7 +1,6 @@
-export type NewsContentBlock =
-  | { type: "paragraph"; text: string }
-  | { type: "heading"; text: string }
-  | { type: "list"; items: string[] };
+import type { TextContentBlock } from "./text-content";
+
+export type { TextContentBlock };
 
 export type NewsArticle = {
   slug: string;
@@ -12,10 +11,10 @@ export type NewsArticle = {
   description: string;
   image: string;
   href: string;
-  content: NewsContentBlock[];
+  content: TextContentBlock[];
 };
 
-const defaultContent = (topic: string): NewsContentBlock[] => [
+const defaultContent = (topic: string): TextContentBlock[] => [
   {
     type: "paragraph",
     text: `${topic} — задача, с которой к нам обращаются рестораны, мясные бутики и региональные сети. Ниже — практические шаги, которые помогают выстроить стабильный процесс без срывов поставок.`,

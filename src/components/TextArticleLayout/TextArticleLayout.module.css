@@ -71,6 +71,10 @@
   margin-top: 40px;
 }
 
+.contentNoCover {
+  margin-top: 32px;
+}
+
 .content > *:first-child {
   margin-top: 0;
 }
