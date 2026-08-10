@@ -5,6 +5,7 @@ export type { TextContentBlock };
 export type NewsArticle = {
   slug: string;
   tag: string;
+  category: NewsCategory;
   date: string;
   dateTime: string;
   title: string;
@@ -13,6 +14,19 @@ export type NewsArticle = {
   href: string;
   content: TextContentBlock[];
 };
+
+export const newsFilters = [
+  { id: "all", label: "Все материалы" },
+  { id: "cases", label: "Кейсы сотрудничества" },
+  { id: "supplies", label: "Новые поставки и отрубы" },
+  { id: "cooking", label: "Выбор и приготовление" },
+  { id: "farms", label: "Фермы-поставщики" },
+] as const;
+
+export type NewsFilterId = (typeof newsFilters)[number]["id"];
+export type NewsCategory = Exclude<NewsFilterId, "all">;
+
+export const NEWS_PAGE_SIZE = 6;
 
 const defaultContent = (topic: string): TextContentBlock[] => [
   {
@@ -54,6 +68,7 @@ export const newsArticles: NewsArticle[] = [
   {
     slug: "stable-supplies-restaurant-menu",
     tag: "Главный материал",
+    category: "cases",
     date: "18 июля 2026",
     dateTime: "2026-07-18",
     title: "Как стабильные поставки помогли ресторану обновить мясное меню",
@@ -66,6 +81,7 @@ export const newsArticles: NewsArticle[] = [
   {
     slug: "new-deliveries-steaks",
     tag: "Новые поставки",
+    category: "supplies",
     date: "12 июля 2026",
     dateTime: "2026-07-12",
     title: "Новая линейка стейков Primebeef для стейк-хаусов",
@@ -78,6 +94,7 @@ export const newsArticles: NewsArticle[] = [
   {
     slug: "choose-cut-cooking",
     tag: "Выбор и приготовление",
+    category: "cooking",
     date: "5 июля 2026",
     dateTime: "2026-07-05",
     title: "Как выбрать отруб для разных способов приготовления",
@@ -90,6 +107,7 @@ export const newsArticles: NewsArticle[] = [
   {
     slug: "farm-quality-control",
     tag: "Фермы-поставщики",
+    category: "farms",
     date: "28 июня 2026",
     dateTime: "2026-06-28",
     title: "Как устроен контроль качества на ферме-поставщике",
@@ -102,6 +120,7 @@ export const newsArticles: NewsArticle[] = [
   {
     slug: "meat-shop-assortment",
     tag: "Кейс сотрудничества",
+    category: "cases",
     date: "20 июня 2026",
     dateTime: "2026-06-20",
     title: "Ассортиментная матрица для новой мясной лавки",
@@ -114,6 +133,7 @@ export const newsArticles: NewsArticle[] = [
   {
     slug: "dry-aging-guide",
     tag: "Выбор и приготовление",
+    category: "cooking",
     date: "14 июня 2026",
     dateTime: "2026-06-14",
     title: "Сухое вызревание: что важно знать профессионалу",
@@ -122,6 +142,32 @@ export const newsArticles: NewsArticle[] = [
     image: "/assets/home/news_item4.jpg",
     href: "/news/dry-aging-guide",
     content: defaultContent("Сухое вызревание"),
+  },
+  {
+    slug: "grill-bar-poultry-supply",
+    tag: "Новые поставки",
+    category: "supplies",
+    date: "8 июля 2026",
+    dateTime: "2026-07-08",
+    title: "Импортная птица для сети гриль-баров: запуск поставок",
+    description:
+      "Как выстроили еженедельные поставки охлаждённой птицы с фиксированной калибровкой для сети из 12 заведений.",
+    image: "/assets/home/category2.jpg",
+    href: "/news/grill-bar-poultry-supply",
+    content: defaultContent("Поставки птицы для гриль-баров"),
+  },
+  {
+    slug: "restaurant-group-single-supplier",
+    tag: "Кейс сотрудничества",
+    category: "cases",
+    date: "2 июля 2026",
+    dateTime: "2026-07-02",
+    title: "Как ресторанная группа перешла на единого поставщика",
+    description:
+      "Объединили закупки мяса и напитков в одном канале — сократили время согласований и стабилизировали себестоимость блюд.",
+    image: "/assets/home/news_item3.jpg",
+    href: "/news/restaurant-group-single-supplier",
+    content: defaultContent("Единый поставщик для группы"),
   },
 ];
 
@@ -137,4 +183,12 @@ export function getAllNewsSlugs() {
 
 export function getRelatedNewsArticles(slug: string, limit = 3) {
   return newsArticles.filter((article) => article.slug !== slug).slice(0, limit);
+}
+
+export function getNewsArticlesByFilter(filterId: NewsFilterId) {
+  if (filterId === "all") {
+    return newsArticles.filter((article) => article.slug !== featuredNewsArticle.slug);
+  }
+
+  return newsArticles.filter((article) => article.category === filterId);
 }
