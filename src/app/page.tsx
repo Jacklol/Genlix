@@ -11,6 +11,7 @@ import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
 import { ContactHoursIcon } from "@/components/icons/ContactHoursIcon";
 import { ContactLocationIcon } from "@/components/icons/ContactLocationIcon";
 import { ContactPhoneIcon } from "@/components/icons/ContactPhoneIcon";
+import { newsArticles } from "@/lib/news";
 import styles from "./home.module.css";
 
 const categories = [
@@ -21,28 +22,7 @@ const categories = [
   { name: "Снеки", image: "/assets/home/category5.jpg", className: "", href: "#contacts" },
 ] as const;
 
-const news = [
-  {
-    title: "Новый отруб Primebeef для стейк-хаусов",
-    tag: "Поставки и качество",
-    image: "/assets/home/news_item1.jpg",
-  },
-  {
-    title: "Контроль качества на каждом этапе поставки",
-    tag: "Поставки и качество",
-    image: "/assets/home/news_item2.jpg",
-  },
-  {
-    title: "Новая линейка премиальных напитков",
-    tag: "Новая линейка",
-    image: "/assets/home/news_item3.jpg",
-  },
-  {
-    title: "Расширяем ассортимент для ресторанных групп",
-    tag: "Поставки и качество",
-    image: "/assets/home/news_item4.jpg",
-  },
-] as const;
+const homeNews = newsArticles.slice(0, 4);
 
 function getNewsGridClass(index: number) {
   const pattern = index % 4;
@@ -151,15 +131,16 @@ export default function Home() {
             <a className={styles.outlineButton} href="/news">Все новости</a>
           </Reveal>
           <div className={styles.newsGrid} id="news-grid">
-            {news.map((item, index) => (
+            {homeNews.map((item, index) => (
               <Reveal
                 className={getNewsGridClass(index)}
                 delay={index * 100}
-                key={`${item.title}-${index}`}
+                key={item.slug}
                 variant="fade-up"
               >
-                <article
+                <a
                   className={styles.newsCard}
+                  href={item.href}
                   style={{ "--news-image": `url("${item.image}")` } as CSSProperties}
                 >
                   <span className={styles.newsShade} />
@@ -167,7 +148,7 @@ export default function Home() {
                     <span>{item.tag}</span>
                     <h3>{item.title}</h3>
                   </div>
-                </article>
+                </a>
               </Reveal>
             ))}
           </div>

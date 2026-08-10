@@ -5,7 +5,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { SubscribeSection } from "@/components/SubscribeSection";
-import { newsArticles } from "@/lib/news";
+import { newsArticles, featuredNewsArticle } from "@/lib/news";
 import homeStyles from "@/app/home.module.css";
 
 import styles from "./news.module.css";
@@ -24,12 +24,11 @@ const filters = [
 ] as const;
 
 const featuredArticle = {
-  label: "Главный материал",
-  title: "Как выстроить стабильные поставки для ресторана",
-  description:
-    "Разбираем основные этапы: подбор ассортимента, согласование фасовки, планирование графика и контроль качества.",
-  image: "/assets/news/news_hero.png",
-  href: "#",
+  label: featuredNewsArticle.tag,
+  title: featuredNewsArticle.title,
+  description: featuredNewsArticle.description,
+  image: featuredNewsArticle.image,
+  href: featuredNewsArticle.href,
 } as const;
 
 export default function NewsPage() {
@@ -93,7 +92,7 @@ export default function NewsPage() {
                 <div className={styles.cardBody}>
                   <div className={styles.cardMeta}>
                     <span className={styles.cardTag}>{article.tag}</span>
-                    <time className={styles.cardDate} dateTime="2026-07-18">
+                    <time className={styles.cardDate} dateTime={article.dateTime}>
                       {article.date}
                     </time>
                   </div>
