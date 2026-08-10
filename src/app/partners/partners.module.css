@@ -1,0 +1,29 @@
+.section {
+  padding: 48px 0 80px;
+  background: var(--paper);
+  color: var(--ink-deep);
+}
+
+.title {
+  margin: 0 0 40px;
+  font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(36px, 4vw, 64px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.title span {
+  color: var(--red);
+}
+
+@media (max-width: 920px) {
+  .section {
+    padding: 32px 0 56px;
+  }
+
+  .title {
+    margin-bottom: 24px;
+  }
+}
