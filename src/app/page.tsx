@@ -138,7 +138,7 @@ export default function Home() {
           <Reveal variant="fade-left">
             <h2 id="testimonials-title">Что говорят о нас<br /><span>наши клиенты</span></h2>
           </Reveal>
-          <Reveal delay={120} variant="fade-right">
+          <Reveal className={styles.testimonialSlider} delay={120} variant="fade-right">
             <TestimonialsSlider />
           </Reveal>
         </div>

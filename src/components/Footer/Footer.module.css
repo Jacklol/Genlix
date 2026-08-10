@@ -128,9 +128,13 @@
 }
 
 @media (max-width: 600px) {
+  .footer {
+    padding-top: 24px;
+  }
   .grid {
     grid-template-columns: 1fr 1fr;
     gap: 42px 24px;
+    padding: 20px 0;
   }
 
   .about {
@@ -145,5 +149,6 @@
     align-items: flex-start;
     flex-direction: column;
     padding: 24px 0;
+    gap: 8px;
   }
 }
