@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
+import { EffectFade } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import styles from "@/app/home.module.css";
 import { testimonials } from "@/lib/site-data";
 
 import "swiper/css";
+import "swiper/css/effect-fade";
 
 export function TestimonialsSlider() {
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
@@ -16,8 +18,11 @@ export function TestimonialsSlider() {
     <blockquote>
       <Swiper
         className={styles.testimonialsTrack}
+        modules={[EffectFade]}
+        effect="fade"
+        fadeEffect={{ crossFade: true }}
         slidesPerView={1}
-        speed={500}
+        speed={600}
         autoHeight
         loop={testimonials.length > 1}
         onSwiper={setSwiper}

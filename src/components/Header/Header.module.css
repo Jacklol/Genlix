@@ -8,6 +8,27 @@
   background: var(--ink-deep);
   color: var(--paper);
   backdrop-filter: blur(18px) saturate(130%);
+  transition:
+    height 280ms ease,
+    background-color 280ms ease,
+    border-color 280ms ease,
+    box-shadow 280ms ease,
+    backdrop-filter 280ms ease;
+}
+
+.header.overlay {
+  background: transparent;
+  border-bottom-color: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.header.overlay.scrolled {
+  height: 72px;
+  background: rgba(7, 30, 77, 0.94);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(130%);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.22);
 }
 
 .header.static {
@@ -117,6 +138,10 @@
   .header {
     height: 74px;
     margin-bottom: -74px;
+  }
+
+  .header.overlay.scrolled {
+    height: 64px;
   }
 
   .header.static {

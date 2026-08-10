@@ -90,15 +90,26 @@
 
 .hero {
   position: relative;
-  min-height: clamp(760px, 55vw, 1060px);
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   overflow: hidden;
   background:
     linear-gradient(90deg, rgba(3, 19, 45, 0.98) 0%, rgba(3, 19, 45, 0.9) 28%, rgba(3, 19, 45, 0.32) 65%, rgba(3, 19, 45, 0.16) 100%),
-    linear-gradient(180deg, rgba(2, 15, 35, 0.15), rgba(2, 15, 35, 0.45)),
-    url("/assets/home/hero-map.png") center / cover no-repeat;
+    linear-gradient(180deg, rgba(2, 15, 35, 0.15), rgba(2, 15, 35, 0.45));
   color: var(--paper);
+  --hero-parallax: 0px;
+  --hero-glow-shift: 0px;
+}
+
+.heroParallax {
+  position: absolute;
+  inset: -8% 0;
+  background: url("/assets/home/hero-map.png") center / cover no-repeat;
+  transform: translate3d(0, var(--hero-parallax), 0);
+  will-change: transform;
+  pointer-events: none;
 }
 
 .hero::after {
@@ -119,10 +130,13 @@
   border-radius: 50%;
   background: radial-gradient(circle, rgba(222, 79, 75, 0.13), transparent 68%);
   animation: pulse 4.5s ease-in-out infinite;
+  transform: translate3d(0, var(--hero-glow-shift), 0);
+  will-change: transform;
+  pointer-events: none;
 }
 
 @keyframes pulse {
-  50% { opacity: 0.48; transform: scale(1.05); }
+  50% { opacity: 0.48; }
 }
 
 .heroCopy {
@@ -180,6 +194,19 @@
   display: flex;
   gap: 16px;
   margin-top: 38px;
+}
+
+.heroReveal {
+  opacity: 0;
+  transform: translateY(28px);
+  animation: heroRevealIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes heroRevealIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .scrollCue {
@@ -286,6 +313,11 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
   pointer-events: none;
+  transition: background-color 500ms ease;
+}
+
+.categoryCard:hover::after {
+  background: rgba(0, 0, 0, 0.58);
 }
 
 .categoryShade {
@@ -309,6 +341,11 @@
   font-size: 26px;
   letter-spacing: 0.03em;
   text-transform: uppercase;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.categoryCard:hover .categoryLabel {
+  transform: translateY(-6px);
 }
 
 .categoryLabel i {
@@ -316,11 +353,34 @@
   height: 1px;
   margin-bottom: 6px;
   background: var(--red);
-  transition: width 180ms ease;
+  transition: width 220ms ease, background-color 220ms ease;
 }
 
 .categoryCard:hover .categoryLabel i {
   width: 48px;
+  background: var(--red-bright);
+}
+
+.eyebrowDraw::before {
+  width: 0 !important;
+  transition: width 700ms cubic-bezier(0.22, 1, 0.36, 1) 180ms;
+}
+
+[data-revealed] .eyebrowDraw::before {
+  width: 36px !important;
+}
+
+.revealFromRight {
+  opacity: 0;
+  transform: translateX(40px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealFromRight.isVisible {
+  opacity: 1;
+  transform: none;
 }
 
 .catalogCta,
@@ -635,9 +695,24 @@
   gap: 16px;
 }
 
+.newsGridWide {
+  grid-column: span 2;
+}
+
+.newsGridNarrow {
+  grid-column: span 1;
+}
+
+.newsGridWide,
+.newsGridNarrow {
+  min-width: 0;
+  min-height: 0;
+}
+
 .newsCard {
   --news-image: url("/assets/home/news_item1.jpg");
   position: relative;
+  height: 100%;
   overflow: hidden;
   background-color: var(--surface-dark);
   background-image: var(--news-image);
@@ -645,16 +720,6 @@
   background-size: cover;
   color: var(--paper);
   isolation: isolate;
-}
-
-.newsCard:nth-child(4n + 1),
-.newsCard:nth-child(4n) {
-  grid-column: span 2;
-}
-
-.newsCard:nth-child(4n + 2),
-.newsCard:nth-child(4n + 3) {
-  grid-column: span 1;
 }
 
 .newsCard::before {
@@ -865,7 +930,6 @@
 }
 
 @media (max-width: 920px) {
-  .hero { min-height: 760px; background-position: 58% center; }
   .heroCopy { width: min(680px, 84vw); padding-top: 74px; }
   .hero h1 { font-size: clamp(48px, 7.8vw, 68px); }
   .catalogHeading,
@@ -881,16 +945,13 @@
   .advantagesTrack :global(.swiper-slide),
   .advantage { width: min(425px, 78vw) !important; }
   .newsGrid { grid-template-columns: 1fr; grid-auto-rows: 330px; }
-  .newsCard:nth-child(4n + 1),
-  .newsCard:nth-child(4n),
-  .newsCard:nth-child(4n + 2),
-  .newsCard:nth-child(4n + 3) { grid-column: auto; }
+  .newsGridWide,
+  .newsGridNarrow { grid-column: auto; }
   .contactGrid { gap: 64px; }
 }
 
 @media (max-width: 600px) {
   .shell { width: calc(100% - 32px); }
-  .hero { min-height: 720px; background-position: 65% center; }
   .hero::before {
     content: "";
     position: absolute;
@@ -925,4 +986,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .page *, .page *::before, .page *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+  .heroReveal,
+  .revealFromRight {
+    opacity: 1;
+    transform: none;
+  }
 }
