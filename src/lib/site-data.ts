@@ -1,3 +1,10 @@
+export const footerCompanyInfo = [
+  "УНП 7656768768768,",
+  "Юридический адрес: текст",
+  "Р/с BY 000 000 000 000",
+  "Банк",
+] as const;
+
 export const navItems = [
   { label: "Главная", href: "/" },
   { label: "О компании", href: "/about" },
@@ -29,7 +36,7 @@ export const footerColumns = [
     ],
   },
   {
-    title: "Связь",
+    title: "Контакты",
     links: [
       { label: "b2b@gildia-dist.ru", href: "mailto:b2b@gildia-dist.ru" },
       { label: "+7 (495) 123-45-67", href: "tel:+74951234567" },

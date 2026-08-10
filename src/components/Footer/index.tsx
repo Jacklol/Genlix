@@ -2,9 +2,8 @@ import homeStyles from "@/app/home.module.css";
 import { Brand } from "@/components/Brand";
 import { FooterFacebookIcon } from "@/components/icons/FooterFacebookIcon";
 import { FooterInstagramIcon } from "@/components/icons/FooterInstagramIcon";
-import { FooterXIcon } from "@/components/icons/FooterXIcon";
 import { FooterYoutubeIcon } from "@/components/icons/FooterYoutubeIcon";
-import { footerColumns } from "@/lib/site-data";
+import { footerColumns, footerCompanyInfo } from "@/lib/site-data";
 
 import styles from "./Footer.module.css";
 
@@ -14,10 +13,22 @@ export function Footer() {
       <div className={`${homeStyles.shell} ${styles.grid}`}>
         <div className={styles.about}>
           <Brand />
-          <p>
-            Импорт и комплексная дистрибуция мяса и премиальных напитков для ресторанных
-            холдингов и элитного ритейла.
+          <p className={styles.companyInfo}>
+            {footerCompanyInfo.map((line) => (
+              <span key={line}>{line}</span>
+            ))}
           </p>
+          <div className={styles.social} aria-label="Социальные сети">
+            <a href="/#contacts" aria-label="Instagram">
+              <FooterInstagramIcon />
+            </a>
+            <a href="/#contacts" aria-label="Facebook">
+              <FooterFacebookIcon />
+            </a>
+            <a href="/#contacts" aria-label="YouTube">
+              <FooterYoutubeIcon />
+            </a>
+          </div>
         </div>
         {footerColumns.map((column) => (
           <div className={styles.column} key={column.title}>
@@ -31,27 +42,16 @@ export function Footer() {
         ))}
       </div>
       <div className={`${homeStyles.shell} ${styles.bottom}`}>
-        <span>© 2026 ООО «Гильдия Дистрибуция». Все права защищены.</span>
+        <div className={styles.legal}>
+          <span>© 2026 «Genlix». Все права защищены.</span>
+        </div>
+        <a href="/privacy">Политика конфиденциальности</a>
         <p className={styles.credit}>
           <span>Developed by</span>{" "}
           <a href="https://localmindstudio.site/" target="_blank" rel="noopener">
             localmindstudio
           </a>
         </p>
-        <div className={styles.social} aria-label="Социальные сети">
-          <a href="/#contacts" aria-label="Instagram">
-            <FooterInstagramIcon />
-          </a>
-          <a href="/#contacts" aria-label="Facebook">
-            <FooterFacebookIcon />
-          </a>
-          <a href="/#contacts" aria-label="X">
-            <FooterXIcon />
-          </a>
-          <a href="/#contacts" aria-label="YouTube">
-            <FooterYoutubeIcon />
-          </a>
-        </div>
       </div>
     </footer>
   );

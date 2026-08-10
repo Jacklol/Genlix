@@ -104,9 +104,6 @@ export default function Home() {
               </a>
             ))}
           </div>
-          <div className={styles.catalogCta}>
-            <a className={styles.primaryButton} href="#contacts">Перейти в каталог</a>
-          </div>
         </div>
       </section>
 

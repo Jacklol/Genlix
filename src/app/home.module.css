@@ -377,9 +377,10 @@
 
 .statCard strong {
   margin-top: 10px;
+  margin-left: -0.1em;
   color: var(--red);
   font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  font-size: clamp(74px, 6vw, 122px);
+  font-size: clamp(74px, 8vw, 122px);
   font-weight: 400;
   letter-spacing: 0.02em;
   line-height: 0.9;
