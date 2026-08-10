@@ -126,10 +126,12 @@ export default function Home() {
 
       <section className={styles.newsSection} id="news" aria-labelledby="news-title">
         <div className={styles.shell}>
-          <Reveal className={styles.newsHeading} variant="fade-up">
-            <Heading eyebrow="Новости & статьи" first="События индустрии" accent="и новости компании" id="news-title" />
+          <div className={styles.newsHeading}>
+            <Reveal variant="fade-up">
+              <Heading eyebrow="Новости & статьи" first="События индустрии" accent="и новости компании" id="news-title" />
+            </Reveal>
             <a className={styles.outlineButton} href="/news">Все новости</a>
-          </Reveal>
+          </div>
           <div className={styles.newsGrid} id="news-grid">
             {homeNews.map((item, index) => (
               <Reveal
