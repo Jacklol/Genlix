@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import { Brand } from "@/components/Brand";
 import { navItems } from "@/lib/site-data";
 
@@ -6,11 +10,36 @@ import styles from "./Header.module.css";
 type HeaderProps = {
   activeLink?: (typeof navItems)[number]["label"];
   static?: boolean;
+  overlay?: boolean;
 };
 
-export function Header({ activeLink = "Главная", static: isStatic = false }: HeaderProps) {
+export function Header({
+  activeLink = "Главная",
+  static: isStatic = false,
+  overlay = false,
+}: HeaderProps) {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    if (!overlay) return;
+
+    const onScroll = () => setScrolled(window.scrollY > 48);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [overlay]);
+
   return (
-    <header className={`${styles.header} ${isStatic ? styles.static : ""}`}>
+    <header
+      className={[
+        styles.header,
+        isStatic ? styles.static : "",
+        overlay ? styles.overlay : "",
+        scrolled ? styles.scrolled : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <div className={styles.inner}>
         <Brand href={activeLink === "Главная" ? "#top" : "/"} />
         <nav className={styles.desktopNav} aria-label="Основная навигация">
