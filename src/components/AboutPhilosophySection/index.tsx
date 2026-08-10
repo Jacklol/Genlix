@@ -102,65 +102,67 @@ export function AboutPhilosophySection() {
             </span>
 
             <div className={styles.videoWrap}>
-              <video
-                ref={videoRef}
-                className={styles.video}
-                playsInline
-                poster={VIDEO_POSTER}
-                preload="metadata"
-                src={VIDEO_SRC}
-                onDurationChange={(event) => {
-                  updateTimeLabel(event.currentTarget, setTimeLabel);
-                }}
-                onEnded={() => {
-                  const video = videoRef.current;
-                  setIsPlaying(false);
-
-                  if (video) {
-                    video.currentTime = 0;
-                    updateTimeLabel(video, setTimeLabel);
-                  }
-                }}
-                onLoadedMetadata={(event) => {
-                  updateTimeLabel(event.currentTarget, setTimeLabel);
-                }}
-                onPause={() => setIsPlaying(false)}
-                onPlay={() => setIsPlaying(true)}
-                onTimeUpdate={(event) => {
-                  const video = event.currentTarget;
-                  if (!video.duration) {
-                    return;
-                  }
-
-                  setProgress((video.currentTime / video.duration) * 100);
-                  updateTimeLabel(video, setTimeLabel);
-                }}
-              />
-
-              {!isPlaying ? <div aria-hidden="true" className={styles.videoCoverOverlay} /> : null}
-
               <div className={styles.videoPanel}>
                 <p className={styles.videoPanelTitle}>Единый стандарт качества</p>
                 <p className={styles.videoPanelText}>{introText}</p>
               </div>
 
-              <button
-                aria-label={isPlaying ? "Пауза" : "Воспроизвести видео"}
-                className={styles.playButton}
-                type="button"
-                onClick={() => {
-                  void togglePlayback();
-                }}
-              >
-                <span className={isPlaying ? styles.pauseIcon : styles.playIcon} aria-hidden="true" />
-              </button>
+              <div className={styles.videoStage}>
+                <video
+                  ref={videoRef}
+                  className={styles.video}
+                  playsInline
+                  poster={VIDEO_POSTER}
+                  preload="metadata"
+                  src={VIDEO_SRC}
+                  onDurationChange={(event) => {
+                    updateTimeLabel(event.currentTarget, setTimeLabel);
+                  }}
+                  onEnded={() => {
+                    const video = videoRef.current;
+                    setIsPlaying(false);
 
-              <div className={styles.videoFooter}>
-                <span className={styles.videoLabel}>
-                  О компании{timeLabel ? ` ${timeLabel}` : ""}
-                </span>
-                <div className={styles.progressTrack}>
-                  <span className={styles.progressFill} style={{ width: `${progress}%` }} />
+                    if (video) {
+                      video.currentTime = 0;
+                      updateTimeLabel(video, setTimeLabel);
+                    }
+                  }}
+                  onLoadedMetadata={(event) => {
+                    updateTimeLabel(event.currentTarget, setTimeLabel);
+                  }}
+                  onPause={() => setIsPlaying(false)}
+                  onPlay={() => setIsPlaying(true)}
+                  onTimeUpdate={(event) => {
+                    const video = event.currentTarget;
+                    if (!video.duration) {
+                      return;
+                    }
+
+                    setProgress((video.currentTime / video.duration) * 100);
+                    updateTimeLabel(video, setTimeLabel);
+                  }}
+                />
+
+                {!isPlaying ? <div aria-hidden="true" className={styles.videoCoverOverlay} /> : null}
+
+                <button
+                  aria-label={isPlaying ? "Пауза" : "Воспроизвести видео"}
+                  className={styles.playButton}
+                  type="button"
+                  onClick={() => {
+                    void togglePlayback();
+                  }}
+                >
+                  <span className={isPlaying ? styles.pauseIcon : styles.playIcon} aria-hidden="true" />
+                </button>
+
+                <div className={styles.videoFooter}>
+                  <span className={styles.videoLabel}>
+                    О компании{timeLabel ? ` ${timeLabel}` : ""}
+                  </span>
+                  <div className={styles.progressTrack}>
+                    <span className={styles.progressFill} style={{ width: `${progress}%` }} />
+                  </div>
                 </div>
               </div>
             </div>

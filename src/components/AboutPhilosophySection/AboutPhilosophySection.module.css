@@ -107,6 +107,10 @@
 
 .videoWrap {
   position: relative;
+}
+
+.videoStage {
+  position: relative;
   height: 600px;
   background: var(--ink-deep);
 }
@@ -130,7 +134,7 @@
   position: absolute;
   left: -44px;
   bottom: 107px;
-  z-index: 1;
+  z-index: 2;
   width: min(390px, 42%);
   padding: 24px;
   background: var(--navy);
@@ -244,9 +248,22 @@
   }
 
   .videoWrap {
-    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
   }
 
+  .videoPanel {
+    position: static;
+    left: auto;
+    bottom: auto;
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .videoStage {
+    height: clamp(240px, 56vw, 400px);
+  }
 }
 
 @media (max-width: 600px) {
@@ -260,8 +277,15 @@
   }
 
   .videoPanel {
-    width: min(240px, 72%);
-    padding: 18px 16px;
+    padding: 20px 18px;
+  }
+
+  .videoPanelText {
+    font-size: 16px;
+  }
+
+  .videoStage {
+    height: clamp(220px, 62vw, 320px);
   }
 
   .playButton {

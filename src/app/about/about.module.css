@@ -516,11 +516,29 @@
   }
 
   .certificates {
-    padding: 56px 0 64px;
+    padding: 0;
+  }
+
+  .certificateImageWrap {
+    padding: 12px 12px 14px;
+  }
+
+  .certificateBody {
+    padding: 0 12px 14px;
+  }
+
+  .certificateDescription{
+    font-size: 14px;
+    margin-top: 8px;
   }
 
   .certificatesText {
     font-size: 16px;
+  }
+
+  .certificateLink {
+    padding-top: 12px;
+    font-size: 12px;
   }
 
   .certificatesHeader {

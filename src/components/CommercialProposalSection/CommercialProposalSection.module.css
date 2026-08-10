@@ -30,6 +30,7 @@
   justify-content: center;
   min-height: 48px;
   padding: 14px 130px 12px;
+  border: 1px solid transparent;
   background: var(--red);
   color: var(--paper) !important;
   font-size: 12px;
@@ -37,10 +38,36 @@
   letter-spacing: 0.04em;
   text-decoration: none;
   text-transform: uppercase;
+  white-space: nowrap;
   transition: background-color 180ms ease, transform 180ms ease;
 }
 
 .button:hover {
   background: var(--red-bright);
   transform: translateY(-2px);
+}
+
+@media (max-width: 920px) {
+  .button {
+    padding: 14px 48px 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .section {
+    padding: 56px 16px 64px;
+  }
+
+  .inner {
+    gap: 28px;
+  }
+
+  .title {
+    font-size: clamp(32px, 9.5vw, 42px);
+  }
+
+  .button {
+    width: min(100%, 320px);
+    padding: 14px 28px 12px;
+  }
 }
