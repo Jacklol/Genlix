@@ -61,9 +61,6 @@ export function HomeHero() {
           </div>
         </div>
       </div>
-      <div className={styles.scrollCue} aria-hidden="true">
-        <span />
-      </div>
     </section>
   );
 }

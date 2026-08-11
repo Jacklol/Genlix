@@ -16,11 +16,11 @@ import { newsArticles } from "@/lib/news";
 import styles from "./home.module.css";
 
 const categories = [
-  { name: "Мясо", image: "/assets/home/category1.jpg", className: styles.categoryFeatured, href: "/catalog/meat" },
-  { name: "Птица", image: "/assets/home/category2.jpg", className: "", href: "/catalog/bird" },
-  { name: "Пиво", image: "/assets/home/category3.jpg", className: "", href: "/catalog/beer" },
-  { name: "Вода", image: "/assets/home/category4.jpg", className: "", href: "#contacts" },
-  { name: "Снеки", image: "/assets/home/category5.jpg", className: "", href: "#contacts" },
+  { name: "Мясо", image: "/assets/home/category1.jpg", href: "/catalog/meat" },
+  { name: "Птица", image: "/assets/home/category2.jpg", href: "/catalog/bird" },
+  { name: "Пиво", image: "/assets/home/category3.jpg", href: "/catalog/beer" },
+  { name: "Вода", image: "/assets/home/category4.jpg", href: "#contacts" },
+  { name: "Снеки", image: "/assets/home/category5.jpg", href: "#contacts" },
 ] as const;
 
 const homeNews = newsArticles.slice(0, 4);
@@ -68,7 +68,7 @@ export default function Home() {
             {categories.map((category, index) => (
               <Reveal contents delay={index * 90} key={category.name} variant="fade-up">
                 <a
-                  className={`${styles.categoryCard} ${category.className}`}
+                  className={styles.categoryCard}
                   href={category.href}
                   style={{ "--category-image": `url("${category.image}")` } as CSSProperties}
                 >

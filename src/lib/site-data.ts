@@ -11,6 +11,12 @@ export const officeLocation = {
   address: "г. Москва, ул. Кутузовский проспект, д. 12, стр. 4",
 } as const;
 
+export const catalogSections = [
+  { label: "Мясо", href: "/catalog/meat" },
+  { label: "Птица", href: "/catalog/bird" },
+  { label: "Пиво", href: "/catalog/beer" },
+] as const;
+
 export const navItems = [
   { label: "Главная", href: "/" },
   { label: "О компании", href: "/about" },

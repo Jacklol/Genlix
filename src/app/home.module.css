@@ -74,8 +74,8 @@
 }
 
 .secondaryButton:hover {
-  border-color: var(--paper);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--navy);
+  background: var(--navy);
 }
 
 .outlineButton {
@@ -209,35 +209,6 @@
   }
 }
 
-.scrollCue {
-  position: absolute;
-  z-index: 3;
-  bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 28px;
-  height: 44px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 18px;
-}
-
-.scrollCue span {
-  width: 3px;
-  height: 8px;
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  border-radius: 2px;
-  background: var(--red);
-  transform: translateX(-50%);
-  animation: scroll-dot 1.8s ease-in-out infinite;
-}
-
-@keyframes scroll-dot {
-  70% { opacity: 0; transform: translate(-50%, 14px); }
-  100% { opacity: 0; }
-}
-
 .catalogSection,
 .advantagesSection,
 .newsSection {
@@ -277,14 +248,15 @@
 }
 
 .categoryGrid {
-  display: grid;
-  grid-template-columns: 2fr repeat(4, 1fr);
+  display: flex;
   gap: 20px;
 }
 
 .categoryCard {
   --category-image: url("/assets/home/category1.jpg");
   position: relative;
+  flex: 1 1 0;
+  min-width: 0;
   height: 500px;
   overflow: hidden;
   background-color: var(--surface-dark);
@@ -292,6 +264,11 @@
   background-position: center;
   background-size: cover;
   isolation: isolate;
+  transition: flex 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.categoryCard:hover {
+  flex: 2 1 0;
 }
 
 .categoryCard::before {
@@ -318,7 +295,7 @@
 }
 
 .categoryCard:hover::after {
-  background: rgba(0, 0, 0, 0.58);
+  background: transparent;
 }
 
 .categoryShade {
@@ -326,6 +303,11 @@
   z-index: 2;
   inset: 35% 0 0;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));
+  transition: opacity 500ms ease;
+}
+
+.categoryCard:hover .categoryShade {
+  opacity: 0;
 }
 
 .categoryLabel {
@@ -950,9 +932,19 @@
   .catalogHeading,
   .newsHeading { align-items: flex-start; flex-direction: column; }
   .catalogHeading > p { text-align: left; }
-  .categoryGrid { grid-template-columns: repeat(2, 1fr); }
-  .categoryFeatured { grid-column: 1 / -1; }
-  .categoryCard { height: 430px; }
+  .categoryGrid {
+    flex-wrap: wrap;
+  }
+
+  .categoryCard {
+    flex: 1 1 calc(50% - 10px);
+    min-width: calc(50% - 10px);
+    height: 430px;
+  }
+
+  .categoryCard:hover {
+    flex: 1 1 100%;
+  }
   .philosophyGrid,
   .testimonialGrid,
   .contactGrid { grid-template-columns: 1fr; }
@@ -986,9 +978,27 @@
   .contactSection { padding-top: 78px; padding-bottom: 84px; }
   .headingBlock h2 { font-size: 42px; }
   .catalogHeading { margin-bottom: 36px; }
-  .categoryGrid { display: flex; margin-right: -16px; padding-right: 16px; overflow-x: auto; scroll-snap-type: x mandatory; }
-  .categoryCard,
-  .categoryFeatured { min-width: 78vw; height: 480px; grid-column: auto; scroll-snap-align: start; }
+  .categoryGrid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: nowrap;
+    margin-right: -16px;
+    padding-right: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .categoryCard {
+    min-width: 78vw;
+    height: 480px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .categoryCard:hover {
+    flex: 0 0 auto;
+  }
   .philosophy h2,
   .testimonials h2,
   .contactCopy h2 { font-size: clamp(39px, 10.5vw, 46px); }
