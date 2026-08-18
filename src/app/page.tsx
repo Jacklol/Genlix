@@ -2,8 +2,7 @@ import type { CSSProperties } from "react";
 
 import { AdvantagesSlider } from "@/components/AdvantagesSlider";
 import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { HomeHero } from "@/components/HomeHero";
+import { HomeExperience } from "@/components/HomeExperience";
 import { PhilosophyStat } from "@/components/PhilosophyStat";
 import { Reveal } from "@/components/Reveal";
 import { TestimonialsSlider } from "@/components/TestimonialsSlider";
@@ -54,9 +53,7 @@ function Heading({
 export default function Home() {
   return (
     <main className={styles.page} id="top">
-      <Header overlay />
-
-      <HomeHero />
+      <HomeExperience />
 
       <section className={styles.catalogSection} id="catalog" aria-labelledby="catalog-title">
         <div className={styles.shell}>

@@ -11,7 +11,7 @@ export const miratorgSections = {
   ] satisfies ProductPlacement[],
   hits: [
     { slug: "govyazhij-farsh-domashnij", image: "/assets/catalog/meat/miratorg/mt_hits1.png", badge: "хит" },
-    { slug: "antrekot-ohlazhdyonnyj-b2b", image: "/assets/catalog/meat/miratorg/mt_hits2.png", badge: "хит" },
+    { slug: "steyk-ribaj-prajm", image: "/assets/catalog/meat/miratorg/mt_hits2.png", badge: "хит" },
     { slug: "gulyash-iz-govyadiny", image: "/assets/catalog/meat/miratorg/mt_hits3.png", badge: "хит" },
   ] satisfies ProductPlacement[],
   new: [
@@ -26,8 +26,6 @@ export const miratorgSections = {
       slug: "kotlety-domashnie-iz-svininy",
       image: "/assets/catalog/meat/miratorg/mt_ideal3.png",
       badge: "витрина",
-      brand: "Primebeef",
-      buttonLabel: "Запросить оптовое предложение",
     },
   ] satisfies ProductPlacement[],
 } as const;

@@ -40,9 +40,47 @@
   height: 100%;
   margin-inline: auto;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 48px;
+}
+
+.versionSwitch {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(5, 24, 58, 0.28);
+  backdrop-filter: blur(12px);
+}
+
+.versionSwitch > span {
+  padding: 0 6px 0 8px;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.versionSwitch button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.66);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.versionSwitch button:hover,
+.versionSwitch button.versionActive {
+  background: var(--red);
+  color: var(--paper);
 }
 
 .desktopNav {
@@ -234,6 +272,10 @@
   .actions .phone {
     display: none;
   }
+
+  .versionSwitch > span {
+    display: none;
+  }
 }
 
 @media (max-width: 920px) {
@@ -251,7 +293,8 @@
   }
 
   .desktopNav,
-  .actions {
+  .actions,
+  .versionSwitch {
     display: none;
   }
 
@@ -346,6 +389,44 @@
 
   .mobilePanelActive {
     transform: translateX(0);
+  }
+
+  .mobileVersionSwitch {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .mobileVersionSwitch > span {
+    display: block;
+    margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0.46);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .mobileVersionSwitch > div {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .mobileVersionSwitch button {
+    min-height: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.68);
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .mobileVersionSwitch button.versionActive {
+    border-color: var(--red);
+    background: var(--red);
+    color: var(--paper);
   }
 
   .mobilePanel > a,

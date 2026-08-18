@@ -1,22 +1,30 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState, type TransitionEvent } from "react";
 
 import { Brand } from "@/components/Brand";
+import type { HomeHeroVariant } from "@/components/HomeHero";
 import { catalogSections, navItems } from "@/lib/site-data";
 
 import styles from "./Header.module.css";
+
+const homeHeroVariants = [1, 2, 3, 5] as const satisfies readonly HomeHeroVariant[];
 
 type HeaderProps = {
   activeLink?: (typeof navItems)[number]["label"];
   static?: boolean;
   overlay?: boolean;
+  heroVariant?: HomeHeroVariant;
+  onHeroVariantChange?: (variant: HomeHeroVariant) => void;
 };
 
 export function Header({
   activeLink = "Главная",
   static: isStatic = false,
   overlay = false,
+  heroVariant,
+  onHeroVariantChange,
 }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -56,6 +64,11 @@ export function Header({
   }, [menuVisible]);
 
   const closeMenu = () => setMenuActive(false);
+
+  const selectHeroVariant = (variant: HomeHeroVariant) => {
+    onHeroVariantChange?.(variant);
+    closeMenu();
+  };
 
   const toggleMenu = () => {
     if (menuActive) {
@@ -119,13 +132,30 @@ export function Header({
             ),
           )}
         </nav>
+        {heroVariant && onHeroVariantChange ? (
+          <div className={styles.versionSwitch} aria-label="Версия первого экрана">
+            <span>Версия</span>
+            {homeHeroVariants.map((variant) => (
+              <button
+                type="button"
+                className={variant === heroVariant ? styles.versionActive : undefined}
+                aria-label={`Открыть версию ${variant}`}
+                aria-pressed={variant === heroVariant}
+                key={variant}
+                onClick={() => onHeroVariantChange(variant)}
+              >
+                {variant}
+              </button>
+            ))}
+          </div>
+        ) : null}
         <div className={styles.actions}>
           <a className={styles.phone} href="tel:+74951234567">
             +7 (495) 123-45-67
           </a>
-          <a className={styles.cta} href="/#contacts">
+          <Link className={styles.cta} href="/#contacts">
             Стать партнёром
-          </a>
+          </Link>
         </div>
         <div className={styles.mobileMenu}>
           <button
@@ -157,6 +187,24 @@ export function Header({
                 onClick={(event) => event.stopPropagation()}
                 onTransitionEnd={handlePanelTransitionEnd}
               >
+                {heroVariant && onHeroVariantChange ? (
+                  <div className={styles.mobileVersionSwitch} aria-label="Версия первого экрана">
+                    <span>Первый экран</span>
+                    <div>
+                      {homeHeroVariants.map((variant) => (
+                        <button
+                          type="button"
+                          className={variant === heroVariant ? styles.versionActive : undefined}
+                          aria-pressed={variant === heroVariant}
+                          key={variant}
+                          onClick={() => selectHeroVariant(variant)}
+                        >
+                          Версия {variant}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
                 {navItems.map(({ label, href }) =>
                   label === "Каталог" ? (
                     <details className={styles.mobileCatalog} key={label}>

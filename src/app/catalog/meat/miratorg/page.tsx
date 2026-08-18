@@ -3,9 +3,10 @@ import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { MeatCatalogBrowser } from "@/components/MeatCatalogBrowser";
 import { ProductCardsSection } from "@/components/ProductCardsSection";
 import { SubscribeSection } from "@/components/SubscribeSection";
-import { getMiratorgSection } from "@/lib/catalog";
+import { getMiratorgRetailMeatItems, getMiratorgSection } from "@/lib/catalog";
 import homeStyles from "@/app/home.module.css";
 import styles from "./miratorg.module.css";
 
@@ -44,7 +45,12 @@ export default function MiratorgPage() {
         </div>
       </section>
 
-      <ProductCardsSection title="Продукция Мираторг" products={getMiratorgSection("detailed")} />
+      <MeatCatalogBrowser
+        id="miratorg-products"
+        products={getMiratorgRetailMeatItems()}
+        subtitle="Готовая продукция для торговых сетей и розничных магазинов."
+        title="Розничный ассортимент Мираторг"
+      />
 
       <ProductCardsSection
         variant="dark"

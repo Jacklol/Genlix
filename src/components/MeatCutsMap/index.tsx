@@ -16,23 +16,41 @@ import styles from "./MeatCutsMap.module.css";
 
 type MeatCutsMapProps = {
   subtitle?: string;
+  embedded?: boolean;
+  selectedCutId?: string | null;
+  onCutSelect?: (region: MeatCutRegion) => void;
+  onClearSelection?: () => void;
 };
 
 export function MeatCutsMap({
   subtitle = "Выберите интересующую часть туши",
+  embedded = false,
+  selectedCutId,
+  onCutSelect,
+  onClearSelection,
 }: MeatCutsMapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const mapWrapRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [internalActiveId, setInternalActiveId] = useState<string | null>(null);
   const [popupPosition, setPopupPosition] = useState<{ left: number; top: number } | null>(null);
 
+  const isControlled = selectedCutId !== undefined;
+  const activeId = isControlled ? selectedCutId : internalActiveId;
   const activeCut = meatCutRegions.find((region) => region.id === activeId) ?? null;
+
+  const selectCut = (region: MeatCutRegion) => {
+    if (!isControlled) {
+      setInternalActiveId(region.id);
+    }
+
+    onCutSelect?.(region);
+  };
 
   const handleSelect = (region: MeatCutRegion, event: ReactMouseEvent<SVGPolygonElement>) => {
     event.stopPropagation();
-    setActiveId(region.id);
+    selectCut(region);
   };
 
   const handleMapClick = (event: ReactMouseEvent<SVGSVGElement>) => {
@@ -42,7 +60,11 @@ export function MeatCutsMap({
       return;
     }
 
-    setActiveId(null);
+    if (!isControlled) {
+      setInternalActiveId(null);
+    }
+
+    onClearSelection?.();
   };
 
   const updatePopupPosition = useCallback(() => {
@@ -96,7 +118,9 @@ export function MeatCutsMap({
   }, [activeCut]);
 
   useLayoutEffect(() => {
-    updatePopupPosition();
+    const frame = window.requestAnimationFrame(updatePopupPosition);
+
+    return () => window.cancelAnimationFrame(frame);
   }, [updatePopupPosition]);
 
   useEffect(() => {
@@ -127,7 +151,16 @@ export function MeatCutsMap({
       <h3 className={styles.detailsTitle}>{activeCut.titleRu}</h3>
       <p className={styles.detailsText}>{activeCut.description}</p>
 
-      {activeCut.productSlug ? (
+      {onCutSelect ? (
+        <button
+          className={styles.detailsLink}
+          type="button"
+          style={{ padding: 0, border: 0, background: "none", cursor: "pointer" }}
+          onClick={() => onCutSelect(activeCut)}
+        >
+          Показать ассортимент
+        </button>
+      ) : activeCut.productSlug ? (
         <Link className={styles.detailsLink} href={`/catalog/product/${activeCut.productSlug}`}>
           Смотреть в каталоге
         </Link>
@@ -138,8 +171,11 @@ export function MeatCutsMap({
   ) : null;
 
   return (
-    <section className={styles.section} aria-labelledby="meat-cuts-map-title">
-      <div className={homeStyles.shell}>
+    <section
+      className={`${styles.section} ${embedded ? styles.embedded : ""}`.trim()}
+      aria-labelledby="meat-cuts-map-title"
+    >
+      <div className={embedded ? styles.embeddedInner : homeStyles.shell}>
         <div className={styles.header}>
           <h2 className={styles.title} id="meat-cuts-map-title">
             Интерактивная карта <span>мясных отрубов</span>
@@ -175,6 +211,7 @@ export function MeatCutsMap({
                   return (
                     <polygon
                       aria-label={`${region.titleRu} / ${region.titleEn}`}
+                      aria-pressed={isActive}
                       className={`${styles.region} ${isActive ? styles.regionActive : ""}`}
                       key={region.id}
                       points={region.points}
@@ -184,7 +221,7 @@ export function MeatCutsMap({
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
                           event.preventDefault();
-                          setActiveId(region.id);
+                          selectCut(region);
                         }
                       }}
                     />

@@ -1,0 +1,238 @@
+.splitHero {
+  display: grid;
+  min-height: 620px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  background: var(--navy-deep);
+}
+
+.heroPane,
+.cutsPane {
+  min-width: 0;
+}
+
+.heroPane {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: clamp(40px, 4vw, 72px);
+  background-color: var(--hero-overlay);
+  background-image:
+    linear-gradient(180deg, rgba(2, 15, 35, 0.1) 12%, rgba(2, 15, 35, 0.88) 100%),
+    linear-gradient(90deg, rgba(2, 15, 35, 0.54), transparent 72%),
+    url("/assets/catalog/meat/primebeef/hero.png");
+  background-position: center;
+  background-size: cover;
+  color: var(--paper);
+}
+
+.heroCopy {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+}
+
+.brandBadge {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 24px;
+  padding: 10px 18px 8px;
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--text-secondary);
+}
+
+.brandBadge strong {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.heroPane h1 {
+  margin: 0;
+  color: var(--paper);
+  font-family: var(--font-montserrat), "Montserrat", Arial, Helvetica, sans-serif;
+  font-size: clamp(32px, 2.7vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.16;
+}
+
+.heroLead {
+  max-width: 690px;
+  margin: 18px 0 0;
+  color: var(--text-on-dark);
+  font-size: clamp(14px, 1vw, 17px);
+  line-height: 1.55;
+}
+
+.cutsPane {
+  min-height: 620px;
+  border-left: 1px solid rgba(5, 32, 76, 0.1);
+  background: var(--section-muted-bg);
+}
+
+.audienceSection {
+  padding: 52px 0 28px;
+  background: var(--paper);
+  color: var(--ink-deep);
+}
+
+.audienceHeader {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.audienceHeader h2 {
+  margin: 0;
+  font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(36px, 3vw, 52px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid color-mix(in srgb, var(--ink-deep) 20%, transparent);
+}
+
+.tab {
+  display: flex;
+  min-height: 112px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 22px 28px;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink-deep);
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.tab + .tab {
+  border-left: 1px solid color-mix(in srgb, var(--ink-deep) 20%, transparent);
+}
+
+.tab strong {
+  font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.tab span {
+  max-width: 560px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.tab:hover:not(.tabActive) {
+  background: color-mix(in srgb, var(--navy) 5%, var(--paper));
+}
+
+.tab:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 3px solid color-mix(in srgb, var(--red) 65%, transparent);
+  outline-offset: -3px;
+}
+
+.tabActive {
+  background: var(--navy);
+  color: var(--paper);
+}
+
+.resultsAnchor {
+  scroll-margin-top: 24px;
+}
+
+@media (max-width: 1180px) {
+  .splitHero,
+  .cutsPane {
+    min-height: 560px;
+  }
+
+  .heroPane {
+    padding: 42px;
+  }
+
+  .heroPane h1 {
+    font-size: 34px;
+  }
+
+  .heroLead br {
+    display: none;
+  }
+}
+
+@media (max-width: 920px) {
+  .splitHero {
+    min-height: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .heroPane {
+    min-height: 440px;
+    padding: 44px 28px;
+  }
+
+  .cutsPane {
+    min-height: 0;
+    border-top: 1px solid rgba(5, 32, 76, 0.1);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .heroPane {
+    min-height: 390px;
+    padding: 36px 16px;
+  }
+
+  .brandBadge {
+    margin-bottom: 18px;
+  }
+
+  .heroPane h1 {
+    font-size: clamp(28px, 8vw, 34px);
+  }
+
+  .heroLead {
+    margin-top: 14px;
+    font-size: 14px;
+  }
+
+  .audienceSection {
+    padding: 48px 0 20px;
+  }
+
+  .tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .tab {
+    min-height: 96px;
+    padding: 18px 20px;
+  }
+
+  .tab + .tab {
+    border-top: 1px solid color-mix(in srgb, var(--ink-deep) 20%, transparent);
+    border-left: 0;
+  }
+}

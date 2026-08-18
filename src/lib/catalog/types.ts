@@ -6,6 +6,31 @@ export type ProductSpec = {
   value: string;
 };
 
+export type MeatSalesChannel = "horeca" | "retail";
+
+export type MeatSpecies = "beef" | "pork" | "poultry";
+
+export type MeatProductType =
+  | "steak"
+  | "large-cut"
+  | "minced-meat"
+  | "goulash"
+  | "fillet"
+  | "cutlets";
+
+export type MeatPackaging = "large-block" | "fixed-weight-vacuum" | "tray-or-box";
+
+export type MeatCookingMethod = "grill" | "fry" | "braise" | "bake" | "boil";
+
+export type MeatProductMetadata = {
+  channel: MeatSalesChannel;
+  species: MeatSpecies;
+  productType: MeatProductType;
+  packaging: MeatPackaging;
+  cutIds: string[];
+  cooking: MeatCookingMethod[];
+};
+
 export type CatalogProduct = {
   slug: string;
   title: string;
@@ -16,6 +41,7 @@ export type CatalogProduct = {
   recommendation?: string;
   buttonLabel?: string;
   badge?: ProductBadge;
+  meat?: MeatProductMetadata;
 };
 
 export type ProductPlacement = {

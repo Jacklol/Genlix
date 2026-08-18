@@ -135,6 +135,514 @@
   pointer-events: none;
 }
 
+.heroVariantSlider,
+.heroVariantVideo,
+.heroVariantSupplyMap {
+  display: block;
+  background: var(--navy-deep);
+}
+
+.sliderHero,
+.heroSlider,
+.heroSlide,
+.heroSlide > div,
+.heroVariantVideo {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.heroSlider {
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.heroSlide {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  overflow: hidden;
+}
+
+.heroSlideImage {
+  position: absolute;
+  inset: 0;
+  background-color: var(--navy-deep);
+  background-repeat: no-repeat;
+  background-size: cover;
+  transform: scale(1.03);
+  transition: transform 7s ease-out;
+}
+
+.heroSlide:global(.swiper-slide-active) .heroSlideImage {
+  transform: scale(1);
+}
+
+.heroSlide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(2, 14, 35, 0.98) 0%, rgba(2, 17, 42, 0.85) 37%, rgba(2, 17, 42, 0.2) 72%, rgba(2, 17, 42, 0.26) 100%),
+    linear-gradient(180deg, rgba(2, 14, 35, 0.12), rgba(2, 14, 35, 0.58));
+  pointer-events: none;
+}
+
+.heroSlide > .shell {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.sliderCopy {
+  width: min(880px, 60vw);
+  padding-top: 76px;
+  color: var(--paper);
+}
+
+.sliderCopy h1 {
+  font-size: clamp(58px, 4.4vw, 84px);
+}
+
+.sliderCopy .heroLead {
+  max-width: 650px;
+  font-size: clamp(17px, 1.1vw, 20px);
+}
+
+.heroSliderUi {
+  position: absolute;
+  z-index: 5;
+  right: 0;
+  bottom: 42px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.heroProgress,
+.heroSliderArrows {
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.heroProgress {
+  gap: 8px;
+}
+
+.heroProgress button {
+  position: relative;
+  width: 54px;
+  height: 18px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.heroProgress button::before,
+.heroProgress button span {
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: 0;
+  left: 0;
+  height: 2px;
+}
+
+.heroProgress button::before {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.heroProgress button span {
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms ease;
+}
+
+.heroProgress button.heroProgressActive span {
+  transform: scaleX(1);
+}
+
+.heroSliderArrows {
+  gap: 1px;
+}
+
+.heroSliderArrows button {
+  width: 54px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(3, 19, 45, 0.36);
+  color: var(--paper);
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.heroSliderArrows button:hover {
+  border-color: var(--red);
+  background: var(--red);
+}
+
+.heroSliderArrows svg {
+  width: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.heroVideo,
+.heroVideoShade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.heroVideo {
+  object-fit: cover;
+  background: var(--navy-deep);
+}
+
+.heroVideoShade {
+  background:
+    linear-gradient(90deg, rgba(2, 14, 35, 0.96) 0%, rgba(2, 17, 42, 0.78) 34%, rgba(2, 17, 42, 0.18) 68%, rgba(2, 17, 42, 0.24) 100%),
+    linear-gradient(180deg, rgba(2, 14, 35, 0.12), rgba(2, 14, 35, 0.56));
+  pointer-events: none;
+}
+
+.heroVariantVideo > .shell {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+}
+
+.videoToggle {
+  position: absolute;
+  z-index: 4;
+  right: max(48px, calc((100vw - 1760px) / 2));
+  bottom: 42px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(3, 19, 45, 0.38);
+  color: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.videoToggle:hover {
+  border-color: var(--red);
+  background: var(--red);
+}
+
+.videoToggle i {
+  width: 2px;
+  height: 12px;
+  display: block;
+  background: currentColor;
+}
+
+.playIcon {
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 9px solid currentColor;
+}
+
+.heroVariantSupplyMap {
+  isolation: isolate;
+}
+
+.supplyMapLayer,
+.supplyMapShade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.supplyMapLayer {
+  z-index: 0;
+  overflow: hidden;
+  background: #020e22;
+}
+
+.supplyMapPlane {
+  position: absolute;
+  top: 50%;
+  left: 68%;
+  height: max(100%, 47.34vw);
+  aspect-ratio: 1823 / 863;
+  transform: translate(-68%, -50%);
+}
+
+.supplyMapImage,
+.supplyMapGraphic {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.supplyMapImage {
+  background: url("/assets/home/hero-map-clean.png") center / 100% 100% no-repeat;
+}
+
+.supplyMapGraphic {
+  overflow: visible;
+}
+
+.supplyMapShade {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(2, 14, 35, 0.99) 0%, rgba(2, 16, 39, 0.93) 27%, rgba(2, 17, 42, 0.57) 45%, rgba(2, 17, 42, 0.08) 72%, rgba(2, 17, 42, 0.18) 100%),
+    linear-gradient(180deg, rgba(2, 14, 35, 0.08), rgba(2, 14, 35, 0.48));
+}
+
+.supplyMapShell {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+}
+
+.supplyMapCopy {
+  width: min(760px, 51vw);
+}
+
+.supplyMapCopy h1 {
+  font-size: clamp(54px, 4vw, 78px);
+}
+
+.supplyMapCopy .heroLead {
+  max-width: 680px;
+  font-size: clamp(17px, 1.05vw, 20px);
+}
+
+.supplyRouteGroup {
+  opacity: 0;
+  animation: supplyRouteWave var(--supply-cycle) linear var(--supply-delay) infinite both;
+}
+
+.supplyRouteShadow,
+.supplyRoute {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: supplyRouteTrace var(--supply-cycle) linear var(--supply-delay) infinite both;
+}
+
+.supplyRouteShadow {
+  stroke: rgba(132, 169, 211, 0.2);
+  stroke-width: 1.1px;
+}
+
+.supplyRoute {
+  stroke: rgba(239, 101, 93, 0.82);
+  stroke-width: 1.65px;
+  filter: url("#supply-route-glow");
+}
+
+.supplyOriginNode,
+.supplyOriginPulse {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-duration: var(--supply-cycle);
+  animation-delay: var(--supply-delay);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.supplyOriginNode {
+  fill: #ffffff;
+  stroke: var(--red);
+  stroke-width: 1.2px;
+  animation-name: supplyOriginNodeWave;
+}
+
+.supplyOriginPulse {
+  fill: none;
+  stroke: rgba(239, 101, 93, 0.72);
+  stroke-width: 1.2px;
+  animation-name: supplyOriginPulseWave;
+}
+
+.supplyCargo {
+  opacity: 0;
+  offset-distance: 0%;
+  offset-rotate: 0deg;
+  mix-blend-mode: screen;
+  animation: supplyCargoWave var(--supply-cycle) linear var(--supply-delay) infinite both;
+}
+
+.supplyCargoGlow {
+  fill: rgba(226, 75, 70, 0.42);
+  filter: url("#supply-route-glow");
+}
+
+.supplyCargoRing {
+  fill: none;
+  stroke: rgba(239, 101, 93, 0.72);
+  stroke-width: 1px;
+}
+
+.supplyCargoDot {
+  fill: #ffffff;
+  stroke: rgba(239, 101, 93, 0.88);
+  stroke-width: 0.8px;
+}
+
+.belarusOutline {
+  fill: rgba(217, 68, 67, 0.2);
+  stroke: #ef655d;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  filter: url("#supply-route-glow");
+  animation: belarusDraw 900ms cubic-bezier(0.22, 1, 0.36, 1) 480ms forwards;
+}
+
+.minskFocus {
+  opacity: 0;
+  animation: minskFocusIn 600ms ease-out 1.15s forwards;
+}
+
+.minskPulse {
+  fill: none;
+  stroke: rgba(239, 101, 93, 0.68);
+  stroke-width: 1.4px;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: minskPulseOut 2.8s ease-out 1.6s infinite;
+}
+
+.minskPulseSecond {
+  animation-delay: 2.95s;
+}
+
+.minskGlow {
+  fill: rgba(226, 75, 70, 0.62);
+  filter: url("#supply-minsk-glow");
+}
+
+.minskPoint {
+  fill: #ffffff;
+  stroke: var(--red);
+  stroke-width: 1.5px;
+}
+
+.minskCallout {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.52);
+  stroke-width: 1px;
+}
+
+.minskCountry,
+.minskCaption {
+  font-family: var(--font-montserrat), "Montserrat", Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.minskCountry {
+  fill: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+.minskCaption {
+  fill: rgba(255, 255, 255, 0.62);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+.supplyMapPaused .supplyRouteGroup,
+.supplyMapPaused .supplyRouteShadow,
+.supplyMapPaused .supplyRoute,
+.supplyMapPaused .supplyOriginNode,
+.supplyMapPaused .supplyOriginPulse,
+.supplyMapPaused .supplyCargo,
+.supplyMapPaused .belarusOutline,
+.supplyMapPaused .minskFocus,
+.supplyMapPaused .minskPulse {
+  animation-play-state: paused;
+}
+
+@keyframes supplyRouteWave {
+  0% { opacity: 0; }
+  0.6% { opacity: 1; }
+  16.83% { opacity: 1; }
+  18.5%, 100% { opacity: 0; }
+}
+
+@keyframes supplyRouteTrace {
+  0%, 1.17% { stroke-dashoffset: 1; }
+  5.17%, 100% { stroke-dashoffset: 0; }
+}
+
+@keyframes supplyOriginNodeWave {
+  0% { opacity: 0; transform: scale(0.35); }
+  0.83% { opacity: 1; transform: scale(1); }
+  5.17% { opacity: 1; transform: scale(1); }
+  6.33%, 100% { opacity: 0; transform: scale(0.7); }
+}
+
+@keyframes supplyOriginPulseWave {
+  0% { opacity: 0; transform: scale(0.45); }
+  0.6% { opacity: 0.72; }
+  4.5% { opacity: 0; transform: scale(2.35); }
+  100% { opacity: 0; transform: scale(2.35); }
+}
+
+@keyframes supplyCargoWave {
+  0%, 5.17% { opacity: 0; offset-distance: 0%; }
+  6% { opacity: 1; }
+  15.67% { opacity: 1; }
+  16.17% { opacity: 0.8; offset-distance: 100%; }
+  17.5%, 100% { opacity: 0; offset-distance: 100%; }
+}
+
+@keyframes belarusDraw {
+  from { stroke-dashoffset: 1; opacity: 0; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes minskFocusIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes minskPulseOut {
+  0% { opacity: 0.68; transform: scale(0.45); }
+  75%, 100% { opacity: 0; transform: scale(2.4); }
+}
+
 @keyframes pulse {
   50% { opacity: 0.48; }
 }
@@ -922,6 +1430,7 @@
 
 @media (max-width: 1240px) {
   .shell { width: min(100% - 56px, 1120px); }
+  .videoToggle { right: 28px; }
   .categoryCard { height: 430px; }
   .contactGrid { gap: 60px; }
 }
@@ -929,6 +1438,14 @@
 @media (max-width: 920px) {
   .heroCopy { width: min(680px, 84vw); padding-top: 74px; }
   .hero h1 { font-size: clamp(48px, 7.8vw, 68px); }
+  .sliderCopy { width: min(680px, 84vw); padding-top: 74px; }
+  .sliderCopy h1 { font-size: clamp(48px, 7.8vw, 68px); }
+  .supplyMapCopy { width: min(650px, 76vw); }
+  .supplyMapCopy h1 { font-size: clamp(46px, 7.1vw, 64px); }
+  .supplyMapPlane {
+    top: 32%;
+    height: 52%;
+  }
   .catalogHeading,
   .newsHeading { align-items: flex-start; flex-direction: column; }
   .catalogHeading > p { text-align: left; }
@@ -970,6 +1487,49 @@
   .heroLead br { display: none; }
   .heroActions { align-items: stretch; flex-direction: column; }
   .heroActions a { width: 100%; }
+  .heroVariantSlider::before,
+  .heroVariantVideo::before,
+  .heroVariantSupplyMap::before { content: none; }
+  .heroSlide { align-items: flex-end; }
+  .heroSlide::after {
+    background: linear-gradient(180deg, rgba(3, 19, 45, 0.2) 12%, rgba(3, 19, 45, 0.95) 70%, rgba(3, 19, 45, 0.99));
+  }
+  .sliderCopy {
+    width: 100%;
+    padding: 150px 0 126px;
+  }
+  .sliderCopy h1 { font-size: clamp(40px, 12.7vw, 56px); }
+  .sliderCopy .heroLead { margin-top: 22px; font-size: 15px; }
+  .sliderCopy .heroActions { margin-top: 26px; }
+  .heroSliderUi { bottom: 24px; }
+  .heroProgress { gap: 5px; }
+  .heroProgress button { width: min(10vw, 42px); }
+  .heroSliderArrows { display: none; }
+  .heroVideoShade {
+    background: linear-gradient(180deg, rgba(3, 19, 45, 0.18) 12%, rgba(3, 19, 45, 0.93) 68%, rgba(3, 19, 45, 0.98));
+  }
+  .heroVariantVideo > .shell { align-items: flex-end; }
+  .videoHeroCopy { padding-bottom: 120px; }
+  .videoToggle { right: 16px; bottom: 24px; }
+  .supplyMapPlane {
+    left: 68%;
+    top: 31%;
+    height: 48%;
+  }
+  .supplyMapShade {
+    background: linear-gradient(180deg, rgba(2, 14, 35, 0.08) 10%, rgba(2, 14, 35, 0.34) 42%, rgba(2, 14, 35, 0.96) 68%, rgba(2, 14, 35, 0.99));
+  }
+  .supplyMapShell { align-items: flex-end; }
+  .supplyMapCopy {
+    width: 100%;
+    padding: 160px 0 126px;
+  }
+  .supplyMapCopy h1 { font-size: clamp(38px, 11.7vw, 52px); }
+  .supplyMapCopy .heroLead { margin-top: 22px; font-size: 14px; }
+  .supplyMapCopy .heroActions { margin-top: 26px; }
+  .minskCountry { font-size: 22px; }
+  .minskCaption { font-size: 13px; }
+  .supplyMapToggle { right: 16px; bottom: 24px; }
   .catalogSection,
   .advantagesSection,
   .newsSection,
@@ -1030,4 +1590,22 @@
     opacity: 1;
     transform: none;
   }
+  .heroSlideImage { transform: none; }
+  .supplyRouteShadow,
+  .supplyRoute,
+  .belarusOutline {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  .supplyRouteGroup { opacity: 0; }
+  .supplyRouteGroup[data-wave="0"] { opacity: 1; }
+  .minskFocus {
+    opacity: 1;
+    transform: none;
+  }
+  .supplyOriginNode,
+  .supplyOriginPulse,
+  .supplyCargo { display: none; }
+  .minskPulse { opacity: 0.28; transform: none; }
+  .supplyMapToggle { display: none; }
 }
