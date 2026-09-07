@@ -1,5 +1,6 @@
 import type { ProductDetailData } from "@/lib/catalog";
 import homeStyles from "@/app/home.module.css";
+import { getContactRequestHref } from "@/lib/contact-requests/link";
 
 import { ProductDetailGallery } from "@/components/ProductDetailGallery";
 
@@ -79,7 +80,7 @@ export function ProductDetailHero({ product }: ProductDetailHeroProps) {
 
             <a
               className={styles.button}
-              href={product.buttonHref ?? "/#contacts"}
+              href={getContactRequestHref(product.slug, product.buttonHref)}
             >
               {product.buttonLabel ?? "Запросить поставку"}
             </a>

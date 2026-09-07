@@ -1,6 +1,12 @@
 "use client";
 
-import { useId, useMemo, useState, type FormEvent } from "react";
+import {
+  useId,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+  type FormEvent,
+} from "react";
 import { useRouter } from "next/navigation";
 
 import homeStyles from "@/app/home.module.css";
@@ -25,11 +31,40 @@ type CatalogFilters = Pick<
 
 type DedicatedSpecies = Extract<MeatSpecies, "beef" | "lamb">;
 
+type CatalogFilterKey = keyof CatalogFilters;
+
 type UnifiedMeatCatalogProps = {
   products: MeatCatalogItem[];
   initialFilters?: CatalogFilters;
   speciesPage?: DedicatedSpecies;
 };
+
+const countryLabels: Record<string, string> = {
+  argentina: "Аргентина",
+  belarus: "Беларусь",
+  brazil: "Бразилия",
+  russia: "Россия",
+  uruguay: "Уругвай",
+};
+
+function isDedicatedSpecies(species?: MeatSpecies): species is DedicatedSpecies {
+  return species === "beef" || species === "lamb";
+}
+
+function subscribeToMobileViewport(callback: () => void) {
+  const media = window.matchMedia("(max-width: 600px)");
+
+  media.addEventListener("change", callback);
+  return () => media.removeEventListener("change", callback);
+}
+
+function getMobileViewportSnapshot() {
+  return window.matchMedia("(max-width: 600px)").matches;
+}
+
+function getServerMobileViewportSnapshot() {
+  return false;
+}
 
 function formatProductCount(count: number) {
   const lastTwoDigits = count % 100;
@@ -78,6 +113,17 @@ function buildCatalogHref(pathname: string, filters: CatalogFilters, includeSpec
   return query ? `${pathname}?${query}` : pathname;
 }
 
+function filterCatalogProducts(products: MeatCatalogItem[], filters: CatalogFilters) {
+  return products.filter(
+    (product) =>
+      (!filters.species || product.meat.species === filters.species) &&
+      (!filters.manufacturer || product.brand === filters.manufacturer) &&
+      (!filters.country || product.meat.country === filters.country) &&
+      (!filters.packaging || product.meat.packaging === filters.packaging) &&
+      (!filters.channel || product.meat.channel === filters.channel),
+  );
+}
+
 export function UnifiedMeatCatalog({
   products,
   initialFilters = {},
@@ -98,55 +144,109 @@ export function UnifiedMeatCatalog({
 
   const [draftFilters, setDraftFilters] = useState<CatalogFilters>(normalizedInitialFilters);
   const [appliedFilters, setAppliedFilters] = useState<CatalogFilters>(normalizedInitialFilters);
+  const isMobileViewport = useSyncExternalStore(
+    subscribeToMobileViewport,
+    getMobileViewportSnapshot,
+    getServerMobileViewportSnapshot,
+  );
+  const [disclosureOverride, setDisclosureOverride] = useState<boolean | null>(null);
+  const filtersOpen = isMobileViewport ? (disclosureOverride ?? false) : true;
+  const availableProducts = useMemo(
+    () =>
+      speciesPage
+        ? products.filter((product) => product.meat.species === speciesPage)
+        : products,
+    [products, speciesPage],
+  );
+  const speciesOptions = useMemo(
+    () =>
+      meatFilterOptions.species.filter((option) =>
+        products.some((product) => product.meat.species === option.value),
+      ),
+    [products],
+  );
   const manufacturerOptions = useMemo(
     () =>
       Array.from(
         new Set(
-          products
+          availableProducts
             .map((product) => product.brand)
             .filter((brand): brand is string => Boolean(brand)),
         ),
       )
         .sort((left, right) => left.localeCompare(right, "ru"))
         .map((value) => ({ label: value, value })),
-    [products],
+    [availableProducts],
   );
   const countryOptions = useMemo(() => {
-    const labels: Record<string, string> = {
-      argentina: "Аргентина",
-      belarus: "Беларусь",
-      brazil: "Бразилия",
-      russia: "Россия",
-      uruguay: "Уругвай",
-    };
-
-    return Array.from(new Set(products.map((product) => product.meat.country)))
-      .sort((left, right) => (labels[left] ?? left).localeCompare(labels[right] ?? right, "ru"))
-      .map((value) => ({ label: labels[value] ?? value, value }));
-  }, [products]);
+    return Array.from(new Set(availableProducts.map((product) => product.meat.country)))
+      .sort((left, right) =>
+        (countryLabels[left] ?? left).localeCompare(countryLabels[right] ?? right, "ru"),
+      )
+      .map((value) => ({ label: countryLabels[value] ?? value, value }));
+  }, [availableProducts]);
+  const packagingOptions = useMemo(
+    () =>
+      meatFilterOptions.packaging.filter((option) =>
+        availableProducts.some((product) => product.meat.packaging === option.value),
+      ),
+    [availableProducts],
+  );
+  const channelOptions = useMemo(
+    () =>
+      meatFilterOptions.channels.filter((option) =>
+        availableProducts.some((product) => product.meat.channel === option.value),
+      ),
+    [availableProducts],
+  );
 
   const filteredProducts = useMemo(
-    () =>
-      products.filter(
-        (product) =>
-          (!appliedFilters.species || product.meat.species === appliedFilters.species) &&
-          (!appliedFilters.manufacturer || product.brand === appliedFilters.manufacturer) &&
-          (!appliedFilters.country || product.meat.country === appliedFilters.country) &&
-          (!appliedFilters.packaging || product.meat.packaging === appliedFilters.packaging) &&
-          (!appliedFilters.channel || product.meat.channel === appliedFilters.channel),
-      ),
+    () => filterCatalogProducts(products, appliedFilters),
     [appliedFilters, products],
+  );
+  const previewProductCount = useMemo(
+    () => filterCatalogProducts(products, draftFilters).length,
+    [draftFilters, products],
   );
 
   const hasAppliedFilters = Object.values(appliedFilters).some(Boolean);
+  const activeFilterCount = Object.values(appliedFilters).filter(Boolean).length;
+
+  const getFilterLabel = (key: CatalogFilterKey, value: string) => {
+    if (key === "manufacturer") {
+      return value;
+    }
+
+    if (key === "country") {
+      return countryLabels[value] ?? value;
+    }
+
+    const optionGroups = {
+      channel: meatFilterOptions.channels,
+      packaging: meatFilterOptions.packaging,
+      species: meatFilterOptions.species,
+    } as const;
+
+    return optionGroups[key].find((option) => option.value === value)?.label ?? value;
+  };
+
+  const activeFilters = (
+    Object.entries(appliedFilters) as [CatalogFilterKey, string | undefined][]
+  ).flatMap(([key, value]) =>
+    value ? [{ key, label: getFilterLabel(key, value) }] : [],
+  );
 
   const applyFilters = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const dedicatedSpecies =
-      draftFilters.species === "beef" || draftFilters.species === "lamb"
-        ? draftFilters.species
-        : undefined;
+    if (draftFilters.species === "poultry") {
+      router.push("/catalog/bird");
+      return;
+    }
+
+    const dedicatedSpecies = isDedicatedSpecies(draftFilters.species)
+      ? draftFilters.species
+      : undefined;
 
     if (dedicatedSpecies && dedicatedSpecies !== speciesPage) {
       router.push(
@@ -161,10 +261,35 @@ export function UnifiedMeatCatalog({
     }
 
     setAppliedFilters({ ...draftFilters });
+    if (isMobileViewport) {
+      setDisclosureOverride(false);
+    }
     router.replace(
       buildCatalogHref(
         speciesPage ? `/catalog/meat/${speciesPage}` : "/catalog/meat",
         draftFilters,
+        !speciesPage,
+      ),
+      { scroll: false },
+    );
+  };
+
+  const removeFilter = (key: CatalogFilterKey) => {
+    const nextFilters = { ...appliedFilters };
+    delete nextFilters[key];
+
+    setDraftFilters(nextFilters);
+    setAppliedFilters(nextFilters);
+
+    if (key === "species" && speciesPage) {
+      router.push(buildCatalogHref("/catalog/meat", nextFilters, true));
+      return;
+    }
+
+    router.replace(
+      buildCatalogHref(
+        speciesPage ? `/catalog/meat/${speciesPage}` : "/catalog/meat",
+        nextFilters,
         !speciesPage,
       ),
       { scroll: false },
@@ -202,8 +327,31 @@ export function UnifiedMeatCatalog({
             </p>
           </header>
 
-          <form className={styles.filterPanel} onSubmit={applyFilters}>
-            <div className={styles.filterFields}>
+          <details
+            className={styles.filterDisclosure}
+            onToggle={(event) => {
+              if (event.nativeEvent.isTrusted) {
+                setDisclosureOverride(event.currentTarget.open);
+              }
+            }}
+            open={filtersOpen}
+          >
+            <summary className={styles.filterSummary}>
+              <span>
+                <strong>Фильтры</strong>
+                <small>
+                  {activeFilterCount > 0
+                    ? `Выбрано: ${activeFilterCount}`
+                    : "Выбрать параметры"}
+                </small>
+              </span>
+              <svg aria-hidden="true" viewBox="0 0 16 16">
+                <path d="m3 6 5 5 5-5" />
+              </svg>
+            </summary>
+
+            <form className={styles.filterPanel} onSubmit={applyFilters}>
+              <div className={styles.filterFields}>
               <label className={styles.field} htmlFor={speciesId}>
                 <span>Вид мяса</span>
                 <select
@@ -219,7 +367,7 @@ export function UnifiedMeatCatalog({
                   }
                 >
                   <option value="">Все виды мяса</option>
-                  {meatFilterOptions.species.map((option) => (
+                  {speciesOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
@@ -288,7 +436,7 @@ export function UnifiedMeatCatalog({
                   }
                 >
                   <option value="">Любая упаковка</option>
-                  {meatFilterOptions.packaging.map((option) => (
+                  {packagingOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
@@ -311,24 +459,52 @@ export function UnifiedMeatCatalog({
                   }
                 >
                   <option value="">HoReCa и ритейл</option>
-                  {meatFilterOptions.channels.map((option) => (
+                  {channelOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
                   ))}
                 </select>
               </label>
-            </div>
+              </div>
 
-            <div className={styles.filterActions}>
-              <button className={styles.resetButton} type="button" onClick={resetFilters}>
-                Сбросить
-              </button>
-              <button className={styles.applyButton} type="submit">
-                Применить фильтры
-              </button>
-            </div>
-          </form>
+              {activeFilters.length > 0 ? (
+                <div className={styles.activeFilters} aria-label="Активные фильтры">
+                  <span className={styles.activeFiltersLabel}>Выбрано</span>
+                  <div className={styles.chips}>
+                    {activeFilters.map((filter) => (
+                      <button
+                        aria-label={`Удалить фильтр «${filter.label}»`}
+                        className={styles.chip}
+                        key={filter.key}
+                        onClick={() => removeFilter(filter.key)}
+                        type="button"
+                      >
+                        <span>{filter.label}</span>
+                        <svg aria-hidden="true" viewBox="0 0 12 12">
+                          <path d="m2.2 2.2 7.6 7.6m0-7.6-7.6 7.6" />
+                        </svg>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              <div className={styles.filterActions}>
+                <button className={styles.resetButton} type="button" onClick={resetFilters}>
+                  Сбросить
+                </button>
+                <button className={styles.applyButton} type="submit">
+                  <span>Применить фильтры</span>
+                  <small aria-live="polite">
+                    {draftFilters.species === "poultry"
+                      ? "Открыть раздел «Птица»"
+                      : `Показать ${formatProductCount(previewProductCount)}`}
+                  </small>
+                </button>
+              </div>
+            </form>
+          </details>
         </div>
       </section>
 

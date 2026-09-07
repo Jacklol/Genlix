@@ -1352,6 +1352,28 @@
   font-size: 23px;
 }
 
+.contactProduct {
+  display: grid;
+  gap: 4px;
+  margin: -12px 0 24px;
+  padding: 12px 14px;
+  border-left: 2px solid var(--red);
+  background: rgba(255,255,255,.07);
+}
+
+.contactProduct span {
+  color: rgba(255,255,255,.48);
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.contactProduct strong {
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .contactForm > label:not(.consent) {
   display: flex;
   flex-direction: column;
@@ -1362,6 +1384,12 @@
   font-weight: 600;
   letter-spacing: .06em;
   text-transform: uppercase;
+}
+
+.contactForm > label small {
+  font-size: inherit;
+  font-weight: 500;
+  text-transform: none;
 }
 
 .contactForm input:not([type="radio"]):not([type="checkbox"]) {
@@ -1418,6 +1446,52 @@
   cursor: pointer;
 }
 
+.contactForm > .primaryButton:disabled {
+  cursor: wait;
+  opacity: .65;
+}
+
+.contactFieldError {
+  color: #ffaaa6;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.35;
+  text-transform: none;
+}
+
+.contactForm fieldset > .contactFieldError {
+  width: 100%;
+}
+
+.contactHoneypot {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+}
+
+.contactFormMessage {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.contactFormSuccess {
+  border-color: rgba(128,224,169,.32);
+  color: #a8efc6;
+  background: rgba(54,145,93,.14);
+}
+
+.contactFormFailure {
+  border-color: rgba(255,151,145,.32);
+  color: #ffb7b2;
+  background: rgba(190,58,50,.14);
+}
+
 .consent {
   display: flex;
   gap: 9px;
@@ -1426,6 +1500,11 @@
   color: rgba(255,255,255,.38);
   font-size: 9px;
   line-height: 1.45;
+}
+
+.consent a {
+  color: inherit;
+  text-underline-offset: 2px;
 }
 
 @media (max-width: 1240px) {

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { CatalogCategoryNav } from "@/components/CatalogCategoryNav";
+import { CatalogEmptyState } from "@/components/CatalogEmptyState";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ProductCardsSection } from "@/components/ProductCardsSection";
@@ -31,6 +33,8 @@ export default async function BeerPage() {
         ]}
       />
 
+      <CatalogCategoryNav activeCategory="beer" />
+
       <section className={styles.hero} aria-labelledby="beer-title">
         <div className={styles.heroInner}>
           <p className={styles.brandBadge}>
@@ -44,7 +48,11 @@ export default async function BeerPage() {
         </div>
       </section>
 
-      <ProductCardsSection title="Пиво" products={products} />
+      {products.length > 0 ? (
+        <ProductCardsSection title="Пиво" products={products} />
+      ) : (
+        <CatalogEmptyState categoryName="Пиво" />
+      )}
 
       <SubscribeSection />
       <Footer />

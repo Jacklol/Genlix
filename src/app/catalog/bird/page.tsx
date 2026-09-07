@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { CatalogCategoryNav } from "@/components/CatalogCategoryNav";
+import { CatalogEmptyState } from "@/components/CatalogEmptyState";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import type { ProductCardData } from "@/components/ProductCard";
 import { ProductCardsSection } from "@/components/ProductCardsSection";
 import { SubscribeSection } from "@/components/SubscribeSection";
-import { getPublishedCategoryProducts } from "@/lib/cms/repository";
+import {
+  getPublishedCategoryProducts,
+  getPublishedMeatItems,
+} from "@/lib/cms/repository";
 import homeStyles from "@/app/home.module.css";
 import styles from "./bird.module.css";
 
@@ -16,8 +22,29 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+function mergeUniqueProducts(...groups: ProductCardData[][]) {
+  const productsBySlug = new Map<string, ProductCardData>();
+
+  for (const product of groups.flat()) {
+    const key = product.slug ?? `${product.title}:${product.image}`;
+
+    if (!productsBySlug.has(key)) {
+      productsBySlug.set(key, product);
+    }
+  }
+
+  return Array.from(productsBySlug.values());
+}
+
 export default async function BirdPage() {
-  const products = await getPublishedCategoryProducts("bird");
+  const [birdProducts, meatProducts] = await Promise.all([
+    getPublishedCategoryProducts("bird"),
+    getPublishedMeatItems(),
+  ]);
+  const products = mergeUniqueProducts(
+    birdProducts,
+    meatProducts.filter((product) => product.meat.species === "poultry"),
+  );
 
   return (
     <main className={homeStyles.page}>
@@ -30,6 +57,8 @@ export default async function BirdPage() {
           { label: "Птица" },
         ]}
       />
+
+      <CatalogCategoryNav activeCategory="bird" />
 
       <section className={styles.hero} aria-labelledby="bird-title">
         <div className={styles.heroInner}>
@@ -47,7 +76,11 @@ export default async function BirdPage() {
         </div>
       </section>
 
-      <ProductCardsSection title="Птица" products={products} />
+      {products.length > 0 ? (
+        <ProductCardsSection title="Птица" products={products} />
+      ) : (
+        <CatalogEmptyState categoryName="Птица" />
+      )}
 
       <SubscribeSection />
       <Footer />

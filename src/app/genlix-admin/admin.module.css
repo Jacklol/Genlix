@@ -401,6 +401,65 @@
   text-decoration: none;
 }
 
+.requestDate {
+  min-width: 150px;
+  color: #69768a;
+  white-space: nowrap;
+}
+
+.requestContact,
+.requestProduct {
+  min-width: 210px;
+  display: grid;
+  gap: 4px;
+}
+
+.requestContact span,
+.requestProduct span,
+.requestMuted {
+  color: #788599;
+  font-size: 12px;
+}
+
+.requestContact a {
+  color: #164f8c;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.statusSelectForm {
+  min-width: 150px;
+  display: grid;
+  gap: 7px;
+}
+
+.statusSelectForm select,
+.statusSelectForm button {
+  min-height: 36px;
+  border: 1px solid #ccd5e2;
+  border-radius: 8px;
+  color: #17375f;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+}
+
+.statusSelectForm select {
+  padding: 0 9px;
+}
+
+.statusSelectForm button {
+  padding: 0 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.emptyTableCell {
+  padding: 42px 20px !important;
+  color: #788599;
+  text-align: center !important;
+}
+
 .formGrid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;

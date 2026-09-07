@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 
+import { getSiteUrl } from "@/lib/seo";
+
 import "./globals.css";
+
+// The CMS database is in Supabase's Frankfurt region. Child routes inherit
+// this preference, keeping both public reads and admin writes close to it.
+export const preferredRegion = "fra1";
 
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
@@ -20,6 +26,7 @@ const bebasNeue = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: getSiteUrl(),
   title: "Genlix — премиальные поставки для HoReCa и Retail",
   description: "Импорт и комплексная дистрибуция мяса и премиальных напитков для ресторанов и ритейла.",
 };

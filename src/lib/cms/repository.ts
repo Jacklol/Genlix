@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import type { ProductCardData } from "@/components/ProductCard";
 import type { MeatCatalogItem, ProductDetailData } from "@/lib/catalog";
 import { similarProductsBySlug } from "@/lib/catalog/sections";
@@ -10,6 +12,13 @@ import type {
   CmsProductEntity,
   CmsProductPayload,
 } from "./types";
+
+// Public pages often ask for the same snapshot from generateMetadata and the
+// page render (or from several repository helpers). React clears this cache for
+// every server request, so it deduplicates Supabase reads without serving stale
+// CMS content to later requests. Admin mutations continue to call the store
+// directly and are deliberately outside this cache.
+const loadPublishedCmsSnapshot = cache(loadCmsSnapshot);
 
 function isPublicEntity<
   TEntity extends { published?: unknown; status: string },
@@ -75,7 +84,7 @@ function newsArticleFromEntity(entity: CmsNewsEntity): NewsArticle {
 }
 
 async function getPublishedProductEntities() {
-  const { snapshot } = await loadCmsSnapshot();
+  const { snapshot } = await loadPublishedCmsSnapshot();
 
   return snapshot.content.products
     .filter(isPublicEntity)
@@ -83,7 +92,7 @@ async function getPublishedProductEntities() {
 }
 
 export async function getPublishedNewsArticles() {
-  const { snapshot } = await loadCmsSnapshot();
+  const { snapshot } = await loadPublishedCmsSnapshot();
 
   return snapshot.content.news
     .filter(isPublicEntity)
@@ -96,7 +105,7 @@ export async function getPublishedNewsArticles() {
 }
 
 export async function getPublishedNewsArticleBySlug(slug: string) {
-  const { snapshot } = await loadCmsSnapshot();
+  const { snapshot } = await loadPublishedCmsSnapshot();
   const entity = snapshot.content.news.find(
     (item) => item.slug === slug && isPublicEntity(item),
   );
@@ -150,25 +159,87 @@ export async function getPublishedProductSlugs() {
   return (await getPublishedProductEntities()).map((entity) => entity.slug);
 }
 
+/** A single snapshot read for metadata routes, which run outside RSC rendering. */
+export async function getPublishedSitemapEntries() {
+  const { snapshot } = await loadPublishedCmsSnapshot();
+
+  return {
+    news: snapshot.content.news
+      .filter(isPublicEntity)
+      .map((entity) => ({
+        lastModified: (entity.published as CmsNewsPayload).publishedAt,
+        slug: entity.slug,
+      })),
+    productSlugs: snapshot.content.products
+      .filter(isPublicEntity)
+      .map((entity) => entity.slug),
+  };
+}
+
 export async function getPublishedSimilarProducts(slug: string) {
   const entities = await getPublishedProductEntities();
   const entityBySlug = new Map(entities.map((entity) => [entity.slug, entity]));
+  const sourceEntity = entityBySlug.get(slug);
 
-  return (similarProductsBySlug[slug] ?? []).flatMap((placement) => {
+  if (!sourceEntity) {
+    return [];
+  }
+
+  const explicitProducts = (similarProductsBySlug[slug] ?? []).flatMap((placement) => {
     const entity = entityBySlug.get(placement.slug);
 
     if (!entity) {
       return [];
     }
 
+    const card = productCardFromEntity(entity);
+
     return [
       {
-        ...productCardFromEntity(entity),
-        badge: placement.badge ?? productCardFromEntity(entity).badge,
-        brand: placement.brand ?? productCardFromEntity(entity).brand,
-        buttonLabel: placement.buttonLabel ?? productCardFromEntity(entity).buttonLabel,
-        image: placement.image ?? productCardFromEntity(entity).image,
+        ...card,
+        badge: placement.badge ?? card.badge,
+        brand: placement.brand ?? card.brand,
+        buttonLabel: placement.buttonLabel ?? card.buttonLabel,
+        image: placement.image ?? card.image,
       },
     ];
   });
+
+  const selectedSlugs = new Set([
+    slug,
+    ...explicitProducts.flatMap((product) => (product.slug ? [product.slug] : [])),
+  ]);
+  const sourcePayload = sourceEntity.published as CmsProductPayload;
+  const fallbackProducts = entities
+    .filter((entity) => !selectedSlugs.has(entity.slug))
+    .map((entity) => {
+      const payload = entity.published as CmsProductPayload;
+      let score = payload.category === sourcePayload.category ? 4 : 0;
+
+      if (payload.catalog.brand === sourcePayload.catalog.brand) {
+        score += 2;
+      }
+      if (
+        payload.catalog.meat?.species &&
+        payload.catalog.meat.species === sourcePayload.catalog.meat?.species
+      ) {
+        score += 4;
+      }
+      if (
+        payload.catalog.meat?.channel &&
+        payload.catalog.meat.channel === sourcePayload.catalog.meat?.channel
+      ) {
+        score += 1;
+      }
+
+      return { entity, score };
+    })
+    .filter(({ score }) => score > 0)
+    .sort(
+      (left, right) =>
+        right.score - left.score || left.entity.sortOrder - right.entity.sortOrder,
+    )
+    .map(({ entity }) => productCardFromEntity(entity));
+
+  return [...explicitProducts, ...fallbackProducts].slice(0, 3);
 }

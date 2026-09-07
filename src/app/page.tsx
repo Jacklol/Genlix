@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AdvantagesSlider } from "@/components/AdvantagesSlider";
@@ -12,10 +13,20 @@ import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
 import { ContactHoursIcon } from "@/components/icons/ContactHoursIcon";
 import { ContactLocationIcon } from "@/components/icons/ContactLocationIcon";
 import { ContactPhoneIcon } from "@/components/icons/ContactPhoneIcon";
+import { ContactRequestForm } from "@/components/ContactRequestForm";
+import { getContactProductContext } from "@/lib/contact-requests/context";
 import { getPublishedNewsArticles } from "@/lib/cms/repository";
 import styles from "./home.module.css";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
+type HomeProps = {
+  searchParams: Promise<{
+    demo?: string | string[];
+    product?: string | string[];
+  }>;
+};
 
 const categories = [
   { name: "Мясо", image: "/assets/home/category1.jpg", href: "/catalog/meat" },
@@ -51,12 +62,21 @@ function Heading({
   );
 }
 
-export default async function Home() {
-  const homeNews = (await getPublishedNewsArticles()).slice(0, 4);
+export default async function Home({ searchParams }: HomeProps) {
+  const { demo, product } = await searchParams;
+  const productSlug = Array.isArray(product) ? product[0] : product;
+  const showVersionSwitch =
+    process.env.NODE_ENV !== "production" ||
+    (Array.isArray(demo) ? demo[0] : demo) === "1";
+  const [newsArticles, contactProduct] = await Promise.all([
+    getPublishedNewsArticles(),
+    getContactProductContext(productSlug),
+  ]);
+  const homeNews = newsArticles.slice(0, 4);
 
   return (
     <main className={styles.page} id="top">
-      <HomeExperience />
+      <HomeExperience showVersionSwitch={showVersionSwitch} />
 
       <section className={styles.catalogSection} id="catalog" aria-labelledby="catalog-title">
         <div className={styles.shell}>
@@ -206,21 +226,7 @@ export default async function Home() {
             </div>
           </Reveal>
           <Reveal delay={140} variant="fade-right">
-            <form className={styles.contactForm}>
-            <h3>Заявка на партнёрство</h3>
-            <label>Название компании<input name="company" placeholder="ООО Гастрономия Плюс" /></label>
-            <label>Ваше имя<input name="name" placeholder="Владислав Козлов" /></label>
-            <label>Контактный телефон<input name="phone" placeholder="+7 (999) 123-45-67" inputMode="tel" /></label>
-            <label>Электронная почта<input name="email" placeholder="name@company.ru" type="email" /></label>
-            <fieldset>
-              <legend>Тип бизнеса</legend>
-              <label><input defaultChecked name="business" type="radio" /> HoReCa</label>
-              <label><input name="business" type="radio" /> Ритейл</label>
-              <label><input name="business" type="radio" /> Дистрибьютор</label>
-            </fieldset>
-            <button className={styles.primaryButton} type="submit">Отправить заявку</button>
-            <label className={styles.consent}><input defaultChecked type="checkbox" /> Нажимая кнопку, вы соглашаетесь с условиями обработки персональных данных.</label>
-            </form>
+            <ContactRequestForm product={contactProduct} />
           </Reveal>
         </div>
       </section>

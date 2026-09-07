@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -55,6 +56,31 @@ type ProductDetailGalleryProps = {
 };
 
 export function ProductDetailGallery({ images, title }: ProductDetailGalleryProps) {
+  if (images.length <= 1) {
+    return (
+      <div className={`${styles.gallery} ${styles.singleGallery}`}>
+        <div className={`${styles.mainSlide} ${styles.singleSlide}`}>
+          {images[0] ? (
+            <Image
+              alt={title}
+              className={styles.mainImage}
+              fill
+              priority
+              sizes="(max-width: 1100px) calc(100vw - 32px), 55vw"
+              src={images[0]}
+            />
+          ) : (
+            <span className={styles.emptyMessage}>Изображение готовится</span>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return <ProductDetailGallerySlider images={images} title={title} />;
+}
+
+function ProductDetailGallerySlider({ images, title }: ProductDetailGalleryProps) {
   const [mainSwiper, setMainSwiper] = useState<SwiperType | null>(null);
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -78,12 +104,19 @@ export function ProductDetailGallery({ images, title }: ProductDetailGalleryProp
         </button>
 
         <Swiper
+          breakpoints={{
+            921: {
+              direction: "vertical",
+              slidesPerView: 4,
+              spaceBetween: 12,
+            },
+          }}
           className={styles.thumbsSwiper}
-          direction="vertical"
+          direction="horizontal"
           modules={[Thumbs]}
           onSwiper={setThumbsSwiper}
-          slidesPerView={4}
-          spaceBetween={12}
+          slidesPerView="auto"
+          spaceBetween={8}
           watchSlidesProgress
         >
           {images.map((image, index) => (
@@ -91,11 +124,19 @@ export function ProductDetailGallery({ images, title }: ProductDetailGalleryProp
               <button
                 type="button"
                 className={`${styles.thumbButton} ${activeIndex === index ? styles.thumbButtonActive : ""}`}
-                style={{ backgroundImage: `url("${image}")` }}
                 aria-label={`Показать фото ${index + 1}`}
-                aria-current={activeIndex === index}
+                aria-pressed={activeIndex === index}
                 onClick={() => mainSwiper?.slideTo(index)}
-              />
+              >
+                <Image
+                  alt=""
+                  className={styles.thumbImage}
+                  fill
+                  loading="lazy"
+                  sizes="(max-width: 920px) 72px, 100px"
+                  src={image}
+                />
+              </button>
             </SwiperSlide>
           ))}
         </Swiper>
@@ -124,7 +165,14 @@ export function ProductDetailGallery({ images, title }: ProductDetailGalleryProp
       >
         {images.map((image, index) => (
           <SwiperSlide className={styles.mainSlide} key={`${image}-main-${index}`}>
-            <img alt={`${title} — фото ${index + 1}`} className={styles.mainImage} src={image} />
+            <Image
+              alt={`${title} — фото ${index + 1}`}
+              className={styles.mainImage}
+              fill
+              priority={index === 0}
+              sizes="(max-width: 1100px) calc(100vw - 32px), 55vw"
+              src={image}
+            />
           </SwiperSlide>
         ))}
       </Swiper>

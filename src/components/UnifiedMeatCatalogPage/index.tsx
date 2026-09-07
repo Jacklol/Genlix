@@ -1,4 +1,7 @@
+import { notFound } from "next/navigation";
+
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { CatalogCategoryNav } from "@/components/CatalogCategoryNav";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { SubscribeSection } from "@/components/SubscribeSection";
@@ -18,6 +21,56 @@ type UnifiedMeatCatalogPageProps = {
   initialFilters?: MeatCatalogFilters;
   speciesPage?: DedicatedSpecies;
 };
+
+function normalizeInitialFilters(
+  filters: MeatCatalogFilters,
+  products: Awaited<ReturnType<typeof getPublishedMeatItems>>,
+  speciesPage?: DedicatedSpecies,
+): MeatCatalogFilters {
+  const availableSpecies = new Set(products.map((product) => product.meat.species));
+  const species =
+    speciesPage ??
+    (filters.species && availableSpecies.has(filters.species)
+      ? filters.species
+      : undefined);
+  let candidates = species
+    ? products.filter((product) => product.meat.species === species)
+    : products;
+  const normalized: MeatCatalogFilters = species ? { species } : {};
+
+  if (
+    filters.manufacturer &&
+    candidates.some((product) => product.brand === filters.manufacturer)
+  ) {
+    normalized.manufacturer = filters.manufacturer;
+    candidates = candidates.filter((product) => product.brand === filters.manufacturer);
+  }
+
+  if (
+    filters.country &&
+    candidates.some((product) => product.meat.country === filters.country)
+  ) {
+    normalized.country = filters.country;
+    candidates = candidates.filter((product) => product.meat.country === filters.country);
+  }
+
+  if (
+    filters.packaging &&
+    candidates.some((product) => product.meat.packaging === filters.packaging)
+  ) {
+    normalized.packaging = filters.packaging;
+    candidates = candidates.filter((product) => product.meat.packaging === filters.packaging);
+  }
+
+  if (
+    filters.channel &&
+    candidates.some((product) => product.meat.channel === filters.channel)
+  ) {
+    normalized.channel = filters.channel;
+  }
+
+  return normalized;
+}
 
 const pageContent = {
   all: {
@@ -50,10 +103,16 @@ export async function UnifiedMeatCatalogPage({
   speciesPage,
 }: UnifiedMeatCatalogPageProps) {
   const products = await getPublishedMeatItems();
+
+  if (
+    speciesPage &&
+    !products.some((product) => product.meat.species === speciesPage)
+  ) {
+    notFound();
+  }
+
   const content = speciesPage ? pageContent[speciesPage] : pageContent.all;
-  const filters = speciesPage
-    ? { ...initialFilters, species: speciesPage }
-    : initialFilters;
+  const filters = normalizeInitialFilters(initialFilters, products, speciesPage);
   const filterStateKey = [
     filters.species,
     filters.manufacturer,
@@ -78,6 +137,8 @@ export async function UnifiedMeatCatalogPage({
             : [{ label: "Мясо" }]),
         ]}
       />
+
+      <CatalogCategoryNav activeCategory="meat" />
 
       <section className={styles.hero} aria-labelledby="meat-page-title">
         <div className={homeStyles.shell}>

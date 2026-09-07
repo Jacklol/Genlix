@@ -1,4 +1,6 @@
-import type { CSSProperties } from "react";
+import Image from "next/image";
+
+import { getContactRequestHref } from "@/lib/contact-requests/link";
 
 import styles from "./ProductCard.module.css";
 
@@ -82,16 +84,21 @@ export function ProductCard({
   tags = [],
   recommendation,
   buttonLabel = "Запросить розничную поставку",
-  buttonHref = "/#contacts",
+  buttonHref,
 }: ProductCardData) {
   const badgeData = badge ? badgeStyles[badge] : null;
   const productHref = href ?? (slug ? `/catalog/product/${slug}` : undefined);
+  const requestHref = getContactRequestHref(slug, buttonHref);
 
   const mediaContent = (
     <>
-      <div
+      <Image
+        alt={brand ? `${title} — ${brand}` : title}
         className={styles.mediaImage}
-        style={{ "--product-image": `url("${image}")` } as CSSProperties}
+        fill
+        loading="lazy"
+        sizes="(max-width: 600px) calc(100vw - 32px), (max-width: 920px) calc(50vw - 36px), (max-width: 1280px) 33vw, 25vw"
+        src={image}
       />
       {badgeData ? (
         <span className={styles.badge} style={{ backgroundColor: badgeData.color }}>
@@ -150,7 +157,7 @@ export function ProductCard({
           </div>
         ) : null}
 
-        <a className={styles.button} href={buttonHref}>
+        <a className={styles.button} href={requestHref}>
           {buttonLabel}
         </a>
       </div>
