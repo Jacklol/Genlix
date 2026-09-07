@@ -3,31 +3,35 @@
 import { useId, useState, type CSSProperties } from "react";
 
 import {
-  featuredNewsArticle,
-  getNewsArticlesByFilter,
+  featuredNewsArticle as defaultFeaturedArticle,
   NEWS_PAGE_SIZE,
+  newsArticles as defaultArticles,
   newsFilters,
+  type NewsArticle,
   type NewsFilterId,
 } from "@/lib/news";
 
 import styles from "@/app/news/news.module.css";
 
-const featuredArticle = {
-  label: featuredNewsArticle.tag,
-  title: featuredNewsArticle.title,
-  description: featuredNewsArticle.description,
-  image: featuredNewsArticle.image,
-  href: featuredNewsArticle.href,
-} as const;
+type NewsPageContentProps = {
+  articles?: NewsArticle[];
+  featuredArticle?: NewsArticle;
+};
 
-export function NewsPageContent() {
+export function NewsPageContent({
+  articles = defaultArticles,
+  featuredArticle = defaultFeaturedArticle,
+}: NewsPageContentProps = {}) {
   const panelId = useId();
   const [activeFilter, setActiveFilter] = useState<NewsFilterId>("all");
   const [visibleCount, setVisibleCount] = useState(NEWS_PAGE_SIZE);
-  const filteredArticles = getNewsArticlesByFilter(activeFilter);
+  const filteredArticles =
+    activeFilter === "all"
+      ? articles.filter((article) => article.slug !== featuredArticle?.slug)
+      : articles.filter((article) => article.category === activeFilter);
   const visibleArticles = filteredArticles.slice(0, visibleCount);
   const hasMore = visibleCount < filteredArticles.length;
-  const showFeatured = activeFilter === "all";
+  const showFeatured = activeFilter === "all" && featuredArticle !== undefined;
 
   const handleFilterChange = (filterId: NewsFilterId) => {
     setActiveFilter(filterId);
@@ -66,7 +70,7 @@ export function NewsPageContent() {
           />
 
           <div className={styles.featuredPanel}>
-            <p className={styles.featuredLabel}>{featuredArticle.label}</p>
+            <p className={styles.featuredLabel}>{featuredArticle.tag}</p>
             <h2 className={styles.featuredTitle}>{featuredArticle.title}</h2>
             <p className={styles.featuredDescription}>{featuredArticle.description}</p>
             <a className={styles.featuredButton} href={featuredArticle.href}>

@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import Link from "next/link";
 
 import { AdvantagesSlider } from "@/components/AdvantagesSlider";
 import { Footer } from "@/components/Footer";
@@ -11,8 +12,10 @@ import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
 import { ContactHoursIcon } from "@/components/icons/ContactHoursIcon";
 import { ContactLocationIcon } from "@/components/icons/ContactLocationIcon";
 import { ContactPhoneIcon } from "@/components/icons/ContactPhoneIcon";
-import { newsArticles } from "@/lib/news";
+import { getPublishedNewsArticles } from "@/lib/cms/repository";
 import styles from "./home.module.css";
+
+export const dynamic = "force-dynamic";
 
 const categories = [
   { name: "Мясо", image: "/assets/home/category1.jpg", href: "/catalog/meat" },
@@ -21,8 +24,6 @@ const categories = [
   { name: "Вода", image: "/assets/home/category4.jpg", href: "#contacts" },
   { name: "Снеки", image: "/assets/home/category5.jpg", href: "#contacts" },
 ] as const;
-
-const homeNews = newsArticles.slice(0, 4);
 
 function getNewsGridClass(index: number) {
   const pattern = index % 4;
@@ -50,7 +51,9 @@ function Heading({
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const homeNews = (await getPublishedNewsArticles()).slice(0, 4);
+
   return (
     <main className={styles.page} id="top">
       <HomeExperience />
@@ -92,7 +95,7 @@ export default function Home() {
                 безупречного качества. Благодаря прямому импорту мы гарантируем гибкую ценовую
                 политику и непрерывность поставок.
               </p>
-              <a className={styles.primaryButton} href="/news">Все новости</a>
+              <Link className={styles.primaryButton} href="/news">Все новости</Link>
             </div>
           </Reveal>
           <PhilosophyStat />
@@ -128,7 +131,7 @@ export default function Home() {
             <Reveal variant="fade-up">
               <Heading eyebrow="Новости & статьи" first="События индустрии" accent="и новости компании" id="news-title" />
             </Reveal>
-            <a className={styles.outlineButton} href="/news">Все новости</a>
+            <Link className={styles.outlineButton} href="/news">Все новости</Link>
           </div>
           <div className={styles.newsGrid} id="news-grid">
             {homeNews.map((item, index) => (

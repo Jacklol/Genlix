@@ -20,7 +20,10 @@
 *.tsbuildinfo
 next-env.d.ts
 .env*
+!.env.example
 .vercel
+/.data/
+/public/uploads/
 
 # logs
 npm-debug.log*

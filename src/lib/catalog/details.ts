@@ -12,7 +12,10 @@ const groupConfig: Record<ProductGroup, { breadcrumbs: BreadcrumbItem[]; categor
       { label: "Главная", href: "/" },
       { label: "Каталог", href: "/#catalog" },
       { label: "Мясо", href: "/catalog/meat" },
-      { label: "Мираторг", href: "/catalog/meat/miratorg" },
+      {
+        label: "Мираторг",
+        href: "/catalog/meat?manufacturer=%D0%9C%D0%B8%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%B3",
+      },
     ],
   },
   primebeef: {
@@ -21,7 +24,7 @@ const groupConfig: Record<ProductGroup, { breadcrumbs: BreadcrumbItem[]; categor
       { label: "Главная", href: "/" },
       { label: "Каталог", href: "/#catalog" },
       { label: "Мясо", href: "/catalog/meat" },
-      { label: "Primebeef", href: "/catalog/meat/primebeef" },
+      { label: "Primebeef", href: "/catalog/meat/beef?manufacturer=Primebeef" },
     ],
   },
   beer: {

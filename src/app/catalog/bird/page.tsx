@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ProductCardsSection } from "@/components/ProductCardsSection";
 import { SubscribeSection } from "@/components/SubscribeSection";
-import { getBirdProducts } from "@/lib/catalog";
+import { getPublishedCategoryProducts } from "@/lib/cms/repository";
 import homeStyles from "@/app/home.module.css";
 import styles from "./bird.module.css";
 
@@ -14,7 +14,11 @@ export const metadata: Metadata = {
   description: "Фермерская птица — стабильные B2B поставки для ресторанов и ритейла.",
 };
 
-export default function BirdPage() {
+export const dynamic = "force-dynamic";
+
+export default async function BirdPage() {
+  const products = await getPublishedCategoryProducts("bird");
+
   return (
     <main className={homeStyles.page}>
       <Header activeLink="Каталог" static />
@@ -43,7 +47,7 @@ export default function BirdPage() {
         </div>
       </section>
 
-      <ProductCardsSection title="Птица" products={getBirdProducts()} />
+      <ProductCardsSection title="Птица" products={products} />
 
       <SubscribeSection />
       <Footer />

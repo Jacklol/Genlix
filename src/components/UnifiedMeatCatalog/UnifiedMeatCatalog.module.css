@@ -1,0 +1,304 @@
+.filtersSection {
+  padding: 56px 0 48px;
+  background: var(--section-muted-bg);
+  color: var(--ink-deep);
+}
+
+.filterHeader {
+  max-width: 820px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.filterHeader h2,
+.catalogHeader h2 {
+  margin: 0;
+  color: var(--navy);
+  font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(40px, 3.5vw, 60px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+.filterHeader > p:last-child {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.filterPanel {
+  position: relative;
+  padding: 28px;
+  border: 1px solid rgba(5, 32, 76, 0.14);
+  background: var(--paper);
+  box-shadow: 0 18px 44px rgba(5, 32, 76, 0.07);
+}
+
+.filterPanel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--navy);
+}
+
+.filterFields {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.field {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.field > span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.field select {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid rgba(5, 32, 76, 0.2);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--input-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.field select:hover {
+  border-color: rgba(5, 32, 76, 0.5);
+}
+
+.field select:focus-visible {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(7, 30, 77, 0.14);
+}
+
+.filterActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(5, 32, 76, 0.1);
+}
+
+.applyButton {
+  min-width: 290px;
+  min-height: 54px;
+  padding: 15px 28px 13px;
+  border: 1px solid var(--red);
+  background: var(--red);
+  color: var(--paper);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  line-height: 1;
+  text-transform: uppercase;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.applyButton:hover {
+  border-color: var(--red-bright);
+  background: var(--red-bright);
+  transform: translateY(-1px);
+}
+
+.applyButton:focus-visible,
+.resetButton:focus-visible,
+.emptyState button:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 3px;
+}
+
+.resetButton {
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-decoration: underline;
+  text-transform: uppercase;
+  text-underline-offset: 4px;
+}
+
+.catalogSection {
+  padding: 68px 0 92px;
+  background: var(--paper);
+  color: var(--ink-deep);
+}
+
+.catalogHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.resultCount {
+  flex: 0 0 auto;
+  margin: 0 0 3px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.resultCount strong {
+  color: var(--navy);
+  font-weight: 750;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.emptyState {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 52px 24px;
+  border: 1px solid rgba(5, 32, 76, 0.12);
+  background: var(--section-muted-bg);
+  text-align: center;
+}
+
+.emptyState h3 {
+  margin: 0;
+  color: var(--navy);
+  font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 38px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.emptyState p {
+  max-width: 600px;
+  margin: 12px 0 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.emptyState button {
+  min-height: 46px;
+  padding: 13px 22px 11px;
+  border: 1px solid var(--navy);
+  background: transparent;
+  color: var(--navy);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1200px) {
+  .filterFields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .filterFields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .catalogHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .filtersSection {
+    padding: 44px 0 40px;
+  }
+
+  .filterHeader h2,
+  .catalogHeader h2 {
+    font-size: 36px;
+  }
+
+  .filterPanel {
+    margin-inline: -8px;
+    padding: 24px 16px 18px;
+  }
+
+  .filterFields {
+    grid-template-columns: 1fr;
+  }
+
+  .field select {
+    font-size: 16px;
+  }
+
+  .filterActions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .applyButton {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .catalogSection {
+    padding: 54px 0 72px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .emptyState {
+    min-height: 260px;
+  }
+}

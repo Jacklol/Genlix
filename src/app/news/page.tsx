@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { NewsPageContent } from "@/components/NewsPageContent";
 import { SubscribeSection } from "@/components/SubscribeSection";
+import { getPublishedNewsArticles } from "@/lib/cms/repository";
 import homeStyles from "@/app/home.module.css";
 
 import styles from "./news.module.css";
@@ -14,7 +15,11 @@ export const metadata: Metadata = {
   description: "Полезные материалы для профессионалов: кейсы, поставки, выбор и приготовление мяса.",
 };
 
-export default function NewsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function NewsPage() {
+  const articles = await getPublishedNewsArticles();
+
   return (
     <main className={homeStyles.page}>
       <Header activeLink="Новости" static />
@@ -32,7 +37,7 @@ export default function NewsPage() {
             Полезно <span>для профессионалов</span>
           </h1>
 
-          <NewsPageContent />
+          <NewsPageContent articles={articles} featuredArticle={articles[0]} />
         </div>
       </section>
 

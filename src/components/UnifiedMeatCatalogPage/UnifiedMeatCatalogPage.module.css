@@ -1,0 +1,69 @@
+.hero {
+  position: relative;
+  min-height: clamp(260px, 25vw, 360px);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(2, 17, 43, 0.94) 0%, rgba(2, 17, 43, 0.78) 42%, rgba(2, 17, 43, 0.24) 76%),
+    linear-gradient(180deg, rgba(2, 17, 43, 0.06), rgba(2, 17, 43, 0.42)),
+    url("/assets/catalog/meat/primebeef/hero.png") center 52% / cover no-repeat;
+  color: var(--paper);
+}
+
+.heroCopy {
+  max-width: 900px;
+  padding: 50px 0 48px;
+}
+
+.heroCopy p {
+  margin: 0 0 12px;
+  color: var(--paper);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.heroCopy h1 {
+  max-width: 880px;
+  margin: 0;
+  color: var(--paper);
+  font-family: var(--font-bebas-neue), "Bebas Neue", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(50px, 5vw, 78px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.heroCopy span {
+  max-width: 720px;
+  display: block;
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+@media (max-width: 600px) {
+  .hero {
+    min-height: 240px;
+    background-position: 58% center;
+  }
+
+  .heroCopy {
+    padding: 38px 0 34px;
+  }
+
+  .heroCopy h1 {
+    font-size: 44px;
+    line-height: 0.98;
+  }
+
+  .heroCopy span {
+    max-width: 92%;
+    font-size: 14px;
+  }
+}

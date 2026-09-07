@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { TextArticleLayout } from "@/components/TextArticleLayout";
 import {
-  getAllNewsSlugs,
-  getNewsArticleBySlug,
-  getRelatedNewsArticles,
-} from "@/lib/news";
+  getPublishedNewsArticleBySlug,
+  getPublishedNewsArticles,
+  getPublishedRelatedNewsArticles,
+} from "@/lib/cms/repository";
 
 import styles from "@/components/TextArticleLayout/TextArticleLayout.module.css";
 
@@ -14,13 +15,15 @@ type NewsArticlePageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
-  return getAllNewsSlugs().map((slug) => ({ slug }));
+  return (await getPublishedNewsArticles()).map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: NewsArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = getNewsArticleBySlug(slug);
+  const article = await getPublishedNewsArticleBySlug(slug);
 
   if (!article) {
     return { title: "Материал не найден — Genlix" };
@@ -34,13 +37,13 @@ export async function generateMetadata({ params }: NewsArticlePageProps): Promis
 
 export default async function NewsArticlePage({ params }: NewsArticlePageProps) {
   const { slug } = await params;
-  const article = getNewsArticleBySlug(slug);
+  const article = await getPublishedNewsArticleBySlug(slug);
 
   if (!article) {
     notFound();
   }
 
-  const relatedArticles = getRelatedNewsArticles(slug);
+  const relatedArticles = await getPublishedRelatedNewsArticles(slug);
 
   const sidebar = (
     <>
@@ -62,9 +65,9 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
       <div className={styles.ctaCard}>
         <h2 className={styles.sidebarTitle}>Нужно коммерческое предложение?</h2>
         <p>Оставьте заявку — подготовим условия поставок под ваш формат бизнеса.</p>
-        <a className={styles.ctaButton} href="/#contacts">
+        <Link className={styles.ctaButton} href="/#contacts">
           Оставить заявку
-        </a>
+        </Link>
       </div>
     </>
   );

@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ProductCardsSection } from "@/components/ProductCardsSection";
 import { SubscribeSection } from "@/components/SubscribeSection";
-import { getBeerProducts } from "@/lib/catalog";
+import { getPublishedCategoryProducts } from "@/lib/cms/repository";
 import homeStyles from "@/app/home.module.css";
 import styles from "./beer.module.css";
 
@@ -14,7 +14,11 @@ export const metadata: Metadata = {
   description: "Премиальное пиво — эксклюзивный ассортимент для ресторанов, баров и розничных сетей.",
 };
 
-export default function BeerPage() {
+export const dynamic = "force-dynamic";
+
+export default async function BeerPage() {
+  const products = await getPublishedCategoryProducts("beer");
+
   return (
     <main className={homeStyles.page}>
       <Header activeLink="Каталог" static />
@@ -40,7 +44,7 @@ export default function BeerPage() {
         </div>
       </section>
 
-      <ProductCardsSection title="Пиво" products={getBeerProducts()} />
+      <ProductCardsSection title="Пиво" products={products} />
 
       <SubscribeSection />
       <Footer />

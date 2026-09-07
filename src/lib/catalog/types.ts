@@ -8,7 +8,11 @@ export type ProductSpec = {
 
 export type MeatSalesChannel = "horeca" | "retail";
 
-export type MeatSpecies = "beef" | "pork" | "poultry";
+export type MeatSpecies = "beef" | "lamb" | "pork" | "poultry";
+
+export type MeatManufacturer = string;
+
+export type MeatCountry = string;
 
 export type MeatProductType =
   | "steak"
@@ -25,6 +29,7 @@ export type MeatCookingMethod = "grill" | "fry" | "braise" | "bake" | "boil";
 export type MeatProductMetadata = {
   channel: MeatSalesChannel;
   species: MeatSpecies;
+  country: MeatCountry;
   productType: MeatProductType;
   packaging: MeatPackaging;
   cutIds: string[];

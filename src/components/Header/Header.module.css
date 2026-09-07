@@ -254,7 +254,7 @@
 
 @media (max-width: 1240px) {
   .inner {
-    width: min(100% - 56px, 1120px);
+    width: min(1120px, calc(100% - 56px));
   }
 
   .desktopNav {
@@ -282,10 +282,14 @@
   .header {
     height: 74px;
     margin-bottom: -74px;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   .header.overlay.scrolled {
     height: 64px;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   .header.static {

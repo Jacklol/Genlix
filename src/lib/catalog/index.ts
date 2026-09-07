@@ -15,6 +15,8 @@ import type {
   CatalogProduct as CatalogProductRecord,
   CompactCatalogProduct,
   MeatCookingMethod,
+  MeatCountry,
+  MeatManufacturer,
   MeatPackaging,
   MeatProductMetadata,
   MeatProductType,
@@ -30,6 +32,8 @@ export type {
   ProductCardData,
   CompactCatalogProduct,
   MeatCookingMethod,
+  MeatCountry,
+  MeatManufacturer,
   MeatPackaging,
   MeatProductMetadata,
   MeatProductType,
@@ -48,6 +52,8 @@ export type MeatFilterOption<TValue extends string> = {
 export type MeatCatalogFilters = {
   channel?: MeatSalesChannel;
   species?: MeatSpecies;
+  manufacturer?: MeatManufacturer;
+  country?: MeatCountry;
   productType?: MeatProductType;
   packaging?: MeatPackaging;
   cutId?: string;
@@ -66,9 +72,17 @@ export const meatFilterOptions = {
   ] satisfies MeatFilterOption<MeatSalesChannel>[],
   species: [
     { value: "beef", label: "Говядина" },
+    { value: "lamb", label: "Баранина" },
     { value: "pork", label: "Свинина" },
     { value: "poultry", label: "Птица" },
   ] satisfies MeatFilterOption<MeatSpecies>[],
+  manufacturers: [
+    { value: "Primebeef", label: "Primebeef" },
+    { value: "Мираторг", label: "Мираторг" },
+  ] satisfies MeatFilterOption<MeatManufacturer>[],
+  countries: [
+    { value: "russia", label: "Россия" },
+  ] satisfies MeatFilterOption<MeatCountry>[],
   productTypes: [
     { value: "steak", label: "Стейки" },
     { value: "large-cut", label: "Крупные отрубы" },
@@ -91,6 +105,36 @@ export const meatFilterOptions = {
   ] satisfies MeatFilterOption<MeatCookingMethod>[],
 } as const;
 
+type MeatCatalogQuery = Record<string, string | string[] | undefined>;
+
+function getQueryValue(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function getFilterOptionValue<TValue extends string>(
+  value: string | undefined,
+  options: readonly MeatFilterOption<TValue>[],
+) {
+  return options.find((option) => option.value === value)?.value;
+}
+
+export function parseMeatCatalogFilters(query: MeatCatalogQuery): MeatCatalogFilters {
+  const manufacturer = getQueryValue(query.manufacturer)?.trim();
+  const country = getQueryValue(query.country)?.trim();
+
+  return {
+    species: getFilterOptionValue(getQueryValue(query.species), meatFilterOptions.species),
+    manufacturer:
+      manufacturer && manufacturer.length <= 100 ? manufacturer : undefined,
+    country: country && /^[a-z0-9-]{2,40}$/i.test(country) ? country : undefined,
+    packaging: getFilterOptionValue(
+      getQueryValue(query.packaging),
+      meatFilterOptions.packaging,
+    ),
+    channel: getFilterOptionValue(getQueryValue(query.channel), meatFilterOptions.channels),
+  };
+}
+
 function getProduct(slug: string): CatalogProductRecord {
   const product = catalogProducts[slug as keyof typeof catalogProducts];
 
@@ -107,10 +151,17 @@ function hasMeatMetadata(
   return product.meat !== undefined;
 }
 
-function matchesMeatFilters(meat: MeatProductMetadata, filters: MeatCatalogFilters) {
+function matchesMeatFilters(
+  product: CatalogProductRecord & { meat: MeatProductMetadata },
+  filters: MeatCatalogFilters,
+) {
+  const { meat } = product;
+
   return (
     (!filters.channel || meat.channel === filters.channel) &&
     (!filters.species || meat.species === filters.species) &&
+    (!filters.manufacturer || product.brand === filters.manufacturer) &&
+    (!filters.country || meat.country === filters.country) &&
     (!filters.productType || meat.productType === filters.productType) &&
     (!filters.packaging || meat.packaging === filters.packaging) &&
     (!filters.cutId || meat.cutIds.includes(filters.cutId)) &&
@@ -118,18 +169,18 @@ function matchesMeatFilters(meat: MeatProductMetadata, filters: MeatCatalogFilte
   );
 }
 
-function resolveBrandMeatItems(
-  brand: "Primebeef" | "Мираторг",
+function resolveMeatItems(
   filters: MeatCatalogFilters,
-): MeatCatalogItem[] {
+  brand?: MeatManufacturer,
+) {
   const seenSlugs = new Set<string>();
 
   return Object.values(catalogProducts).flatMap((product) => {
     if (
       !hasMeatMetadata(product) ||
-      product.brand !== brand ||
+      (brand && product.brand !== brand) ||
       seenSlugs.has(product.slug) ||
-      !matchesMeatFilters(product.meat, filters)
+      !matchesMeatFilters(product, filters)
     ) {
       return [];
     }
@@ -144,6 +195,17 @@ function resolveBrandMeatItems(
       },
     ];
   });
+}
+
+function resolveBrandMeatItems(
+  brand: MeatManufacturer,
+  filters: MeatCatalogFilters,
+): MeatCatalogItem[] {
+  return resolveMeatItems(filters, brand);
+}
+
+export function getAllMeatItems(filters: MeatCatalogFilters = {}) {
+  return resolveMeatItems(filters);
 }
 
 export function getPrimebeefHorecaMeatItems(

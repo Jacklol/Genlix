@@ -57,6 +57,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "retail",
       species: "beef",
+      country: "russia",
       productType: "minced-meat",
       packaging: "tray-or-box",
       cutIds: [],
@@ -73,6 +74,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "horeca",
       species: "beef",
+      country: "russia",
       productType: "large-cut",
       packaging: "large-block",
       cutIds: ["tolstyj-kraj"],
@@ -89,6 +91,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "retail",
       species: "beef",
+      country: "russia",
       productType: "goulash",
       packaging: "tray-or-box",
       cutIds: [],
@@ -105,6 +108,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "retail",
       species: "poultry",
+      country: "russia",
       productType: "fillet",
       packaging: "tray-or-box",
       cutIds: [],
@@ -121,6 +125,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "retail",
       species: "pork",
+      country: "russia",
       productType: "cutlets",
       packaging: "tray-or-box",
       cutIds: [],
@@ -137,6 +142,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "retail",
       species: "beef",
+      country: "russia",
       productType: "steak",
       packaging: "fixed-weight-vacuum",
       cutIds: ["tolstyj-kraj"],
@@ -153,6 +159,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "horeca",
       species: "beef",
+      country: "russia",
       productType: "steak",
       packaging: "fixed-weight-vacuum",
       cutIds: ["tonkij-kraj"],
@@ -169,6 +176,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "horeca",
       species: "beef",
+      country: "russia",
       productType: "fillet",
       packaging: "fixed-weight-vacuum",
       cutIds: [],
@@ -185,6 +193,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "horeca",
       species: "beef",
+      country: "russia",
       productType: "steak",
       packaging: "fixed-weight-vacuum",
       cutIds: ["tolstyj-kraj"],
@@ -201,6 +210,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "horeca",
       species: "beef",
+      country: "russia",
       productType: "large-cut",
       packaging: "large-block",
       cutIds: ["tolstyj-kraj"],
@@ -217,6 +227,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "retail",
       species: "beef",
+      country: "russia",
       productType: "steak",
       packaging: "fixed-weight-vacuum",
       cutIds: ["tolstyj-kraj"],
@@ -233,6 +244,7 @@ export const catalogProducts = {
     ...withMeatMetadata({
       channel: "retail",
       species: "beef",
+      country: "russia",
       productType: "steak",
       packaging: "fixed-weight-vacuum",
       cutIds: ["tonkij-kraj"],
