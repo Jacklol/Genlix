@@ -23,7 +23,6 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 type HomeProps = {
   searchParams: Promise<{
-    demo?: string | string[];
     product?: string | string[];
   }>;
 };
@@ -63,11 +62,8 @@ function Heading({
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const { demo, product } = await searchParams;
+  const { product } = await searchParams;
   const productSlug = Array.isArray(product) ? product[0] : product;
-  const showVersionSwitch =
-    process.env.NODE_ENV !== "production" ||
-    (Array.isArray(demo) ? demo[0] : demo) === "1";
   const [newsArticles, contactProduct] = await Promise.all([
     getPublishedNewsArticles(),
     getContactProductContext(productSlug),
@@ -76,7 +72,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <main className={styles.page} id="top">
-      <HomeExperience showVersionSwitch={showVersionSwitch} />
+      <HomeExperience />
 
       <section className={styles.catalogSection} id="catalog" aria-labelledby="catalog-title">
         <div className={styles.shell}>

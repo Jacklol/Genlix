@@ -41,6 +41,44 @@
   max-height: 430px;
 }
 
+.section.filterMode {
+  padding: 0 0 16px;
+  background: var(--paper);
+}
+
+.filterMode .header {
+  margin: 0;
+  text-align: center;
+}
+
+.filterMode .title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.filterMode .subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.filterMode .map {
+  max-width: 1000px;
+  max-height: 430px;
+  margin-inline: auto;
+}
+
+.filterMode .cutSelector {
+  max-width: 340px;
+  margin: 0 auto;
+}
+
 .header {
   max-width: 100%;
   margin-bottom: 40px;
@@ -171,6 +209,40 @@
   display: none;
 }
 
+.cutSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.cutSelector label {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cutSelector select {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--navy);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.cutSelector select:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
 @media (max-width: 920px) {
   .section {
     padding: 56px 0 0;
@@ -209,6 +281,15 @@
 }
 
 @media (max-width: 600px) {
+  .filterMode .subtitle {
+    font-size: 13px;
+  }
+
+  .cutSelector select {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
   .subtitle {
     font-size: 16px;
   }

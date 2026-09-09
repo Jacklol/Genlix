@@ -1,4 +1,5 @@
 import type { ProductBadge } from "@/components/ProductCard";
+import { meatCharacteristicFields } from "@/lib/catalog/meat-characteristics";
 import type {
   CatalogProduct,
   MeatCookingMethod,
@@ -11,6 +12,7 @@ import type {
 } from "@/lib/catalog/types";
 import type { NewsCategory } from "@/lib/news";
 import type { TextContentBlock } from "@/lib/text-content";
+import { MAX_RICH_TEXT_BYTES, normalizeRichDocument, richTextPlainText } from "@/lib/rich-text";
 
 import type {
   CmsNewsEntity,
@@ -143,9 +145,9 @@ export function parseRevision(formData: FormData) {
   return revision;
 }
 
-function splitList(source: string, label = "Список", maxItems = 100) {
+function splitList(source: string, label = "Список", maxItems = 100, separator = /[\n,]+/) {
   const items = source
-    .split(/[\n,]+/)
+    .split(separator)
     .map((item) => item.trim())
     .filter(Boolean);
 
@@ -195,6 +197,63 @@ export function serializeSpecs(specs: ProductSpec[]) {
   return specs.map((spec) => `${spec.label} | ${spec.value}`).join("\n");
 }
 
+function mergeMeatCharacteristics(
+  formData: FormData,
+  specs: ProductSpec[],
+  existingSpecs: ProductSpec[] = [],
+) {
+  // An older form may not contain the new inputs. Preserve its existing values;
+  // only an explicitly submitted empty input clears a characteristic.
+  let result = [...specs];
+  for (const field of meatCharacteristicFields) {
+    if (!formData.has(field.name)) {
+      if (!result.some((spec) => spec.label === field.label)) {
+        result.push(...existingSpecs.filter((spec) => spec.label === field.label));
+      }
+      continue;
+    }
+
+    const source = value(formData, field.name);
+    if (source.length > field.maxLength) {
+      throw new CmsFormError(`Поле «${field.label}» слишком длинное`);
+    }
+    if (source && field.pattern && !new RegExp(`^(?:${field.pattern})$`).test(source)) {
+      throw new CmsFormError(field.name === "meatGtin"
+        ? "GTIN-13 должен содержать ровно 13 цифр"
+        : "Количество в упаковке должно быть целым положительным числом");
+    }
+    if (source && field.name === "meatVl") {
+      const percentage = Number(source.replace(",", "."));
+      if (!/^\d{1,3}(?:[.,]\d{1,2})?$/.test(source) || percentage > 100) {
+        throw new CmsFormError("VL указывается числом от 0 до 100, без знака процента");
+      }
+    }
+    if (source && field.options && !field.options.includes(source)
+      && !existingSpecs.some((spec) => spec.label === field.label && spec.value === source)) {
+      throw new CmsFormError(`Выберите значение поля «${field.label}» из списка`);
+    }
+
+    let position = result.findIndex((spec) => spec.label === field.label);
+    result = result.filter((spec) => spec.label !== field.label);
+    if (source) {
+      if (position < 0) {
+        const originalPosition = existingSpecs.findIndex((spec) => spec.label === field.label);
+        const nextExistingSpec = originalPosition < 0 ? undefined : existingSpecs
+          .slice(originalPosition + 1)
+          .find((spec) => result.some((item) => item.label === spec.label));
+        if (nextExistingSpec) {
+          position = result.findIndex((spec) => spec.label === nextExistingSpec.label);
+        }
+      }
+      result.splice(position < 0 ? result.length : position, 0, { label: field.label, value: source });
+    }
+  }
+  if (result.length > 100) {
+    throw new CmsFormError("Допускается не более 100 характеристик товара");
+  }
+  return result;
+}
+
 function defaultBreadcrumbs(category: CmsProductCategory, title: string) {
   const categoryConfig = {
     beer: { href: "/catalog/beer", label: "Пиво" },
@@ -222,9 +281,14 @@ export function buildProductPayloadFromForm(
     uploadedImage ?? required(formData, "image", "Основное изображение", 2000),
     "Основное изображение",
   );
-  const specs = parseSpecs(value(formData, "specs"));
+  const parsedSpecs = parseSpecs(value(formData, "specs"));
+  const specs = category === "meat" || existing?.category === "meat"
+    ? mergeMeatCharacteristics(formData, parsedSpecs, existing?.catalog.specs)
+    : parsedSpecs;
   const tags = splitList(value(formData, "tags"), "Метки", 50);
-  const recommendation = optional(formData, "recommendation");
+  const recommendation = formData.has("recommendation")
+    ? optional(formData, "recommendation")
+    : existing?.catalog.recommendation;
   const buttonLabel = optional(formData, "buttonLabel", 180);
   const badgeSource = value(formData, "badge") as ProductBadge;
   const badge = badgeSource && badges.has(badgeSource) ? badgeSource : undefined;
@@ -268,7 +332,7 @@ export function buildProductPayloadFromForm(
     };
   }
 
-  const gallery = splitList(value(formData, "images"), "Галерея", 50).map(
+  const gallery = splitList(value(formData, "images"), "Галерея", 50, /\r?\n/).map(
     (galleryImage, index) => safeImageUrl(galleryImage, `Галерея, изображение ${index + 1}`),
   );
   const images = Array.from(new Set([image, ...gallery]));
@@ -277,7 +341,9 @@ export function buildProductPayloadFromForm(
     "Ссылка кнопки",
   );
   const detail: Omit<ProductDetailData, "slug"> = {
-    beerRecommendationLabel: optional(formData, "beerRecommendationLabel", 120),
+    beerRecommendationLabel: formData.has("beerRecommendationLabel")
+      ? optional(formData, "beerRecommendationLabel", 120)
+      : existing?.detail.beerRecommendationLabel,
     brand,
     breadcrumbs: existing?.category === category && existing.detail.breadcrumbs?.length
       ? [
@@ -311,6 +377,7 @@ export function getEditableProductPayload(entity?: CmsProductEntity) {
 export function serializeTextBlocks(blocks: TextContentBlock[]) {
   return blocks
     .map((block) => {
+      if (block.type === "richText") return richTextPlainText(block.blocks);
       if (block.type === "heading") {
         return `## ${block.text}`;
       }
@@ -370,7 +437,7 @@ export function buildNewsPayloadFromForm(
 
   return {
     category: enumValue(formData, "category", "Категория", newsCategories),
-    content: parseTextBlocks(required(formData, "content", "Текст новости", 100_000)),
+    content: parseNewsContent(formData),
     description: required(formData, "description", "Краткое описание", 700),
     image: safeImageUrl(
       uploadedImage ?? required(formData, "image", "Обложка", 2000),
@@ -380,6 +447,16 @@ export function buildNewsPayloadFromForm(
     tag: required(formData, "tag", "Метка", 80),
     title: required(formData, "title", "Заголовок", 220),
   };
+}
+
+function parseNewsContent(formData: FormData): TextContentBlock[] {
+  if (!formData.has("richContent")) return parseTextBlocks(required(formData, "content", "Текст новости", 100_000));
+  const source = required(formData, "richContent", "Текст новости", MAX_RICH_TEXT_BYTES);
+  try {
+    return [normalizeRichDocument(JSON.parse(source), { image: normalizeCmsImageUrl, link: normalizeCmsLink })];
+  } catch (error) {
+    throw new CmsFormError(error instanceof SyntaxError ? "Не удалось прочитать текст редактора." : error instanceof Error ? error.message : "Проверьте текст статьи.");
+  }
 }
 
 export function getEditableNewsPayload(entity?: CmsNewsEntity) {

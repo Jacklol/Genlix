@@ -62,31 +62,21 @@
 }
 
 .filterPanel {
-  position: relative;
-  margin-bottom: 34px;
-  padding: 24px 26px 18px;
+  margin-bottom: 20px;
+  padding: 12px;
   border: 1px solid rgba(5, 32, 76, 0.12);
   background: var(--section-muted-bg);
-  box-shadow: 0 16px 38px rgba(5, 32, 76, 0.06);
-}
-
-.filterPanel::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: var(--navy);
 }
 
 .filterFields {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 8px;
 }
 
 .field {
   display: grid;
-  gap: 8px;
+  gap: 4px;
   min-width: 0;
 }
 
@@ -101,15 +91,15 @@
 
 .field select {
   width: 100%;
-  min-height: 50px;
-  padding: 0 14px;
+  min-height: 36px;
+  padding: 0 8px;
   border: 1px solid rgba(5, 32, 76, 0.18);
   border-radius: 0;
   background: var(--paper);
   color: var(--input-text);
   cursor: pointer;
   font: inherit;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   outline: none;
   transition: border-color 160ms ease, box-shadow 160ms ease;
@@ -125,14 +115,12 @@
 }
 
 .filterFooter {
-  min-height: 36px;
+  min-height: 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(5, 32, 76, 0.1);
+  gap: 8px;
+  margin-top: 6px;
 }
 
 .activeFilters {
@@ -286,9 +274,6 @@
     margin: 0;
   }
 
-  .filterFields {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 600px) {
@@ -307,19 +292,26 @@
   }
 
   .filterPanel {
-    margin-inline: -8px;
-    padding: 22px 16px 16px;
+    padding: 10px;
+  }
+
+  .filterFields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .field:last-child {
+    grid-column: 1 / -1;
   }
 
   .field select {
-    min-height: 52px;
+    min-height: 44px;
     font-size: 16px;
   }
 
   .filterFooter {
     align-items: flex-start;
     flex-direction: column;
-    gap: 10px;
+    gap: 4px;
   }
 
   .filterHint {

@@ -1,8 +1,12 @@
 import type { CatalogProduct, ProductDetailData } from "@/lib/catalog/types";
 import type { NewsCategory } from "@/lib/news";
 import type { TextContentBlock } from "@/lib/text-content";
+import { normalizeRichDocument } from "@/lib/rich-text";
 
-export const CMS_SCHEMA_VERSION = 1 as const;
+export const CMS_SCHEMA_VERSION = 2 as const;
+export function isSupportedCmsSchemaVersion(value: unknown): value is 1 | 2 {
+  return value === 1 || value === CMS_SCHEMA_VERSION;
+}
 
 const MAX_CMS_SNAPSHOT_BYTES = 8 * 1024 * 1024;
 const MAX_PRODUCTS = 2_000;
@@ -50,7 +54,7 @@ export type CmsProductEntity = CmsEntity<CmsProductPayload>;
 export type CmsNewsEntity = CmsEntity<CmsNewsPayload>;
 
 export type CmsContent = {
-  schemaVersion: typeof CMS_SCHEMA_VERSION;
+  schemaVersion: 1 | typeof CMS_SCHEMA_VERSION;
   products: CmsProductEntity[];
   news: CmsNewsEntity[];
 };
@@ -451,6 +455,14 @@ function normalizeContentBlocks(value: unknown, path: string): TextContentBlock[
     const itemPath = `${path}[${index}]`;
     const record = normalizeRecord(item, itemPath);
 
+    if (record.type === "richText") {
+      try {
+        return normalizeRichDocument(record, { image: normalizeCmsImageUrl, link: normalizeCmsLink });
+      } catch (error) {
+        return validationError(itemPath, error instanceof Error ? error.message : "invalid rich text");
+      }
+    }
+
     if (record.type === "paragraph" || record.type === "heading") {
       assertKnownKeys(record, ["type", "text"], itemPath);
       return {
@@ -599,8 +611,8 @@ export function normalizeCmsContent(value: unknown): CmsContent {
   const record = normalizeRecord(value, "$");
   assertKnownKeys(record, ["schemaVersion", "products", "news"], "$");
 
-  if (record.schemaVersion !== CMS_SCHEMA_VERSION) {
-    validationError("$.schemaVersion", `expected ${CMS_SCHEMA_VERSION}`);
+  if (!isSupportedCmsSchemaVersion(record.schemaVersion)) {
+    validationError("$.schemaVersion", `expected 1 or ${CMS_SCHEMA_VERSION}`);
   }
 
   const productRecords = assertArray(record.products, "$.products", MAX_PRODUCTS);
@@ -612,6 +624,9 @@ export function normalizeCmsContent(value: unknown): CmsContent {
   const news = newsRecords.map((entity, index) =>
     normalizeEntity(entity, `$.news[${index}]`, normalizeNewsPayload),
   );
+  if (record.schemaVersion === 1 && news.some((entity) => [entity.draft, entity.published].some((payload) => payload?.content.some((block) => block.type === "richText")))) {
+    validationError("$.schemaVersion", "rich text requires schema version 2");
+  }
 
   assertUniqueEntities(products, "$.products");
   assertUniqueEntities(news, "$.news");
@@ -624,7 +639,7 @@ export function normalizeCmsContent(value: unknown): CmsContent {
   });
 
   return {
-    schemaVersion: CMS_SCHEMA_VERSION,
+    schemaVersion: record.schemaVersion,
     products: products.sort(compareEntities),
     news: news.sort(compareEntities),
   };

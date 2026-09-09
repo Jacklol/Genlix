@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { buildLegacyCmsSeed } from "./seed";
 import {
-  CMS_SCHEMA_VERSION,
+  isSupportedCmsSchemaVersion,
   normalizeCmsContent,
   type CmsContent,
 } from "./types";
@@ -273,9 +273,9 @@ async function verifyRemoteSnapshot(row: SupabaseSnapshotRow) {
     throw new Error("CMS remote snapshot checksum mismatch");
   }
 
-  if (row.schema_version !== CMS_SCHEMA_VERSION) {
+  if (!isSupportedCmsSchemaVersion(row.schema_version)) {
     throw new Error(
-      `Unsupported CMS schema version ${String(row.schema_version)}; expected ${CMS_SCHEMA_VERSION}`,
+      `Unsupported CMS schema version ${String(row.schema_version)}; expected 1 or 2`,
     );
   }
 

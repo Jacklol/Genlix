@@ -1,0 +1,41 @@
+.formFields { min-width: 0; margin: 0; padding: 0; border: 0; }
+.formFields:disabled { opacity: 0.7; }
+.formFields button:disabled { opacity: 0.5; cursor: default; }
+.imageWorkspace { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.galleryEditor { min-width: 0; }
+.dropzone { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 22px 12px; border: 2px dashed #c7d3e3; border-radius: 12px; background: #f7f9fc; text-align: center; }
+.dropzone span { color: #69768a; font-size: 12px; }
+.dropzoneActive { background: #e9f1fc; border-color: #164f8c; }
+.fileInput { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); }
+.dropzone:focus-within { outline: 2px solid #164f8c; outline-offset: 3px; }
+.addButton { min-height: 42px; padding: 8px 18px; color: #fff; background: #17375f; border: 0; border-radius: 8px; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.message { margin: 10px 0; color: #69768a; font-size: 12px; line-height: 1.5; }
+.message:empty { display: none; }
+.thumbnails { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 12px; margin: 16px 0 0; padding: 0; list-style: none; }
+.thumbnail { min-width: 0; overflow: hidden; border: 1px solid #dce3ed; border-radius: 10px; background: #fff; cursor: grab; }
+.thumbnail:active { cursor: grabbing; }
+.mainThumbnail { border-color: #17375f; box-shadow: 0 0 0 1px #17375f; }
+.dragTarget { outline: 3px solid #d94b45; outline-offset: 2px; }
+.thumbnailMedia { position: relative; height: 115px; background: #edf0f4; }
+.thumbnailMedia img { width: 100%; height: 100%; object-fit: cover; }
+.imageNumber { position: absolute; top: 7px; left: 7px; padding: 4px 6px; border-radius: 4px; background: #17375f; color: #fff; font-size: 10px; font-weight: 800; }
+.dragHandle { position: absolute; top: 5px; right: 7px; padding: 0 4px; border-radius: 4px; background: #fffffff0; color: #17375f; font-size: 20px; }
+.fileName { display: block; padding: 8px 8px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #69768a; font-size: 11px; }
+.photoActions { display: flex; gap: 4px; padding: 6px; }
+.photoActions button, .makeMain, .uploadError button { min-height: 36px; border: 1px solid #dce3ed; border-radius: 5px; background: #fff; color: #17375f; font: inherit; font-size: 12px; cursor: pointer; }
+.photoActions button { flex: 1; min-width: 0; padding: 4px; }
+.photoActions .removeButton { flex: 2; color: #a73531; }
+.makeMain { width: calc(100% - 12px); margin: 0 6px 6px; padding: 4px 6px; font-weight: 700; }
+.uploadStatus { display: block; padding: 6px 8px; color: #164f8c; font-size: 11px; }
+.uploadError { display: grid; gap: 6px; padding: 8px; color: #a73531; font-size: 11px; overflow-wrap: anywhere; }
+.preview { width: min(100%, 300px); min-width: 0; align-self: start; }
+.previewLabel { margin: 0 0 10px; color: #69768a; font-size: 12px; font-weight: 700; }
+.previewImage { width: 100%; height: 100%; object-fit: cover; }
+.emptyPreview { display: grid; height: 100%; padding: 20px; place-items: center; color: #788599; font-size: 13px; }
+.preview > p:last-child { margin-top: 10px; }
+@media (min-width: 1450px) { .imageWorkspace { grid-template-columns: minmax(0, 1fr) 250px; gap: 20px; } }
+@media (max-width: 600px) {
+  .thumbnails { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .photoActions button, .makeMain { min-height: 44px; }
+  .thumbnailMedia { height: 105px; }
+}

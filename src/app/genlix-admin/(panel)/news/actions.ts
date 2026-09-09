@@ -5,7 +5,8 @@ import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { requireAdminSession } from "@/lib/admin/auth";
+import { getAdminSession, requireAdminSession } from "@/lib/admin/auth";
+import type { NewsEditorState } from "@/lib/rich-text";
 import {
   buildNewsPayloadFromForm,
   CmsFormError,
@@ -19,6 +20,7 @@ import {
   uploadCmsImage,
 } from "@/lib/cms/store";
 import type { CmsNewsEntity } from "@/lib/cms/types";
+import { CMS_SCHEMA_VERSION } from "@/lib/cms/types";
 
 function getErrorMessage(error: unknown) {
   if (error instanceof CmsFormError || error instanceof CmsMediaValidationError) {
@@ -44,9 +46,25 @@ function revalidateNewsPaths(slug: string) {
   revalidatePath(`/news/${slug}`);
 }
 
-export async function saveNews(formData: FormData) {
-  const session = await requireAdminSession();
-  const revision = parseRevision(formData);
+export async function uploadNewsImage(formData: FormData): Promise<{ url: string } | { error: string }> {
+  const session = await getAdminSession();
+  if (!session) return { error: "Сессия истекла. Войдите в админку в новой вкладке и повторите загрузку." };
+  try {
+    const file = formData.get("file");
+    if (!(file instanceof File) || !file.size) throw new CmsFormError("Выберите фотографию.");
+    const state = await loadCmsSnapshot();
+    if (!state.writable) throw new CmsFormError(state.warning ?? "Хранилище доступно только для чтения.");
+    return { url: await uploadCmsImage(file, session.username) };
+  } catch (error) {
+    if (error instanceof CmsFormError || error instanceof CmsMediaValidationError) return { error: error.message };
+    console.error("News image upload failed", error);
+    return { error: "Не удалось загрузить фотографию. Проверьте соединение и повторите загрузку." };
+  }
+}
+
+export async function saveNews(_state: NewsEditorState, formData: FormData): Promise<NewsEditorState> {
+  const session = await getAdminSession();
+  if (!session) return { error: "Сессия истекла. Войдите в админку в новой вкладке и повторите сохранение — текст останется здесь." };
   const id = String(formData.get("id") ?? "").trim();
   const intent = formData.get("intent") === "publish" ? "publish" : "draft";
   const returnPath = id
@@ -56,6 +74,7 @@ export async function saveNews(formData: FormData) {
   let savedSlug = "";
 
   try {
+    const revision = parseRevision(formData);
     const slug = parseCmsSlug(formData);
     const imageFile = formData.get("imageFile");
     const hasImageUpload = imageFile instanceof File && imageFile.size > 0;
@@ -124,6 +143,8 @@ export async function saveNews(formData: FormData) {
         }
 
         const payload = buildNewsPayloadFromForm(formData, uploadedImage);
+        // Upgrade only on an explicit rich-text save, never while reading old data.
+        if (payload.content.some((block) => block.type === "richText")) content.schemaVersion = CMS_SCHEMA_VERSION;
         const now = new Date().toISOString();
 
         if (existing) {
@@ -174,7 +195,7 @@ export async function saveNews(formData: FormData) {
     }
     destination += `?saved=${intent}`;
   } catch (error) {
-    destination += `?error=${encodeURIComponent(getErrorMessage(error))}`;
+    return { error: getErrorMessage(error) };
   }
 
   redirect(destination);

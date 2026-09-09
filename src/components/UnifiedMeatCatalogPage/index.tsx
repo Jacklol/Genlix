@@ -11,6 +11,7 @@ import {
   type MeatSpecies,
 } from "@/lib/catalog";
 import { getPublishedMeatItems } from "@/lib/cms/repository";
+import { meatCutRegions } from "@/lib/meat-cuts";
 import homeStyles from "@/app/home.module.css";
 
 import styles from "./UnifiedMeatCatalogPage.module.css";
@@ -33,7 +34,7 @@ function normalizeInitialFilters(
     (filters.species && availableSpecies.has(filters.species)
       ? filters.species
       : undefined);
-  let candidates = species
+  const candidates = species
     ? products.filter((product) => product.meat.species === species)
     : products;
   const normalized: MeatCatalogFilters = species ? { species } : {};
@@ -43,7 +44,6 @@ function normalizeInitialFilters(
     candidates.some((product) => product.brand === filters.manufacturer)
   ) {
     normalized.manufacturer = filters.manufacturer;
-    candidates = candidates.filter((product) => product.brand === filters.manufacturer);
   }
 
   if (
@@ -51,7 +51,6 @@ function normalizeInitialFilters(
     candidates.some((product) => product.meat.country === filters.country)
   ) {
     normalized.country = filters.country;
-    candidates = candidates.filter((product) => product.meat.country === filters.country);
   }
 
   if (
@@ -59,7 +58,6 @@ function normalizeInitialFilters(
     candidates.some((product) => product.meat.packaging === filters.packaging)
   ) {
     normalized.packaging = filters.packaging;
-    candidates = candidates.filter((product) => product.meat.packaging === filters.packaging);
   }
 
   if (
@@ -67,6 +65,13 @@ function normalizeInitialFilters(
     candidates.some((product) => product.meat.channel === filters.channel)
   ) {
     normalized.channel = filters.channel;
+  }
+
+  if (
+    speciesPage === "beef" &&
+    meatCutRegions.some((region) => region.id === filters.cutId && region.enabled !== false)
+  ) {
+    normalized.cutId = filters.cutId;
   }
 
   return normalized;
@@ -119,6 +124,7 @@ export async function UnifiedMeatCatalogPage({
     filters.country,
     filters.packaging,
     filters.channel,
+    filters.cutId,
   ].join("|");
 
   return (
@@ -140,17 +146,22 @@ export async function UnifiedMeatCatalogPage({
 
       <CatalogCategoryNav activeCategory="meat" />
 
-      <section className={styles.hero} aria-labelledby="meat-page-title">
-        <div className={homeStyles.shell}>
-          <div className={styles.heroCopy}>
-            <p>{content.eyebrow}</p>
-            <h1 id="meat-page-title">{content.title}</h1>
-            <span>{content.description}</span>
-          </div>
-        </div>
-      </section>
-
       <UnifiedMeatCatalog
+        hero={speciesPage === "beef" ? (
+          <header className={styles.beefHeader}>
+            <h1 id="meat-page-title">Говядина</h1>
+          </header>
+        ) : (
+          <section className={styles.hero} aria-labelledby="meat-page-title">
+            <div className={homeStyles.shell}>
+              <div className={styles.heroCopy}>
+                <p>{content.eyebrow}</p>
+                <h1 id="meat-page-title">{content.title}</h1>
+                <span>{content.description}</span>
+              </div>
+            </div>
+          </section>
+        )}
         initialFilters={filters}
         key={filterStateKey}
         products={products}

@@ -5,11 +5,12 @@ import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { requireAdminSession } from "@/lib/admin/auth";
+import { getAdminSession, requireAdminSession } from "@/lib/admin/auth";
+import { createProductSlug } from "@/lib/catalog/product-slug";
+import type { ProductEditorState, ProductImageUploadResult } from "@/lib/cms/product-editor";
 import {
   buildProductPayloadFromForm,
   CmsFormError,
-  parseCmsSlug,
   parseRevision,
 } from "@/lib/cms/forms";
 import {
@@ -48,7 +49,23 @@ function revalidateProductPaths(slug: string) {
   revalidatePath(`/catalog/product/${slug}`);
 }
 
-export async function saveProduct(formData: FormData) {
+export async function uploadProductImage(formData: FormData): Promise<ProductImageUploadResult> {
+  const session = await getAdminSession();
+  if (!session) return { error: "Сессия истекла. Войдите в админку в новой вкладке и повторите загрузку." };
+  try {
+    const file = formData.get("file");
+    if (!(file instanceof File) || file.size === 0) throw new CmsFormError("Выберите изображение");
+    const state = await loadCmsSnapshot();
+    if (!state.writable) throw new CmsFormError(state.warning ?? "Хранилище доступно только для чтения");
+    return { url: await uploadCmsImage(file, session.username) };
+  } catch (error) {
+    if (error instanceof CmsFormError || error instanceof CmsMediaValidationError) return { error: error.message };
+    console.error("Product image upload failed", error);
+    return { error: "Не удалось загрузить фото. Проверьте соединение и нажмите «Повторить»." };
+  }
+}
+
+export async function saveProduct(_state: ProductEditorState, formData: FormData): Promise<ProductEditorState> {
   const session = await requireAdminSession();
   const revision = parseRevision(formData);
   const id = String(formData.get("id") ?? "").trim();
@@ -61,7 +78,6 @@ export async function saveProduct(formData: FormData) {
   let savedSlug = "";
 
   try {
-    const slug = parseCmsSlug(formData);
     const imageFile = formData.get("imageFile");
     const hasImageUpload = imageFile instanceof File && imageFile.size > 0;
     const preflight = await loadCmsSnapshot();
@@ -84,10 +100,18 @@ export async function saveProduct(formData: FormData) {
       throw new CmsFormError("Товар не найден");
     }
 
-    if (preflightExisting && preflightExisting.slug !== slug) {
-      throw new CmsFormError(
-        "Адрес опубликованного товара нельзя менять, чтобы не сломать старые ссылки",
-      );
+    const requestedId = String(formData.get("creationId") ?? "");
+    let newId = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(requestedId)
+      ? requestedId : randomUUID();
+    const title = String(formData.get("title") ?? "").trim();
+    let slug = preflightExisting?.slug ?? createProductSlug(title, newId);
+    // Preserve every existing URL, and resolve even the very unlikely short-ID
+    // collision server-side. Optimistic revision checks protect concurrent saves.
+    while (!preflightExisting && preflight.snapshot.content.products.some(
+      (product) => product.slug === slug || product.id === newId,
+    )) {
+      newId = randomUUID();
+      slug = createProductSlug(title, newId);
     }
 
     if (
@@ -156,7 +180,7 @@ export async function saveProduct(formData: FormData) {
           const entity: CmsProductEntity = {
             createdAt: now,
             draft: payload,
-            id: randomUUID(),
+            id: newId,
             slug,
             sortOrder:
               content.products.reduce(
@@ -188,7 +212,7 @@ export async function saveProduct(formData: FormData) {
     }
     destination += `?saved=${intent}`;
   } catch (error) {
-    destination += `?error=${encodeURIComponent(getErrorMessage(error))}`;
+    return { error: getErrorMessage(error) };
   }
 
   redirect(destination);

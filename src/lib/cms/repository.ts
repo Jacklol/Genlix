@@ -2,6 +2,9 @@ import { cache } from "react";
 
 import type { ProductCardData } from "@/components/ProductCard";
 import type { MeatCatalogItem, ProductDetailData } from "@/lib/catalog";
+import { meatFilterOptions } from "@/lib/catalog";
+import { getMeatCatalogSpecs, getMeatDetailSpecs } from "@/lib/catalog/meat-characteristics";
+import type { ProductSpec } from "@/lib/catalog/types";
 import { similarProductsBySlug } from "@/lib/catalog/sections";
 import type { NewsArticle } from "@/lib/news";
 
@@ -44,15 +47,23 @@ function productCardFromEntity(entity: CmsProductEntity): ProductCardData {
     image: catalog.image,
     recommendation: catalog.recommendation,
     slug: entity.slug,
-    specs: catalog.specs,
+    specs: payload.category === "meat" ? getMeatCatalogSpecs(catalog.specs) : catalog.specs,
     tags: catalog.tags,
     title: catalog.title,
   };
 }
 
-function productDetailFromEntity(entity: CmsProductEntity): ProductDetailData {
+function productDetailFromEntity(entity: CmsProductEntity): ProductDetailData & { additionalSpecs: ProductSpec[] } {
+  const payload = entity.published as CmsProductPayload;
+  const packaging = payload.category === "meat" && payload.catalog.meat
+    ? meatFilterOptions.packaging.find((option) => option.value === payload.catalog.meat?.packaging)?.label
+    : undefined;
   return {
-    ...((entity.published as CmsProductPayload).detail),
+    ...payload.detail,
+    additionalSpecs: payload.category === "meat" ? [
+      ...(packaging ? [{ label: "Тип упаковки", value: packaging }] : []),
+      ...getMeatDetailSpecs(payload.catalog.specs),
+    ] : [],
     slug: entity.slug,
   };
 }

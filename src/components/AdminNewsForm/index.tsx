@@ -2,11 +2,12 @@ import Link from "next/link";
 
 import {
   getEditableNewsPayload,
-  serializeTextBlocks,
 } from "@/lib/cms/forms";
 import type { CmsNewsEntity, CmsNewsPayload } from "@/lib/cms/types";
 
-import { changeNewsState, saveNews } from "@/app/genlix-admin/(panel)/news/actions";
+import { changeNewsState } from "@/app/genlix-admin/(panel)/news/actions";
+import { NewsEditorForm, NewsArticleEditor, NewsSubmitButton } from "@/components/AdminNewsEditor";
+import { NewsCoverEditor } from "@/components/AdminNewsEditor/NewsCoverEditor";
 import styles from "@/app/genlix-admin/admin.module.css";
 
 type AdminNewsFormProps = {
@@ -43,7 +44,7 @@ export function AdminNewsForm({ entity, error, revision, saved }: AdminNewsFormP
         </p>
       ) : null}
 
-      <form action={saveNews} className={styles.formGrid}>
+      <NewsEditorForm key={`${entity?.id ?? "new"}-${revision}`} initialTitle={payload.title} initialTag={payload.tag}>
         <input name="id" type="hidden" value={entity?.id ?? ""} />
         <input name="revision" type="hidden" value={revision} />
 
@@ -89,36 +90,11 @@ export function AdminNewsForm({ entity, error, revision, saved }: AdminNewsFormP
             </label>
           </section>
 
-          <section className={styles.formSection}>
-            <h2>Обложка</h2>
-            {payload.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img alt="Текущая обложка" className={styles.formPreview} src={payload.image} />
-            ) : null}
-            <label className={styles.field}>
-              <span>Существующий URL</span>
-              <input defaultValue={payload.image} name="image" required={!payload.image} />
-            </label>
-            <label className={styles.field}>
-              <span>Или загрузить новую обложку (до 3 МБ)</span>
-              <input accept="image/jpeg,image/png,image/webp" name="imageFile" type="file" />
-            </label>
-          </section>
+          <NewsCoverEditor initialImage={payload.image} />
 
           <section className={styles.formSection}>
             <h2>Текст новости</h2>
-            <label className={styles.field}>
-              <span>Материал</span>
-              <textarea
-                className={styles.articleEditor}
-                defaultValue={serializeTextBlocks(payload.content)}
-                name="content"
-                required
-              />
-            </label>
-            <p className={styles.helpText}>
-              Новый абзац отделяйте пустой строкой. Заголовок начинайте с «## », пункты списка — с «- ».
-            </p>
+            <NewsArticleEditor content={payload.content} />
           </section>
         </div>
 
@@ -131,18 +107,18 @@ export function AdminNewsForm({ entity, error, revision, saved }: AdminNewsFormP
                 : "Новый черновик"}
           </span>
           {hasDraft ? <span className={styles.statusDraft}>Есть черновик</span> : null}
-          <button name="intent" type="submit" value="draft">
+          <NewsSubmitButton intent="draft">
             Сохранить черновик
-          </button>
-          <button className={styles.publishButton} name="intent" type="submit" value="publish">
+          </NewsSubmitButton>
+          <NewsSubmitButton className={styles.publishButton} intent="publish">
             Опубликовать
-          </button>
+          </NewsSubmitButton>
           <Link href="/genlix-admin/news">Вернуться к новостям</Link>
           <p className={styles.helpText}>
             Черновик виден только здесь. После публикации новость появится на главной и в разделе новостей.
           </p>
         </aside>
-      </form>
+      </NewsEditorForm>
 
       {entity ? (
         <section className={styles.panel}>

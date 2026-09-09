@@ -1,0 +1,2 @@
+.singleThumbnail { grid-template-columns: minmax(0, 180px); }
+.thumbnail, .thumbnail:active { cursor: default; }

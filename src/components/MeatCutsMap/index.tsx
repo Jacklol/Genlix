@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 
 import homeStyles from "@/app/home.module.css";
 import {
@@ -17,6 +17,7 @@ import styles from "./MeatCutsMap.module.css";
 type MeatCutsMapProps = {
   subtitle?: string;
   embedded?: boolean;
+  mode?: "details" | "filter";
   selectedCutId?: string | null;
   onCutSelect?: (region: MeatCutRegion) => void;
   onClearSelection?: () => void;
@@ -25,6 +26,7 @@ type MeatCutsMapProps = {
 export function MeatCutsMap({
   subtitle = "Выберите интересующую часть туши",
   embedded = false,
+  mode = "details",
   selectedCutId,
   onCutSelect,
   onClearSelection,
@@ -32,6 +34,7 @@ export function MeatCutsMap({
   const svgRef = useRef<SVGSVGElement>(null);
   const mapWrapRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
+  const cutSelectId = useId();
 
   const [internalActiveId, setInternalActiveId] = useState<string | null>(null);
   const [popupPosition, setPopupPosition] = useState<{ left: number; top: number } | null>(null);
@@ -68,7 +71,7 @@ export function MeatCutsMap({
   };
 
   const updatePopupPosition = useCallback(() => {
-    if (!activeCut) {
+    if (!activeCut || mode === "filter") {
       setPopupPosition(null);
       return;
     }
@@ -115,7 +118,7 @@ export function MeatCutsMap({
     );
 
     setPopupPosition({ left, top });
-  }, [activeCut]);
+  }, [activeCut, mode]);
 
   useLayoutEffect(() => {
     const frame = window.requestAnimationFrame(updatePopupPosition);
@@ -172,7 +175,11 @@ export function MeatCutsMap({
 
   return (
     <section
-      className={`${styles.section} ${embedded ? styles.embedded : ""}`.trim()}
+      className={[
+        styles.section,
+        embedded ? styles.embedded : "",
+        mode === "filter" ? styles.filterMode : "",
+      ].filter(Boolean).join(" ")}
       aria-labelledby="meat-cuts-map-title"
     >
       <div className={embedded ? styles.embeddedInner : homeStyles.shell}>
@@ -190,7 +197,7 @@ export function MeatCutsMap({
                 ref={svgRef}
                 aria-label="Интерактивная схема отрубов"
                 className={styles.map}
-                role="img"
+                role="group"
                 viewBox={`0 0 ${MEAT_CUTS_VIEWBOX.width} ${MEAT_CUTS_VIEWBOX.height}`}
                 onClick={handleMapClick}
               >
@@ -229,7 +236,7 @@ export function MeatCutsMap({
                 })}
               </svg>
 
-              {activeCut ? (
+              {activeCut && mode === "details" ? (
                 <aside
                   ref={popupRef}
                   className={`${styles.detailsPopup} ${popupPosition ? styles.detailsPopupVisible : ""}`.trim()}
@@ -248,10 +255,36 @@ export function MeatCutsMap({
               ) : null}
             </div>
 
-            {activeCut ? (
+            {activeCut && mode === "details" ? (
               <aside className={styles.detailsPopupBelow} aria-live="polite">
                 {detailsContent}
               </aside>
+            ) : null}
+
+            {mode === "filter" ? (
+              <div className={styles.cutSelector}>
+                <label htmlFor={cutSelectId}>Часть туши</label>
+                <select
+                  id={cutSelectId}
+                  value={activeId ?? ""}
+                  onChange={(event) => {
+                    const region = meatCutRegions.find((cut) => cut.id === event.target.value);
+                    if (region) {
+                      selectCut(region);
+                    } else {
+                      setInternalActiveId(null);
+                      onClearSelection?.();
+                    }
+                  }}
+                >
+                  <option value="">Все отрубы</option>
+                  {meatCutRegions.filter((region) => region.enabled !== false).map((region) => (
+                    <option key={region.id} value={region.id}>
+                      {region.titleRu} / {region.titleEn}
+                    </option>
+                  ))}
+                </select>
+              </div>
             ) : null}
           </div>
         </div>

@@ -1,6 +1,8 @@
 import type { ProductDetailData } from "@/lib/catalog";
+import type { ProductSpec } from "@/lib/catalog/types";
 import homeStyles from "@/app/home.module.css";
 import { getContactRequestHref } from "@/lib/contact-requests/link";
+import { SHOW_PRODUCT_PAIRINGS } from "@/lib/catalog/features";
 
 import { ProductDetailGallery } from "@/components/ProductDetailGallery";
 
@@ -28,9 +30,10 @@ function BeerIcon() {
 
 type ProductDetailHeroProps = {
   product: ProductDetailData;
+  additionalSpecs?: ProductSpec[];
 };
 
-export function ProductDetailHero({ product }: ProductDetailHeroProps) {
+export function ProductDetailHero({ product, additionalSpecs = [] }: ProductDetailHeroProps) {
   return (
     <section className={styles.section} aria-labelledby="product-detail-title">
       <div className={homeStyles.shell}>
@@ -58,6 +61,11 @@ export function ProductDetailHero({ product }: ProductDetailHeroProps) {
               <p className={styles.spec}>
                 <strong>Условия хранения:</strong> {product.storage}
               </p>
+              {additionalSpecs.filter((spec) => spec.value.trim() && spec.value.trim() !== "—").map((spec) => (
+                <p className={styles.spec} key={spec.label}>
+                  <strong>{spec.label}:</strong> {spec.value}
+                </p>
+              ))}
             </div>
 
             <p className={styles.cookingTitle}>Способ приготовления</p>
@@ -69,7 +77,7 @@ export function ProductDetailHero({ product }: ProductDetailHeroProps) {
               ))}
             </div>
 
-            {product.beerRecommendationLabel ? (
+            {SHOW_PRODUCT_PAIRINGS && product.beerRecommendationLabel ? (
               <div className={styles.recommendation}>
                 <BeerIcon />
                 <a className={styles.recommendationLink} href="/catalog/beer">

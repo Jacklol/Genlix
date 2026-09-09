@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { getContactRequestHref } from "@/lib/contact-requests/link";
+import { SHOW_PRODUCT_PAIRINGS } from "@/lib/catalog/features";
 
 import styles from "./ProductCard.module.css";
 
@@ -149,7 +150,7 @@ export function ProductCard({
           </div>
         ) : null}
 
-        {recommendation ? (
+        {SHOW_PRODUCT_PAIRINGS && recommendation ? (
           <div className={styles.recommendation}>
             <BeerIcon />
             <span className={styles.recommendationText}>{recommendation}</span>

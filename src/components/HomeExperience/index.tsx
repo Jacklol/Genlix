@@ -5,11 +5,7 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { HomeHero, type HomeHeroVariant } from "@/components/HomeHero";
 
-type HomeExperienceProps = {
-  showVersionSwitch?: boolean;
-};
-
-export function HomeExperience({ showVersionSwitch = false }: HomeExperienceProps) {
+export function HomeExperience() {
   const [variant, setVariant] = useState<HomeHeroVariant>(1);
 
   const selectVariant = (nextVariant: HomeHeroVariant) => {
@@ -20,8 +16,8 @@ export function HomeExperience({ showVersionSwitch = false }: HomeExperienceProp
     <>
       <Header
         overlay
-        heroVariant={showVersionSwitch ? variant : undefined}
-        onHeroVariantChange={showVersionSwitch ? selectVariant : undefined}
+        heroVariant={variant}
+        onHeroVariantChange={selectVariant}
       />
       <HomeHero variant={variant} />
     </>

@@ -1,4 +1,5 @@
 import type { CatalogProduct } from "@/components/CatalogProductsSection";
+import { meatCutRegions } from "@/lib/meat-cuts";
 
 import { productDetails, productDetailSlugs } from "./details";
 import { catalogProducts } from "./products";
@@ -132,6 +133,9 @@ export function parseMeatCatalogFilters(query: MeatCatalogQuery): MeatCatalogFil
       meatFilterOptions.packaging,
     ),
     channel: getFilterOptionValue(getQueryValue(query.channel), meatFilterOptions.channels),
+    cutId: meatCutRegions.find(
+      (region) => region.enabled !== false && region.id === getQueryValue(query.cutId),
+    )?.id,
   };
 }
 

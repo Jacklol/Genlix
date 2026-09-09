@@ -108,6 +108,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
             name: "Условия хранения",
             value: product.storage,
           },
+          ...product.additionalSpecs.map((spec) => ({
+            "@type": "PropertyValue",
+            name: spec.label,
+            value: spec.value,
+          })),
         ],
         url: canonicalUrl,
       },
@@ -132,7 +137,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       />
       <Header activeLink="Каталог" static />
       <Breadcrumbs items={product.breadcrumbs} />
-      <ProductDetailHero product={product} />
+      <ProductDetailHero product={product} additionalSpecs={product.additionalSpecs} />
       {similarProducts.length > 0 ? (
         <ProductCardsSection title="Похожие товары" products={similarProducts} />
       ) : null}

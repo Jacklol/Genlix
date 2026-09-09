@@ -3,14 +3,18 @@
 import {
   useId,
   useMemo,
+  useRef,
   useState,
   useSyncExternalStore,
   type FormEvent,
+  type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
 
 import homeStyles from "@/app/home.module.css";
 import { ProductCard } from "@/components/ProductCard";
+import { MeatCutsMap } from "@/components/MeatCutsMap";
+import { meatCutRegions } from "@/lib/meat-cuts";
 import {
   meatFilterOptions,
   type MeatCatalogFilters,
@@ -26,7 +30,7 @@ import styles from "./UnifiedMeatCatalog.module.css";
 
 type CatalogFilters = Pick<
   MeatCatalogFilters,
-  "species" | "manufacturer" | "country" | "packaging" | "channel"
+  "species" | "manufacturer" | "country" | "packaging" | "channel" | "cutId"
 >;
 
 type DedicatedSpecies = Extract<MeatSpecies, "beef" | "lamb">;
@@ -34,6 +38,7 @@ type DedicatedSpecies = Extract<MeatSpecies, "beef" | "lamb">;
 type CatalogFilterKey = keyof CatalogFilters;
 
 type UnifiedMeatCatalogProps = {
+  hero: ReactNode;
   products: MeatCatalogItem[];
   initialFilters?: CatalogFilters;
   speciesPage?: DedicatedSpecies;
@@ -109,6 +114,10 @@ function buildCatalogHref(pathname: string, filters: CatalogFilters, includeSpec
     searchParams.set("channel", filters.channel);
   }
 
+  if (filters.species === "beef" && filters.cutId) {
+    searchParams.set("cutId", filters.cutId);
+  }
+
   const query = searchParams.toString();
   return query ? `${pathname}?${query}` : pathname;
 }
@@ -120,16 +129,19 @@ function filterCatalogProducts(products: MeatCatalogItem[], filters: CatalogFilt
       (!filters.manufacturer || product.brand === filters.manufacturer) &&
       (!filters.country || product.meat.country === filters.country) &&
       (!filters.packaging || product.meat.packaging === filters.packaging) &&
-      (!filters.channel || product.meat.channel === filters.channel),
+      (!filters.channel || product.meat.channel === filters.channel) &&
+      (!filters.cutId || product.meat.cutIds.includes(filters.cutId)),
   );
 }
 
 export function UnifiedMeatCatalog({
+  hero,
   products,
   initialFilters = {},
   speciesPage,
 }: UnifiedMeatCatalogProps) {
   const router = useRouter();
+  const resultsRef = useRef<HTMLElement>(null);
   const generatedId = useId().replaceAll(":", "");
   const speciesId = `catalog-species-${generatedId}`;
   const manufacturerId = `catalog-manufacturer-${generatedId}`;
@@ -211,8 +223,13 @@ export function UnifiedMeatCatalog({
 
   const hasAppliedFilters = Object.values(appliedFilters).some(Boolean);
   const activeFilterCount = Object.values(appliedFilters).filter(Boolean).length;
+  const selectedCut = meatCutRegions.find((region) => region.id === appliedFilters.cutId);
 
   const getFilterLabel = (key: CatalogFilterKey, value: string) => {
+    if (key === "cutId") {
+      return meatCutRegions.find((region) => region.id === value)?.titleRu ?? value;
+    }
+
     if (key === "manufacturer") {
       return value;
     }
@@ -278,6 +295,10 @@ export function UnifiedMeatCatalog({
     const nextFilters = { ...appliedFilters };
     delete nextFilters[key];
 
+    if (key === "species") {
+      delete nextFilters.cutId;
+    }
+
     setDraftFilters(nextFilters);
     setAppliedFilters(nextFilters);
 
@@ -315,18 +336,43 @@ export function UnifiedMeatCatalog({
     router.push("/catalog/meat");
   };
 
+  const selectCut = (cutId?: string) => {
+    if (speciesPage !== "beef") return;
+
+    const nextFilters: CatalogFilters = { ...appliedFilters, cutId };
+    setDraftFilters(nextFilters);
+    setAppliedFilters(nextFilters);
+    router.replace(buildCatalogHref("/catalog/meat/beef", nextFilters, false), {
+      scroll: false,
+    });
+
+    window.requestAnimationFrame(() => {
+      resultsRef.current?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+        block: "start",
+      });
+    });
+  };
+
   return (
     <>
-      <section className={styles.filtersSection} aria-labelledby="meat-filter-title">
-        <div className={homeStyles.shell}>
-          <header className={styles.filterHeader}>
-            <p className={styles.eyebrow}>Подбор продукции</p>
-            <h2 id="meat-filter-title">Найдите подходящий товар</h2>
-            <p>
-              Выберите параметры поставки, затем нажмите кнопку «Применить фильтры».
-            </p>
-          </header>
+      {speciesPage === "beef" ? (
+        <div>
+          {hero}
+          <MeatCutsMap
+            mode="filter"
+            selectedCutId={appliedFilters.cutId ?? null}
+            subtitle="Нажмите на часть туши — подходящие товары появятся ниже"
+            onCutSelect={(region) => selectCut(region.id)}
+            onClearSelection={() => selectCut()}
+          />
+        </div>
+      ) : hero}
 
+      <section className={styles.filtersSection} aria-label="Фильтры каталога мяса">
+        <div className={homeStyles.shell}>
           <details
             className={styles.filterDisclosure}
             onToggle={(event) => {
@@ -363,6 +409,7 @@ export function UnifiedMeatCatalog({
                       species: event.target.value
                         ? (event.target.value as MeatSpecies)
                         : undefined,
+                      cutId: event.target.value === "beef" ? current.cutId : undefined,
                     }))
                   }
                 >
@@ -468,6 +515,26 @@ export function UnifiedMeatCatalog({
               </label>
               </div>
 
+              <div className={styles.filterActions}>
+                <button
+                  aria-label={
+                    draftFilters.species === "poultry"
+                      ? "Применить фильтры — открыть раздел «Птица»"
+                      : `Применить фильтры — показать ${formatProductCount(previewProductCount)}`
+                  }
+                  className={styles.applyButton}
+                  type="submit"
+                >
+                  <span>Применить</span>
+                  <small aria-hidden="true">
+                    {draftFilters.species === "poultry" ? "→" : previewProductCount}
+                  </small>
+                </button>
+                <button className={styles.resetButton} type="button" onClick={resetFilters}>
+                  Сбросить
+                </button>
+              </div>
+
               {activeFilters.length > 0 ? (
                 <div className={styles.activeFilters} aria-label="Активные фильтры">
                   <span className={styles.activeFiltersLabel}>Выбрано</span>
@@ -490,25 +557,17 @@ export function UnifiedMeatCatalog({
                 </div>
               ) : null}
 
-              <div className={styles.filterActions}>
-                <button className={styles.resetButton} type="button" onClick={resetFilters}>
-                  Сбросить
-                </button>
-                <button className={styles.applyButton} type="submit">
-                  <span>Применить фильтры</span>
-                  <small aria-live="polite">
-                    {draftFilters.species === "poultry"
-                      ? "Открыть раздел «Птица»"
-                      : `Показать ${formatProductCount(previewProductCount)}`}
-                  </small>
-                </button>
-              </div>
             </form>
           </details>
         </div>
       </section>
 
-      <section className={styles.catalogSection} aria-labelledby="meat-products-title">
+      <section
+        className={styles.catalogSection}
+        aria-labelledby="meat-products-title"
+        ref={resultsRef}
+        id="meat-products"
+      >
         <div className={homeStyles.shell}>
           <header className={styles.catalogHeader}>
             <div>
@@ -519,6 +578,15 @@ export function UnifiedMeatCatalog({
               Найдено: <strong>{formatProductCount(filteredProducts.length)}</strong>
             </p>
           </header>
+
+          {selectedCut ? (
+            <div className={styles.cutSummary}>
+              <p>Выбран отруб: <strong>{selectedCut.titleRu}</strong></p>
+              <button type="button" className={styles.resetButton} onClick={() => selectCut()}>
+                Все отрубы
+              </button>
+            </div>
+          ) : null}
 
           {filteredProducts.length > 0 ? (
             <div className={styles.grid}>

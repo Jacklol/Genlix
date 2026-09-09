@@ -1,12 +1,22 @@
 import Link from "next/link";
+import { randomUUID } from "node:crypto";
+import {
+  ProductEditorForm, ProductImagesEditor, ProductSlugField, ProductSubmitButton,
+} from "@/components/AdminProductEditor";
+import { SHOW_PRODUCT_PAIRINGS } from "@/lib/catalog/features";
 
 import {
   getEditableProductPayload,
   serializeSpecs,
 } from "@/lib/cms/forms";
 import type { CmsProductEntity, CmsProductPayload } from "@/lib/cms/types";
+import {
+  getMeatCharacteristicValue,
+  getUnmanagedMeatSpecs,
+  meatCharacteristicFields,
+} from "@/lib/catalog/meat-characteristics";
 
-import { changeProductState, saveProduct } from "@/app/genlix-admin/(panel)/products/actions";
+import { changeProductState } from "@/app/genlix-admin/(panel)/products/actions";
 import styles from "@/app/genlix-admin/admin.module.css";
 
 type AdminProductFormProps = {
@@ -74,7 +84,15 @@ export function AdminProductForm({
         </p>
       ) : null}
 
-      <form action={saveProduct} className={styles.formGrid}>
+      <ProductEditorForm
+        key={`${entity?.id ?? "new"}:${revision}`}
+        creationId={entity?.id ?? randomUUID()}
+        slug={entity?.slug}
+        initialTitle={catalog.title}
+        initialBrand={catalog.brand}
+        mainImage={catalog.image}
+        gallery={detail.images}
+      >
         <input name="id" type="hidden" value={entity?.id ?? ""} />
         <input name="revision" type="hidden" value={revision} />
 
@@ -86,16 +104,7 @@ export function AdminProductForm({
                 <span>Название товара</span>
                 <input defaultValue={catalog.title} name="title" required />
               </label>
-              <label className={styles.field}>
-                <span>Адрес страницы (slug)</span>
-                <input
-                  defaultValue={entity?.slug ?? ""}
-                  name="slug"
-                  pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-                  readOnly={Boolean(entity)}
-                  required
-                />
-              </label>
+              <ProductSlugField />
               <label className={styles.field}>
                 <span>Раздел каталога</span>
                 <select defaultValue={payload.category} name="category">
@@ -115,28 +124,7 @@ export function AdminProductForm({
             </label>
           </section>
 
-          <section className={styles.formSection}>
-            <h2>Изображения</h2>
-            {catalog.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img alt="Текущее изображение товара" className={styles.formPreview} src={catalog.image} />
-            ) : null}
-            <label className={styles.field}>
-              <span>Основное изображение: существующий URL</span>
-              <input defaultValue={catalog.image} name="image" required={!catalog.image} />
-            </label>
-            <label className={styles.field}>
-              <span>Или загрузить новое изображение (до 3 МБ)</span>
-              <input accept="image/jpeg,image/png,image/webp" name="imageFile" type="file" />
-            </label>
-            <label className={styles.field}>
-              <span>Галерея — по одному URL на строку</span>
-              <textarea defaultValue={detail.images.join("\n")} name="images" />
-            </label>
-            <p className={styles.helpText}>
-              Новые файлы сохраняются с уникальным именем. Старые изображения автоматически не удаляются.
-            </p>
-          </section>
+          <ProductImagesEditor />
 
           <section className={styles.formSection}>
             <h2>Фильтры мяса</h2>
@@ -198,7 +186,9 @@ export function AdminProductForm({
             <h2>Карточка и характеристики</h2>
             <label className={styles.field}>
               <span>Характеристики — «Название | Значение», по одной на строку</span>
-              <textarea defaultValue={serializeSpecs(catalog.specs)} name="specs" />
+              <textarea defaultValue={serializeSpecs(payload.category === "meat"
+                ? getUnmanagedMeatSpecs(catalog.specs)
+                : catalog.specs)} name="specs" />
             </label>
             <label className={styles.field}>
               <span>Метки — через запятую или с новой строки</span>
@@ -220,10 +210,48 @@ export function AdminProductForm({
                 <input defaultValue={detail.category} name="detailCategory" required />
               </label>
             </div>
-            <label className={styles.field}>
+            {SHOW_PRODUCT_PAIRINGS ? <label className={styles.field}>
               <span>Рекомендация</span>
               <input defaultValue={catalog.recommendation ?? ""} name="recommendation" />
-            </label>
+            </label> : null}
+          </section>
+
+          <section className={styles.formSection} id="meat-characteristics">
+            <h2>Дополнительные характеристики мяса</h2>
+            <p className={styles.helpText}>
+              Все поля необязательные. Заполненные характеристики появятся справа на странице
+              мясного товара, рядом со сроком годности и условиями хранения. Пустые строки
+              не отображаются. Мраморность также остаётся в карточке каталога.
+              Тип упаковки берётся из раздела «Фильтры мяса», фасовка — из «Поставки и хранения».
+            </p>
+            <div className={styles.twoColumns}>
+              {meatCharacteristicFields.map((field) => {
+                const currentValue = getMeatCharacteristicValue(catalog.specs, field.name);
+                return (
+                  <label className={styles.field} key={field.name}>
+                    <span>{field.label}</span>
+                    {field.options ? (
+                      <select defaultValue={currentValue} name={field.name}>
+                        <option value="">Не указано</option>
+                        {currentValue && !field.options.includes(currentValue) ? (
+                          <option value={currentValue}>{currentValue}</option>
+                        ) : null}
+                        {field.options.map((option) => <option key={option} value={option}>{option}</option>)}
+                      </select>
+                    ) : (
+                      <input
+                        defaultValue={currentValue}
+                        inputMode={field.inputMode}
+                        maxLength={field.maxLength}
+                        name={field.name}
+                        pattern={field.pattern}
+                        placeholder={field.placeholder}
+                      />
+                    )}
+                  </label>
+                );
+              })}
+            </div>
           </section>
 
           <section className={styles.formSection}>
@@ -256,10 +284,10 @@ export function AdminProductForm({
                 <input defaultValue={detail.buttonHref ?? "/#contacts"} name="buttonHref" />
               </label>
             </div>
-            <label className={styles.field}>
+            {SHOW_PRODUCT_PAIRINGS ? <label className={styles.field}>
               <span>Подпись рекомендации пива</span>
               <input defaultValue={detail.beerRecommendationLabel ?? ""} name="beerRecommendationLabel" />
-            </label>
+            </label> : null}
           </section>
         </div>
 
@@ -272,18 +300,18 @@ export function AdminProductForm({
                 : "Новый черновик"}
           </span>
           {hasDraft ? <span className={styles.statusDraft}>Есть несохранённый на сайте черновик</span> : null}
-          <button name="intent" type="submit" value="draft">
+          <ProductSubmitButton intent="draft">
             Сохранить черновик
-          </button>
-          <button className={styles.publishButton} name="intent" type="submit" value="publish">
+          </ProductSubmitButton>
+          <ProductSubmitButton className={styles.publishButton} intent="publish">
             Опубликовать
-          </button>
+          </ProductSubmitButton>
           <Link href="/genlix-admin/products">Вернуться к товарам</Link>
           <p className={styles.helpText}>
             «Сохранить черновик» не меняет публичный сайт. «Опубликовать» создаёт новую восстановимую ревизию.
           </p>
         </aside>
-      </form>
+      </ProductEditorForm>
 
       {entity ? (
         <section className={styles.panel}>

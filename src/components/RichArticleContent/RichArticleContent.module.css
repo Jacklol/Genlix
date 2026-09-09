@@ -1,0 +1,24 @@
+.richContent { overflow-wrap: anywhere; line-height: 1.7; color: var(--text, #26364b); font-size: 17px; }
+.richContent > :first-child { margin-top: 0; }
+.richContent p { margin: 0 0 20px; white-space: pre-wrap; }
+.richContent h2, .richContent h3 { margin: 32px 0 16px; line-height: 1.25; }
+.richContent h3 { font-size: 24px; }
+.richContent a { color: var(--navy, #173c69); text-decoration: underline; text-underline-offset: 3px; }
+.richContent ul, .richContent ol { padding-left: 1.4em; margin: 0 0 24px; }
+.richContent li { white-space: pre-wrap; }
+.richContent li + li { margin-top: 8px; }
+.richContent li > ul, .richContent li > ol { margin-top: 8px; margin-bottom: 0; }
+.richContent blockquote { border-left: 3px solid var(--red, #d14444); padding: 12px 20px; margin: 24px 0; background: #f6f7f9; white-space: pre-wrap; }
+.richContent figure { width: 100%; margin: 28px auto; }
+.richContent figure img { display: block; width: 100%; height: auto; }
+.richContent figcaption { margin-top: 10px; color: #69758a; text-align: center; font-size: 13px; }
+.richContent code { padding: 2px 5px; border-radius: 3px; background: #eef0f3; font-size: .9em; }
+.richContent hr { border: 0; border-top: 1px solid #dce1e8; margin: 28px 0; }
+.richContent .checklist { list-style: none; padding-left: 0; }
+.check { margin-right: 9px; }
+.nested { padding-left: 22px; }
+.tableScroll { overflow-x: auto; margin: 24px 0; }
+.tableScroll table { width: 100%; border-collapse: collapse; min-width: 300px; }
+.tableScroll td, .tableScroll th { border: 1px solid #dce1e8; padding: 10px 12px; text-align: left; min-width: 100px; white-space: pre-wrap; }
+.tableScroll th { background: #f4f6f9; }
+@media (max-width: 600px) { .richContent { font-size: 16px; } .nested { padding-left: 14px; } }

@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 
 import type { BreadcrumbItem } from "@/components/Breadcrumbs";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { RichArticleContent } from "@/components/RichArticleContent";
 import { SubscribeSection } from "@/components/SubscribeSection";
 import type { TextContentBlock } from "@/lib/text-content";
 import { navItems } from "@/lib/site-data";
@@ -28,6 +30,8 @@ type TextArticleLayoutProps = {
 
 function renderContentBlock(block: TextContentBlock, index: number) {
   switch (block.type) {
+    case "richText":
+      return <RichArticleContent key={`rich-${index}`} blocks={block.blocks} />;
     case "heading":
       return <h2 key={`heading-${index}`}>{block.text}</h2>;
     case "list":
@@ -48,9 +52,9 @@ function DefaultSidebar() {
     <div className={styles.ctaCard}>
       <h2 className={styles.sidebarTitle}>Нужно коммерческое предложение?</h2>
       <p>Оставьте заявку — подготовим условия поставок под ваш формат бизнеса.</p>
-      <a className={styles.ctaButton} href="/#contacts">
+      <Link className={styles.ctaButton} href="/#contacts">
         Оставить заявку
-      </a>
+      </Link>
     </div>
   );
 }
@@ -94,6 +98,7 @@ export function TextArticleLayout({
 
               {image ? (
                 <figure className={styles.cover}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img alt="" height={520} src={image} width={1200} />
                 </figure>
               ) : null}
