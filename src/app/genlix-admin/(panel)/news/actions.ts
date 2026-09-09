@@ -37,7 +37,7 @@ function getErrorMessage(error: unknown) {
   }
 
   console.error("News CMS action failed", error);
-  return "Не удалось сохранить новость. Проверьте поля и попробуйте ещё раз.";
+  return "Не удалось сохранить статью. Проверьте поля и попробуйте ещё раз.";
 }
 
 function revalidateNewsPaths(slug: string) {
@@ -95,12 +95,12 @@ export async function saveNews(_state: NewsEditorState, formData: FormData): Pro
       : undefined;
 
     if (id && !preflightExisting) {
-      throw new CmsFormError("Новость не найдена");
+      throw new CmsFormError("Статья не найдена");
     }
 
     if (preflightExisting && preflightExisting.slug !== slug) {
       throw new CmsFormError(
-        "Адрес опубликованной новости нельзя менять, чтобы не сломать старые ссылки",
+        "Адрес опубликованной статьи нельзя менять, чтобы не сломать старые ссылки",
       );
     }
 
@@ -109,7 +109,7 @@ export async function saveNews(_state: NewsEditorState, formData: FormData): Pro
         (item) => item.slug === slug && item.id !== preflightExisting?.id,
       )
     ) {
-      throw new CmsFormError("Такой адрес страницы уже занят другой новостью");
+      throw new CmsFormError("Такой адрес страницы уже занят другой статьёй");
     }
 
     buildNewsPayloadFromForm(
@@ -124,22 +124,22 @@ export async function saveNews(_state: NewsEditorState, formData: FormData): Pro
     await mutateCmsContent(
       revision,
       session.username,
-      `${intent === "publish" ? "Публикация" : "Сохранение черновика"} новости «${slug}»`,
+      `${intent === "publish" ? "Публикация" : "Сохранение черновика"} статьи «${slug}»`,
       (content) => {
         const existing = id ? content.news.find((item) => item.id === id) : undefined;
 
         if (id && !existing) {
-          throw new CmsFormError("Новость не найдена");
+          throw new CmsFormError("Статья не найдена");
         }
 
         if (existing && existing.slug !== slug) {
           throw new CmsFormError(
-            "Адрес опубликованной новости нельзя менять, чтобы не сломать старые ссылки",
+            "Адрес опубликованной статьи нельзя менять, чтобы не сломать старые ссылки",
           );
         }
 
         if (content.news.some((item) => item.slug === slug && item.id !== existing?.id)) {
-          throw new CmsFormError("Такой адрес страницы уже занят другой новостью");
+          throw new CmsFormError("Такой адрес страницы уже занят другой статьёй");
         }
 
         const payload = buildNewsPayloadFromForm(formData, uploadedImage);
@@ -213,12 +213,12 @@ export async function changeNewsState(formData: FormData) {
     await mutateCmsContent(
       revision,
       session.username,
-      `Изменение состояния новости ${id}: ${operation}`,
+      `Изменение состояния статьи ${id}: ${operation}`,
       (content) => {
         const entity = content.news.find((item) => item.id === id);
 
         if (!entity) {
-          throw new CmsFormError("Новость не найдена");
+          throw new CmsFormError("Статья не найдена");
         }
 
         slug = entity.slug;
@@ -230,7 +230,7 @@ export async function changeNewsState(formData: FormData) {
           entity.status = entity.published ? "published" : "draft";
         } else if (operation === "discard-draft") {
           if (!entity.published) {
-            throw new CmsFormError("Нельзя удалить единственную версию новой новости");
+            throw new CmsFormError("Нельзя удалить единственную версию новой статьи");
           }
           const wasArchived = entity.status === "archived";
           delete entity.draft;

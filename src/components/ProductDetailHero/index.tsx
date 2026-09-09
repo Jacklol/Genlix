@@ -3,6 +3,7 @@ import type { ProductSpec } from "@/lib/catalog/types";
 import homeStyles from "@/app/home.module.css";
 import { getContactRequestHref } from "@/lib/contact-requests/link";
 import { SHOW_PRODUCT_PAIRINGS } from "@/lib/catalog/features";
+import { hasSpecValue } from "@/lib/catalog/category-fields";
 
 import { ProductDetailGallery } from "@/components/ProductDetailGallery";
 
@@ -49,31 +50,22 @@ export function ProductDetailHero({ product, additionalSpecs = [] }: ProductDeta
             <h1 className={styles.title} id="product-detail-title">
               {product.title}
             </h1>
-            <p className={styles.packaging}>Фасовка: {product.packaging}</p>
+            {hasSpecValue(product.packaging) ? <p className={styles.packaging}>Фасовка: {product.packaging}</p> : null}
             <p className={styles.description}>{product.description}</p>
 
             <div className={styles.divider} />
 
             <div className={styles.specs}>
-              <p className={styles.spec}>
+              {hasSpecValue(product.shelfLife) ? <p className={styles.spec}>
                 <strong>Срок годности:</strong> {product.shelfLife}
-              </p>
-              <p className={styles.spec}>
+              </p> : null}
+              {hasSpecValue(product.storage) ? <p className={styles.spec}>
                 <strong>Условия хранения:</strong> {product.storage}
-              </p>
+              </p> : null}
               {additionalSpecs.filter((spec) => spec.value.trim() && spec.value.trim() !== "—").map((spec) => (
                 <p className={styles.spec} key={spec.label}>
                   <strong>{spec.label}:</strong> {spec.value}
                 </p>
-              ))}
-            </div>
-
-            <p className={styles.cookingTitle}>Способ приготовления</p>
-            <div className={styles.tags}>
-              {product.cookingMethods.map((method) => (
-                <span className={styles.tag} key={method}>
-                  {method}
-                </span>
               ))}
             </div>
 
@@ -86,12 +78,14 @@ export function ProductDetailHero({ product, additionalSpecs = [] }: ProductDeta
               </div>
             ) : null}
 
-            <a
-              className={styles.button}
-              href={getContactRequestHref(product.slug, product.buttonHref)}
-            >
-              {product.buttonLabel ?? "Запросить поставку"}
-            </a>
+            <div className={styles.action}>
+              <a
+                className={styles.button}
+                href={getContactRequestHref(product.slug, product.buttonHref)}
+              >
+                {product.buttonLabel ?? "Запросить поставку"}
+              </a>
+            </div>
           </div>
         </div>
       </div>

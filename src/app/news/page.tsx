@@ -11,7 +11,7 @@ import homeStyles from "@/app/home.module.css";
 import styles from "./news.module.css";
 
 export const metadata: Metadata = {
-  title: "Новости — Genlix",
+  title: "Блог — Genlix",
   description: "Полезные материалы для профессионалов: кейсы, поставки, выбор и приготовление мяса.",
 };
 
@@ -22,19 +22,19 @@ export default async function NewsPage() {
 
   return (
     <main className={homeStyles.page}>
-      <Header activeLink="Новости" static />
+      <Header activeLink="Блог" static />
 
       <Breadcrumbs
         items={[
           { label: "Главная", href: "/" },
-          { label: "Новости" },
+          { label: "Блог" },
         ]}
       />
 
       <section className={styles.section} aria-labelledby="news-page-title">
         <div className={homeStyles.shell}>
           <h1 className={styles.title} id="news-page-title">
-            Полезно <span>для профессионалов</span>
+            Блог <span>для профессионалов</span>
           </h1>
 
           <NewsPageContent articles={articles} featuredArticle={articles[0]} />

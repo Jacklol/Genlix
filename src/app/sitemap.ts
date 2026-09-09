@@ -11,6 +11,7 @@ const staticRoutes = [
   { path: "/catalog/meat/beef", changeFrequency: "weekly", priority: 0.85 },
   { path: "/catalog/bird", changeFrequency: "weekly", priority: 0.8 },
   { path: "/catalog/beer", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/catalog/water", changeFrequency: "weekly", priority: 0.8 },
   { path: "/news", changeFrequency: "weekly", priority: 0.75 },
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
   { path: "/partners", changeFrequency: "monthly", priority: 0.6 },

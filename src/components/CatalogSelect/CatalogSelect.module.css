@@ -1,0 +1,71 @@
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid rgba(5, 32, 76, .2);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--input-text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+.value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chevron { width: 16px; height: 16px; flex-shrink: 0; color: var(--navy); transition: transform 140ms ease; }
+.chevron path, .option svg path { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.trigger:hover:not(:disabled), .trigger[data-open] { border-color: var(--navy); }
+.trigger[data-open] .chevron { transform: rotate(180deg); }
+.trigger:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.trigger:disabled { opacity: .6; cursor: not-allowed; }
+.list {
+  position: fixed;
+  z-index: 200;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+  border: 1px solid rgba(5, 32, 76, .18);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink-deep);
+  box-shadow: 0 8px 28px rgba(5, 32, 76, .16);
+  scrollbar-width: thin;
+  font-family: var(--font-montserrat), Arial, sans-serif;
+  animation: appear 120ms ease-out;
+}
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 36px;
+  padding: 8px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  cursor: pointer;
+  user-select: none;
+}
+.option > span { min-width: 0; overflow-wrap: anywhere; }
+.option[data-active] { background: var(--surface-soft); box-shadow: inset 2px 0 var(--navy); }
+.option[aria-selected="true"] { color: var(--navy); font-weight: 750; }
+.option svg { flex-shrink: 0; width: 16px; height: 16px; }
+@keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 600px) {
+  .trigger { min-height: 44px; font-size: 16px; }
+  .option { min-height: 44px; font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trigger, .chevron { transition: none; }
+  .list { animation: none; }
+}

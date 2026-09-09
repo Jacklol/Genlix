@@ -14,6 +14,7 @@ import {
 import adminStyles from "@/app/genlix-admin/admin.module.css";
 import cardStyles from "@/components/ProductCard/ProductCard.module.css";
 import styles from "./AdminProductEditor.module.css";
+import { categoryLabels, type CatalogCategory } from "@/lib/catalog/category-fields";
 
 type EditorImage = {
   id: string;
@@ -25,6 +26,7 @@ type EditorImage = {
 };
 
 type EditorContextValue = {
+  category: CatalogCategory;
   title: string;
   brand: string;
   images: EditorImage[];
@@ -43,6 +45,7 @@ function useEditor() {
 }
 
 type ProductEditorFormProps = {
+  initialCategory: CatalogCategory;
   children: ReactNode;
   initialTitle: string;
   initialBrand: string;
@@ -52,7 +55,8 @@ type ProductEditorFormProps = {
   slug?: string;
 };
 
-export function ProductEditorForm({ children, initialTitle, initialBrand, mainImage, gallery, creationId, slug }: ProductEditorFormProps) {
+export function ProductEditorForm({ children, initialTitle, initialBrand, initialCategory, mainImage, gallery, creationId, slug }: ProductEditorFormProps) {
+  const [category, setCategory] = useState(initialCategory);
   const [title, setTitle] = useState(initialTitle);
   const [brand, setBrand] = useState(initialBrand);
   const [images, setImages] = useState<EditorImage[]>(() => initialProductImages(mainImage, gallery).map((url, index) => ({
@@ -85,8 +89,11 @@ export function ProductEditorForm({ children, initialTitle, initialBrand, mainIm
   }
 
   return (
-    <EditorContext.Provider value={{ title, brand, images, setImages, pending, creationId, slug }}>
-      <form onSubmit={submit} onInput={(event) => {
+    <EditorContext.Provider value={{ category, title, brand, images, setImages, pending, creationId, slug }}>
+      <form onSubmit={submit} onChange={(event) => {
+        const target = event.target;
+        if (target instanceof HTMLSelectElement && target.name === "category") setCategory(target.value as CatalogCategory);
+      }} onInput={(event) => {
         const target = event.target as HTMLInputElement;
         if (target.name === "title") setTitle(target.value);
         if (target.name === "brand") setBrand(target.value);
@@ -100,6 +107,21 @@ export function ProductEditorForm({ children, initialTitle, initialBrand, mainIm
       </form>
     </EditorContext.Provider>
   );
+}
+
+export function ProductCategorySection({ categories, children }: { categories: CatalogCategory[]; children: ReactNode }) {
+  const { category } = useEditor();
+  const active = categories.includes(category);
+  // Keep inputs mounted so unsaved entries survive switching the category.
+  // Disabled inactive fields neither submit nor block native form validation.
+  return <fieldset hidden={!active} disabled={!active} className={styles.categorySection}>{children}</fieldset>;
+}
+
+export function ProductCategoryLabel({ initialCategory, label }: { initialCategory: CatalogCategory; label: string }) {
+  const { category } = useEditor();
+  const [labels, setLabels] = useState<Partial<Record<CatalogCategory, string>>>({});
+  return <input value={labels[category] ?? (category === initialCategory ? label : categoryLabels[category])}
+    onChange={(event) => setLabels({ ...labels, [category]: event.target.value })} name="detailCategory" required />;
 }
 
 export function ProductSlugField() {

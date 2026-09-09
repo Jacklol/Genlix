@@ -11,6 +11,7 @@ import type {
 const channelLabels: Record<MeatSalesChannel, string> = {
   horeca: "HoReCa",
   retail: "Ритейл",
+  both: "HoReCa и ритейл",
 };
 
 const productTypeLabels: Record<MeatProductType, string> = {

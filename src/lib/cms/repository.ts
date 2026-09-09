@@ -6,6 +6,8 @@ import { meatFilterOptions } from "@/lib/catalog";
 import { getMeatCatalogSpecs, getMeatDetailSpecs } from "@/lib/catalog/meat-characteristics";
 import type { ProductSpec } from "@/lib/catalog/types";
 import { similarProductsBySlug } from "@/lib/catalog/sections";
+import { categoryDetailSpecs, categoryFields, countryLabels, hasSpecValue, unmanagedCategorySpecs, type CatalogCategory, type FilteredCategory } from "@/lib/catalog/category-fields";
+import { availableFilterOptions, commonFilterKeys, productFilterValues, type CategoryCatalogItem, type FilterOption } from "@/lib/catalog/filter-engine";
 import type { NewsArticle } from "@/lib/news";
 
 import { loadCmsSnapshot } from "./store";
@@ -39,6 +41,13 @@ function isPublicEntity<
 function productCardFromEntity(entity: CmsProductEntity): ProductCardData {
   const payload = entity.published as CmsProductPayload;
   const catalog = payload.catalog;
+  const specs = payload.category === "meat" ? getMeatCatalogSpecs(catalog.specs).map((spec) =>
+    spec.label === "Канал поставки" && catalog.meat ? {
+      ...spec, value: catalog.meat.channel === "both" ? "HoReCa и ритейл" : catalog.meat.channel === "horeca" ? "HoReCa" : "Ритейл",
+    } : spec) : [
+      ...catalog.specs.filter((spec) => categoryFields[payload.category as FilteredCategory].some((field) => field.card && field.label === spec.label)),
+      ...unmanagedCategorySpecs(catalog.specs),
+    ].filter((spec) => hasSpecValue(spec.value));
 
   return {
     badge: catalog.badge,
@@ -47,7 +56,7 @@ function productCardFromEntity(entity: CmsProductEntity): ProductCardData {
     image: catalog.image,
     recommendation: catalog.recommendation,
     slug: entity.slug,
-    specs: payload.category === "meat" ? getMeatCatalogSpecs(catalog.specs) : catalog.specs,
+    specs,
     tags: catalog.tags,
     title: catalog.title,
   };
@@ -60,10 +69,12 @@ function productDetailFromEntity(entity: CmsProductEntity): ProductDetailData & 
     : undefined;
   return {
     ...payload.detail,
+    cookingMethods: payload.category === "beer" || payload.category === "water" ? [] : payload.detail.cookingMethods,
     additionalSpecs: payload.category === "meat" ? [
       ...(packaging ? [{ label: "Тип упаковки", value: packaging }] : []),
       ...getMeatDetailSpecs(payload.catalog.specs),
-    ] : [],
+    ] : categoryDetailSpecs(payload.category, payload.catalog.specs).map((spec) => spec.label === "Страна производства"
+      ? { ...spec, value: countryLabels[spec.value] ?? spec.value } : spec),
     slug: entity.slug,
   };
 }
@@ -157,6 +168,40 @@ export async function getPublishedCategoryProducts(category: "beer" | "bird") {
   return entities
     .filter((entity) => (entity.published as CmsProductPayload).category === category)
     .map(productCardFromEntity);
+}
+
+function entityCategoryItem(entity: CmsProductEntity): CategoryCatalogItem {
+  const payload = entity.published as CmsProductPayload;
+  return {
+    ...productCardFromEntity(entity), slug: entity.slug,
+    filterValues: payload.category === "meat" && payload.catalog.meat ? {
+      manufacturer: payload.catalog.brand, country: payload.catalog.meat.country, channel: payload.catalog.meat.channel,
+    } : productFilterValues(payload.category === "meat" ? "bird" : payload.category, payload.catalog.brand, payload.catalog.specs),
+  };
+}
+
+export async function getPublishedCategoryItems(category: FilteredCategory): Promise<CategoryCatalogItem[]> {
+  return (await getPublishedProductEntities()).filter((entity) => {
+    const payload = entity.published as CmsProductPayload;
+    return payload.category === category || (category === "bird" && payload.category === "meat" && payload.catalog.meat?.species === "poultry");
+  }).map((entity) => {
+    const payload = entity.published as CmsProductPayload;
+    return {
+      ...productCardFromEntity(entity), slug: entity.slug,
+      filterValues: productFilterValues(category, payload.catalog.brand, payload.catalog.specs, payload.category === "meat" ? payload.catalog.meat : undefined),
+    };
+  });
+}
+
+export async function getCatalogCommonOptions(): Promise<Record<CatalogCategory, Record<string, FilterOption[]>>> {
+  const entities = await getPublishedProductEntities();
+  return Object.fromEntries((["meat", "bird", "beer", "water"] as const).map((category) => {
+    const items = entities.filter((entity) => {
+      const payload = entity.published as CmsProductPayload;
+      return payload.category === category || (category === "bird" && payload.category === "meat" && payload.catalog.meat?.species === "poultry");
+    }).map(entityCategoryItem);
+    return [category, Object.fromEntries(commonFilterKeys.map((key) => [key, availableFilterOptions(items, key)]))];
+  })) as Record<CatalogCategory, Record<string, FilterOption[]>>;
 }
 
 export async function getPublishedProductBySlug(slug: string) {

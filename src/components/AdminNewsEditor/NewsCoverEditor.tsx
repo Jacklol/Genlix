@@ -72,7 +72,7 @@ export function NewsCoverEditor({ initialImage }: { initialImage: string }) {
   const disabled = pending || uploading;
   return <section className={adminStyles.formSection} id="news-cover" aria-labelledby="news-cover-title">
     <h2 id="news-cover-title">Обложка статьи</h2>
-    <p className={adminStyles.helpText}>Одна главная фотография для карточки новости и страницы статьи.</p>
+    <p className={adminStyles.helpText}>Одна главная фотография для карточки в блоге и страницы статьи.</p>
     <input type="hidden" name="image" value={candidate ? "" : cover?.url ?? ""} />
     <div className={styles.imageWorkspace}>
       <div className={styles.galleryEditor}>
@@ -125,7 +125,7 @@ export function NewsCoverEditor({ initialImage }: { initialImage: string }) {
           <div className={newsStyles.cardMedia}>
             {shown ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={shown.url} alt="Обложка в карточке новости" className={styles.previewImage} />
+              <img src={shown.url} alt="Обложка в карточке блога" className={styles.previewImage} />
             ) : <span className={styles.emptyPreview}>Добавьте обложку статьи</span>}
           </div>
           <div className={newsStyles.cardBody}>
@@ -133,7 +133,7 @@ export function NewsCoverEditor({ initialImage }: { initialImage: string }) {
             <h3 className={newsStyles.cardTitle}>{title || "Заголовок статьи"}</h3>
           </div>
         </article>
-        <p className={adminStyles.helpText}>Предпросмотр карточки новости. На странице статьи фото отображается крупнее. Изменения появятся на сайте после публикации.</p>
+        <p className={adminStyles.helpText}>Предпросмотр карточки в блоге. На странице статьи фото отображается крупнее. Изменения появятся на сайте после публикации.</p>
       </div>
     </div>
     <p className={adminStyles.helpText}>Файл загружается сразу с уникальным именем. Замена обложки не удаляет прежний файл и историю статьи.</p>

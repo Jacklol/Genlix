@@ -89,31 +89,6 @@
   text-transform: uppercase;
 }
 
-.field select {
-  width: 100%;
-  min-height: 36px;
-  padding: 0 8px;
-  border: 1px solid rgba(5, 32, 76, 0.18);
-  border-radius: 0;
-  background: var(--paper);
-  color: var(--input-text);
-  cursor: pointer;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  outline: none;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
-}
-
-.field select:hover {
-  border-color: rgba(5, 32, 76, 0.42);
-}
-
-.field select:focus-visible {
-  border-color: var(--navy);
-  box-shadow: 0 0 0 3px rgba(7, 30, 77, 0.14);
-}
-
 .filterFooter {
   min-height: 32px;
   display: flex;
@@ -301,11 +276,6 @@
 
   .field:last-child {
     grid-column: 1 / -1;
-  }
-
-  .field select {
-    min-height: 44px;
-    font-size: 16px;
   }
 
   .filterFooter {

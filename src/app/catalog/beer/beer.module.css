@@ -1,6 +1,8 @@
 .hero {
   position: relative;
-  min-height: 500px;
+  min-height: 260px;
+  display: flex;
+  align-items: center;
   overflow: hidden;
   background-color: var(--hero-overlay);
   background-image:
@@ -9,7 +11,7 @@
   background-position: center;
   background-size: cover;
   color: var(--paper);
-  padding: 48px 0;
+  padding: 32px 0;
 }
 
 .heroInner {
@@ -22,14 +24,14 @@
 .brandBadge {
   display: inline-flex;
   align-items: center;
-  margin-bottom: 28px;
-  padding: 6px 12px;
+  margin: 0 0 14px;
+  padding: 5px 10px;
   background: var(--paper);
   color: var(--text-secondary);
 }
 
 .brandBadge strong {
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.04em;
   line-height: 1;
@@ -41,7 +43,7 @@
   margin: 0;
   color: var(--paper);
   font-family: var(--font-montserrat), "Montserrat", Arial, Helvetica, sans-serif;
-  font-size: 40px;
+  font-size: clamp(28px, 3vw, 40px);
   font-weight: 800;
   letter-spacing: 0;
   line-height: 1.2;
@@ -51,16 +53,11 @@
   max-width: 800px;
   margin: 12px 0 0;
   color: var(--text-on-dark);
-  font-size: clamp(15px, 1.1vw, 18px);
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 @media (max-width: 920px) {
-  .hero {
-    height: auto;
-    min-height: 480px;
-  }
-
   .heroInner {
     width: min(100% - 56px, 1120px);
   }
@@ -68,15 +65,20 @@
 
 @media (max-width: 600px) {
   .hero {
-    min-height: 420px;
+    min-height: 240px;
+    padding: 28px 0;
   }
 
   .heroInner {
     width: calc(100% - 32px);
-    padding: 40px 0;
   }
 
   .hero h1 {
-    font-size: clamp(28px, 7vw, 36px);
+    font-size: 28px;
+    line-height: 1.15;
+  }
+
+  .heroLead {
+    font-size: 14px;
   }
 }

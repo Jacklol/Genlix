@@ -41,7 +41,7 @@ export default async function AdminLoginPage({ searchParams }: AdminLoginPagePro
         <p className={styles.eyebrow}>Закрытый раздел</p>
         <h1 id="admin-login-title">Управление сайтом</h1>
         <p className={styles.loginLead}>
-          Войдите, чтобы добавлять товары, редактировать каталог и публиковать новости.
+          Войдите, чтобы добавлять товары, редактировать каталог и публиковать статьи в блоге.
         </p>
 
         {errorMessage ? (

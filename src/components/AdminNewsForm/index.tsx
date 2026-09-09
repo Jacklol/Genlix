@@ -23,7 +23,7 @@ const defaultPayload: CmsNewsPayload = {
   description: "",
   image: "",
   publishedAt: new Date().toISOString(),
-  tag: "Новости компании",
+  tag: "Блог компании",
   title: "",
 };
 
@@ -93,7 +93,7 @@ export function AdminNewsForm({ entity, error, revision, saved }: AdminNewsFormP
           <NewsCoverEditor initialImage={payload.image} />
 
           <section className={styles.formSection}>
-            <h2>Текст новости</h2>
+            <h2>Текст статьи</h2>
             <NewsArticleEditor content={payload.content} />
           </section>
         </div>
@@ -113,16 +113,16 @@ export function AdminNewsForm({ entity, error, revision, saved }: AdminNewsFormP
           <NewsSubmitButton className={styles.publishButton} intent="publish">
             Опубликовать
           </NewsSubmitButton>
-          <Link href="/genlix-admin/news">Вернуться к новостям</Link>
+          <Link href="/genlix-admin/news">Вернуться к блогу</Link>
           <p className={styles.helpText}>
-            Черновик виден только здесь. После публикации новость появится на главной и в разделе новостей.
+            Черновик виден только здесь. После публикации статья появится на главной и в блоге.
           </p>
         </aside>
       </NewsEditorForm>
 
       {entity ? (
         <section className={styles.panel}>
-          <h2>Состояние новости</h2>
+          <h2>Состояние статьи</h2>
           <div className={styles.inlineActions}>
             {entity.draft && entity.published ? (
               <form action={changeNewsState}>

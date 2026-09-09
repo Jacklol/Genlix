@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { randomUUID } from "node:crypto";
 import {
-  ProductEditorForm, ProductImagesEditor, ProductSlugField, ProductSubmitButton,
+  ProductEditorForm, ProductImagesEditor, ProductSlugField, ProductSubmitButton, ProductCategorySection, ProductCategoryLabel,
 } from "@/components/AdminProductEditor";
 import { SHOW_PRODUCT_PAIRINGS } from "@/lib/catalog/features";
 
@@ -18,6 +18,7 @@ import {
 
 import { changeProductState } from "@/app/genlix-admin/(panel)/products/actions";
 import styles from "@/app/genlix-admin/admin.module.css";
+import { categoryFields, categoryLabels, fieldValue, unmanagedCategorySpecs, type FilteredCategory } from "@/lib/catalog/category-fields";
 
 type AdminProductFormProps = {
   entity?: CmsProductEntity;
@@ -90,6 +91,7 @@ export function AdminProductForm({
         slug={entity?.slug}
         initialTitle={catalog.title}
         initialBrand={catalog.brand}
+        initialCategory={payload.category}
         mainImage={catalog.image}
         gallery={detail.images}
       >
@@ -107,10 +109,11 @@ export function AdminProductForm({
               <ProductSlugField />
               <label className={styles.field}>
                 <span>Раздел каталога</span>
-                <select defaultValue={payload.category} name="category">
+                <select aria-label="Раздел каталога" defaultValue={payload.category} name="category">
                   <option value="meat">Мясо</option>
                   <option value="bird">Птица</option>
                   <option value="beer">Пиво</option>
+                  <option value="water">Вода</option>
                 </select>
               </label>
               <label className={styles.field}>
@@ -126,6 +129,7 @@ export function AdminProductForm({
 
           <ProductImagesEditor />
 
+          <ProductCategorySection categories={["meat"]}>
           <section className={styles.formSection}>
             <h2>Фильтры мяса</h2>
             <p className={styles.helpText}>
@@ -150,6 +154,7 @@ export function AdminProductForm({
                 <select defaultValue={meat?.channel ?? "horeca"} name="channel">
                   <option value="horeca">HoReCa</option>
                   <option value="retail">Ритейл</option>
+                  <option value="both">HoReCa и ритейл</option>
                 </select>
               </label>
               <label className={styles.field}>
@@ -181,14 +186,39 @@ export function AdminProductForm({
               <input defaultValue={meat?.cutIds.join(", ") ?? ""} name="cutIds" />
             </label>
           </section>
+          </ProductCategorySection>
+
+          {(Object.keys(categoryFields) as FilteredCategory[]).map((category) => (
+            <ProductCategorySection key={category} categories={[category]}>
+              <section className={styles.formSection}>
+                <h2>{categoryLabels[category]}: фильтры и характеристики</h2>
+                <p className={styles.helpText}>Все поля необязательные. Заполненные значения появятся на странице товара. Поля с пометкой «фильтр» также используются в каталоге. Неизвестные значения оставьте пустыми.</p>
+                <div className={styles.twoColumns}>
+                  {categoryFields[category].map((field) => {
+                    const current = fieldValue(catalog.specs, field);
+                    return <label className={styles.field} key={field.name}>
+                      <span>{field.label}{field.filter ? " · фильтр" : ""}</span>
+                      {field.options ? <select aria-label={field.label} defaultValue={current} name={field.name}>
+                        <option value="">Не указано</option>
+                        {current && !field.options.includes(current) ? <option value={current}>{current}</option> : null}
+                        {field.options.map((option) => <option key={option} value={option}>{option}</option>)}
+                      </select> : <input defaultValue={current} name={field.name} maxLength={160}
+                        inputMode={field.numeric === "integer" ? "numeric" : field.numeric ? "decimal" : undefined}
+                        placeholder={field.placeholder} />}
+                    </label>;
+                  })}
+                </div>
+              </section>
+            </ProductCategorySection>
+          ))}
 
           <section className={styles.formSection}>
             <h2>Карточка и характеристики</h2>
             <label className={styles.field}>
               <span>Характеристики — «Название | Значение», по одной на строку</span>
-              <textarea defaultValue={serializeSpecs(payload.category === "meat"
+              <textarea defaultValue={serializeSpecs(unmanagedCategorySpecs(payload.category === "meat"
                 ? getUnmanagedMeatSpecs(catalog.specs)
-                : catalog.specs)} name="specs" />
+                : catalog.specs))} name="specs" />
             </label>
             <label className={styles.field}>
               <span>Метки — через запятую или с новой строки</span>
@@ -207,7 +237,7 @@ export function AdminProductForm({
               </label>
               <label className={styles.field}>
                 <span>Название категории на странице</span>
-                <input defaultValue={detail.category} name="detailCategory" required />
+                <ProductCategoryLabel initialCategory={payload.category} label={detail.category} />
               </label>
             </div>
             {SHOW_PRODUCT_PAIRINGS ? <label className={styles.field}>
@@ -216,6 +246,7 @@ export function AdminProductForm({
             </label> : null}
           </section>
 
+          <ProductCategorySection categories={["meat"]}>
           <section className={styles.formSection} id="meat-characteristics">
             <h2>Дополнительные характеристики мяса</h2>
             <p className={styles.helpText}>
@@ -253,6 +284,7 @@ export function AdminProductForm({
               })}
             </div>
           </section>
+          </ProductCategorySection>
 
           <section className={styles.formSection}>
             <h2>Поставка и хранение</h2>
@@ -270,10 +302,12 @@ export function AdminProductForm({
               <span>Условия хранения</span>
               <input defaultValue={detail.storage} name="storage" required />
             </label>
+            <ProductCategorySection categories={["meat", "bird"]}>
             <label className={styles.field}>
               <span>Способы приготовления — названия для страницы</span>
               <input defaultValue={detail.cookingMethods.join(", ")} name="cookingMethods" />
             </label>
+            </ProductCategorySection>
             <div className={styles.twoColumns}>
               <label className={styles.field}>
                 <span>Текст кнопки</span>

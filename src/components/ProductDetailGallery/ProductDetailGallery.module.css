@@ -105,6 +105,13 @@
   font-size: 14px;
 }
 
+@media (min-width: 1101px) {
+  .mainSwiper {
+    /* Keep the photo and CTA baseline aligned even when the thumbnail rail is taller. */
+    align-self: end;
+  }
+}
+
 @media (max-width: 920px) {
   .gallery {
     grid-template-columns: 1fr;

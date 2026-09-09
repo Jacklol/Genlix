@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import homeStyles from "@/app/home.module.css";
 import { FooterInstagramIcon } from "@/components/icons/FooterInstagramIcon";
 
@@ -16,16 +18,16 @@ export function SubscribeSection() {
               Подпишитесь <span>на обновления</span>
             </h2>
             <p>
-              Получайте новости о поставках, сезонных предложениях и обновлениях ассортимента
+              Получайте информацию о поставках, сезонных предложениях и обновлениях ассортимента
               для HoReCa и ритейла.
             </p>
           </div>
           <form className={styles.form}>
             <input name="email" placeholder="Ваша почта" type="email" />
             <button type="submit">Подписаться</button>
-            <a className={styles.social} href="/#contacts" aria-label="Instagram">
+            <Link className={styles.social} href="/#contacts" aria-label="Instagram">
               <FooterInstagramIcon />
-            </a>
+            </Link>
           </form>
         </div>
       </div>

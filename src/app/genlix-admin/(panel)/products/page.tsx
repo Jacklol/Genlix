@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { loadCmsSnapshot } from "@/lib/cms/store";
+import { categoryLabels } from "@/lib/catalog/category-fields";
 
 import styles from "../../admin.module.css";
 
@@ -56,7 +57,7 @@ export default async function AdminProductsPage() {
                       </span>
                     </div>
                   </td>
-                  <td>{payload.category === "meat" ? "Мясо" : payload.category === "beer" ? "Пиво" : "Птица"}</td>
+                  <td>{categoryLabels[payload.category]}</td>
                   <td>
                     <span className={entity.status === "archived" ? styles.statusArchived : entity.draft ? styles.statusDraft : styles.statusOk}>
                       {statusLabel(entity.status, Boolean(entity.draft && entity.published))}

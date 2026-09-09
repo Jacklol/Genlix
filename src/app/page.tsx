@@ -31,7 +31,7 @@ const categories = [
   { name: "Мясо", image: "/assets/home/category1.jpg", href: "/catalog/meat" },
   { name: "Птица", image: "/assets/home/category2.jpg", href: "/catalog/bird" },
   { name: "Пиво", image: "/assets/home/category3.jpg", href: "/catalog/beer" },
-  { name: "Вода", image: "/assets/home/category4.jpg", href: "#contacts" },
+  { name: "Вода", image: "/assets/home/category4.jpg", href: "/catalog/water" },
   { name: "Снеки", image: "/assets/home/category5.jpg", href: "#contacts" },
 ] as const;
 
@@ -111,7 +111,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 безупречного качества. Благодаря прямому импорту мы гарантируем гибкую ценовую
                 политику и непрерывность поставок.
               </p>
-              <Link className={styles.primaryButton} href="/news">Все новости</Link>
+              <Link className={styles.primaryButton} href="/news">Перейти в блог</Link>
             </div>
           </Reveal>
           <PhilosophyStat />
@@ -145,9 +145,9 @@ export default async function Home({ searchParams }: HomeProps) {
         <div className={styles.shell}>
           <div className={styles.newsHeading}>
             <Reveal variant="fade-up">
-              <Heading eyebrow="Новости & статьи" first="События индустрии" accent="и новости компании" id="news-title" />
+              <Heading eyebrow="Блог" first="События индустрии" accent="и опыт компании" id="news-title" />
             </Reveal>
-            <Link className={styles.outlineButton} href="/news">Все новости</Link>
+            <Link className={styles.outlineButton} href="/news">Перейти в блог</Link>
           </div>
           <div className={styles.newsGrid} id="news-grid">
             {homeNews.map((item, index) => (

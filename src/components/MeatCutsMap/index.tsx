@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 
 import homeStyles from "@/app/home.module.css";
+import { CatalogSelect } from "@/components/CatalogSelect";
 import {
   MEAT_CUTS_IMAGE,
   MEAT_CUTS_VIEWBOX,
@@ -264,11 +265,16 @@ export function MeatCutsMap({
             {mode === "filter" ? (
               <div className={styles.cutSelector}>
                 <label htmlFor={cutSelectId}>Часть туши</label>
-                <select
+                <CatalogSelect
                   id={cutSelectId}
+                  label="Часть туши"
+                  emptyLabel="Все отрубы"
+                  options={meatCutRegions.filter((region) => region.enabled !== false).map((region) => ({
+                    value: region.id, label: `${region.titleRu} / ${region.titleEn}`,
+                  }))}
                   value={activeId ?? ""}
-                  onChange={(event) => {
-                    const region = meatCutRegions.find((cut) => cut.id === event.target.value);
+                  onChange={(value) => {
+                    const region = meatCutRegions.find((cut) => cut.id === value);
                     if (region) {
                       selectCut(region);
                     } else {
@@ -276,14 +282,7 @@ export function MeatCutsMap({
                       onClearSelection?.();
                     }
                   }}
-                >
-                  <option value="">Все отрубы</option>
-                  {meatCutRegions.filter((region) => region.enabled !== false).map((region) => (
-                    <option key={region.id} value={region.id}>
-                      {region.titleRu} / {region.titleEn}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             ) : null}
           </div>

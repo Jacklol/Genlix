@@ -24,7 +24,7 @@ export async function getContactProductContext(
   const meatItem = meatItems.find((item) => item.slug === slug);
 
   return {
-    ...(meatItem?.meat.channel ? { channel: meatItem.meat.channel } : {}),
+    ...(meatItem?.meat.channel && meatItem.meat.channel !== "both" ? { channel: meatItem.meat.channel } : {}),
     slug,
     title: product.title,
   };

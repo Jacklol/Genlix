@@ -57,7 +57,7 @@ test("CMS v1 reads unchanged; v2 is required for rich text and retains old publi
   const restored = normalizeCmsContent(JSON.parse(JSON.stringify(old)));
   assert.deepEqual(restored.news[0].published, before);
   assert.equal(restored.news[0].draft.content[0].type, "richText");
-  assert.throws(() => normalizeCmsContent({ ...old, schemaVersion: 3 }));
+  assert.throws(() => normalizeCmsContent({ ...old, schemaVersion: 4 }));
 });
 test("existing local snapshot checksum is unchanged (read-only)", async () => {
   const { createHash } = await import("node:crypto");

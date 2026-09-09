@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { CatalogCategoryNav } from "@/components/CatalogCategoryNav";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { SubscribeSection } from "@/components/SubscribeSection";
@@ -15,6 +14,7 @@ import { meatCutRegions } from "@/lib/meat-cuts";
 import homeStyles from "@/app/home.module.css";
 
 import styles from "./UnifiedMeatCatalogPage.module.css";
+import { matchesChannel } from "@/lib/catalog/filter-engine";
 
 type DedicatedSpecies = Extract<MeatSpecies, "beef" | "lamb">;
 
@@ -62,7 +62,7 @@ function normalizeInitialFilters(
 
   if (
     filters.channel &&
-    candidates.some((product) => product.meat.channel === filters.channel)
+    candidates.some((product) => matchesChannel(product.meat.channel, filters.channel))
   ) {
     normalized.channel = filters.channel;
   }
@@ -143,8 +143,6 @@ export async function UnifiedMeatCatalogPage({
             : [{ label: "Мясо" }]),
         ]}
       />
-
-      <CatalogCategoryNav activeCategory="meat" />
 
       <UnifiedMeatCatalog
         hero={speciesPage === "beef" ? (

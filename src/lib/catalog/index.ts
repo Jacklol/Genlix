@@ -1,5 +1,6 @@
 import type { CatalogProduct } from "@/components/CatalogProductsSection";
 import { meatCutRegions } from "@/lib/meat-cuts";
+import { matchesChannel } from "./filter-engine";
 
 import { productDetails, productDetailSlugs } from "./details";
 import { catalogProducts } from "./products";
@@ -162,7 +163,7 @@ function matchesMeatFilters(
   const { meat } = product;
 
   return (
-    (!filters.channel || meat.channel === filters.channel) &&
+    matchesChannel(meat.channel, filters.channel) &&
     (!filters.species || meat.species === filters.species) &&
     (!filters.manufacturer || product.brand === filters.manufacturer) &&
     (!filters.country || meat.country === filters.country) &&

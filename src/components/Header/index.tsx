@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { useEffect, useState, type TransitionEvent } from "react";
 
-import { Brand } from "@/components/Brand";
 import type { HomeHeroVariant } from "@/components/HomeHero";
 import { catalogSections, navItems } from "@/lib/site-data";
 
 import styles from "./Header.module.css";
 
-const homeHeroVariants = [1, 2, 3, 5] as const satisfies readonly HomeHeroVariant[];
+const homeHeroVariants = [1, 2, 3, 5, 6] as const satisfies readonly HomeHeroVariant[];
 
 type HeaderProps = {
   activeLink?: (typeof navItems)[number]["label"];
@@ -96,8 +95,7 @@ export function Header({
         .filter(Boolean)
         .join(" ")}
     >
-      <div className={styles.inner}>
-        <Brand href={activeLink === "Главная" ? "#top" : "/"} />
+      <div className={`${styles.inner} ${heroVariant && onHeroVariantChange ? styles.withVersions : ""}`}>
         <nav className={styles.desktopNav} aria-label="Основная навигация">
           {navItems.map(({ label, href }) =>
             label === "Каталог" ? (
@@ -123,11 +121,17 @@ export function Header({
               </div>
             ) : (
               <a
-                className={label === activeLink ? styles.activeLink : undefined}
-                href={href}
+                className={[
+                  label === activeLink ? styles.activeLink : "",
+                  label === "Главная" ? styles.homeLink : "",
+                ].filter(Boolean).join(" ")}
+                href={label === "Главная" && activeLink === "Главная" ? "#top" : href}
+                aria-label={label === "Главная" ? "Genlix — на главную" : undefined}
+                aria-current={label === activeLink ? "page" : undefined}
+                onClick={label === "Главная" ? closeMenu : undefined}
                 key={label}
               >
-                {label}
+                {label === "Главная" ? "Genlix" : label}
               </a>
             ),
           )}
@@ -205,7 +209,7 @@ export function Header({
                     </div>
                   </div>
                 ) : null}
-                {navItems.map(({ label, href }) =>
+                {navItems.filter(({ label }) => label !== "Главная").map(({ label, href }) =>
                   label === "Каталог" ? (
                     <details className={styles.mobileCatalog} key={label}>
                       <summary>{label}</summary>

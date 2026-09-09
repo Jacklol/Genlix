@@ -65,6 +65,7 @@ function revalidateAllContent() {
   revalidatePath("/catalog/meat/[species]", "page");
   revalidatePath("/catalog/beer");
   revalidatePath("/catalog/bird");
+  revalidatePath("/catalog/water");
   revalidatePath("/catalog/product/[slug]", "page");
 }
 

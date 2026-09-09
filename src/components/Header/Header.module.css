@@ -40,9 +40,13 @@
   height: 100%;
   margin-inline: auto;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 48px;
+}
+
+.inner.withVersions {
+  grid-template-columns: minmax(0, 1fr) auto auto;
 }
 
 .versionSwitch {
@@ -86,7 +90,7 @@
 .desktopNav {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: clamp(22px, 2.3vw, 50px);
 }
 
@@ -97,6 +101,17 @@
   font-size: 13px;
   text-decoration: none;
   transition: color 180ms ease;
+}
+
+.desktopNav .homeLink {
+  color: var(--paper);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.desktopNav .homeLink::after {
+  content: none;
 }
 
 .navDropdown {
@@ -296,14 +311,28 @@
     margin-bottom: 0;
   }
 
-  .desktopNav,
   .actions,
   .versionSwitch {
     display: none;
   }
 
-  .inner {
+  .inner,
+  .inner.withVersions {
     grid-template-columns: 1fr auto;
+  }
+
+  .desktopNav {
+    position: relative;
+    z-index: 120;
+    justify-self: start;
+  }
+
+  .desktopNav > :not(.homeLink) {
+    display: none;
+  }
+
+  .desktopNav .homeLink {
+    font-size: 19px;
   }
 
   .mobileMenu {

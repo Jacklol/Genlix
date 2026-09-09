@@ -20,6 +20,7 @@ import {
   uploadCmsImage,
 } from "@/lib/cms/store";
 import type { CmsProductEntity } from "@/lib/cms/types";
+import { CMS_SCHEMA_VERSION } from "@/lib/cms/types";
 
 function getErrorMessage(error: unknown) {
   if (error instanceof CmsFormError || error instanceof CmsMediaValidationError) {
@@ -46,6 +47,7 @@ function revalidateProductPaths(slug: string) {
   revalidatePath("/catalog/meat/lamb");
   revalidatePath("/catalog/beer");
   revalidatePath("/catalog/bird");
+  revalidatePath("/catalog/water");
   revalidatePath(`/catalog/product/${slug}`);
 }
 
@@ -161,6 +163,7 @@ export async function saveProduct(_state: ProductEditorState, formData: FormData
 
         const editable = existing?.draft ?? existing?.published;
         const payload = buildProductPayloadFromForm(formData, editable, uploadedImage);
+        content.schemaVersion = CMS_SCHEMA_VERSION;
         const now = new Date().toISOString();
 
         if (existing) {

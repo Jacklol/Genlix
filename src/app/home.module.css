@@ -137,7 +137,8 @@
 
 .heroVariantSlider,
 .heroVariantVideo,
-.heroVariantSupplyMap {
+.heroVariantSupplyMap,
+.heroVariantJourney {
   display: block;
   background: var(--navy-deep);
 }
@@ -395,6 +396,7 @@
 }
 
 .supplyMapImage,
+.supplyMapCityLights,
 .supplyMapGraphic {
   position: absolute;
   inset: 0;
@@ -404,6 +406,11 @@
 
 .supplyMapImage {
   background: url("/assets/home/hero-map-clean.png") center / 100% 100% no-repeat;
+}
+
+.supplyMapCityLights {
+  background: url("/assets/home/hero-city-lights.svg") center / 100% 100% no-repeat;
+  pointer-events: none;
 }
 
 .supplyMapGraphic {
@@ -437,6 +444,128 @@
 .supplyMapCopy .heroLead {
   max-width: 680px;
   font-size: clamp(17px, 1.05vw, 20px);
+}
+
+.heroVariantJourney {
+  isolation: isolate;
+}
+
+.journeySequence {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.journeyMap,
+.journeyVideo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 1200ms ease-in-out;
+}
+
+.journeyMap {
+  --journey-map-tint: rgba(190, 122, 76, 0.08);
+  z-index: 0;
+  opacity: 1;
+}
+.journeyMapHidden { opacity: 0; }
+.journeyVideo { z-index: 1; opacity: 0; }
+.journeyVideoVisible { opacity: 1; }
+
+/* Lighting is specific to version 6; the original map remains unchanged. */
+.journeyMap .supplyMapImage {
+  filter: brightness(1.65) saturate(1.08);
+}
+
+.journeyMap .supplyMapShade {
+  background:
+    linear-gradient(90deg, rgba(2, 14, 35, 0.8) 0%, rgba(2, 16, 39, 0.62) 27%, rgba(2, 17, 42, 0.2) 47%, rgba(2, 17, 42, 0) 70%),
+    linear-gradient(180deg, rgba(2, 14, 35, 0.02), rgba(2, 14, 35, 0.18)),
+    linear-gradient(var(--journey-map-tint), var(--journey-map-tint));
+}
+
+.supplyMapLights {
+  pointer-events: none;
+}
+
+.supplyCityGlow {
+  fill: url("#supply-city-light");
+}
+
+.supplyCityLight {
+  fill: #ffdbac;
+}
+
+.journeyMap .supplyRoute {
+  stroke: #ffb080;
+  stroke-width: 1.9px;
+}
+
+.journeyMap .supplyOriginPulse,
+.journeyMap .supplyCargoRing {
+  stroke: rgba(255, 180, 126, 0.9);
+}
+
+.journeyMap .supplyCargoGlow {
+  fill: rgba(255, 153, 95, 0.65);
+}
+
+.journeyMap .minskGlow {
+  fill: rgba(255, 179, 113, 0.9);
+}
+
+/* Shared grid space keeps the actions still while captions crossfade. */
+.journeyCaptions {
+  display: grid;
+}
+
+.journeyCaption {
+  grid-area: 1 / 1;
+  min-width: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 400ms ease, transform 400ms ease, visibility 400ms;
+}
+
+.journeyCaptionActive {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.journeyCopy h1 {
+  white-space: pre-line;
+}
+
+.journeyControls {
+  position: absolute;
+  z-index: 4;
+  right: max(48px, calc((100vw - 1760px) / 2));
+  bottom: 42px;
+  display: flex;
+  gap: 8px;
+}
+
+.journeyControls .videoToggle {
+  position: static;
+}
+
+.journeyControls .videoToggle:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 4px;
+}
+
+.journeyNotice {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 12px);
+  width: min(320px, calc(100vw - 32px));
+  margin: 0;
+  text-align: right;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .supplyRouteGroup {
@@ -1510,6 +1639,7 @@
 @media (max-width: 1240px) {
   .shell { width: min(100% - 56px, 1120px); }
   .videoToggle { right: 28px; }
+  .journeyControls { right: 28px; }
   .categoryCard { height: 430px; }
   .contactGrid { gap: 60px; }
 }
@@ -1568,7 +1698,8 @@
   .heroActions a { width: 100%; }
   .heroVariantSlider::before,
   .heroVariantVideo::before,
-  .heroVariantSupplyMap::before { content: none; }
+  .heroVariantSupplyMap::before,
+  .heroVariantJourney::before { content: none; }
   .heroSlide { align-items: flex-end; }
   .heroSlide::after {
     background: linear-gradient(180deg, rgba(3, 19, 45, 0.2) 12%, rgba(3, 19, 45, 0.95) 70%, rgba(3, 19, 45, 0.99));
@@ -1598,6 +1729,11 @@
   .supplyMapShade {
     background: linear-gradient(180deg, rgba(2, 14, 35, 0.08) 10%, rgba(2, 14, 35, 0.34) 42%, rgba(2, 14, 35, 0.96) 68%, rgba(2, 14, 35, 0.99));
   }
+  .journeyMap .supplyMapShade {
+    background:
+      linear-gradient(180deg, rgba(2, 14, 35, 0) 10%, rgba(2, 14, 35, 0.1) 40%, rgba(2, 14, 35, 0.9) 68%, rgba(2, 14, 35, 0.98)),
+      linear-gradient(var(--journey-map-tint), var(--journey-map-tint));
+  }
   .supplyMapShell { align-items: flex-end; }
   .supplyMapCopy {
     width: 100%;
@@ -1609,6 +1745,7 @@
   .minskCountry { font-size: 22px; }
   .minskCaption { font-size: 13px; }
   .supplyMapToggle { right: 16px; bottom: 24px; }
+  .journeyControls { right: 16px; bottom: 24px; }
   .catalogSection,
   .advantagesSection,
   .newsSection,

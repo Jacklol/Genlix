@@ -3,9 +3,9 @@ import type { NewsCategory } from "@/lib/news";
 import type { TextContentBlock } from "@/lib/text-content";
 import { normalizeRichDocument } from "@/lib/rich-text";
 
-export const CMS_SCHEMA_VERSION = 2 as const;
-export function isSupportedCmsSchemaVersion(value: unknown): value is 1 | 2 {
-  return value === 1 || value === CMS_SCHEMA_VERSION;
+export const CMS_SCHEMA_VERSION = 3 as const;
+export function isSupportedCmsSchemaVersion(value: unknown): value is 1 | 2 | 3 {
+  return value === 1 || value === 2 || value === CMS_SCHEMA_VERSION;
 }
 
 const MAX_CMS_SNAPSHOT_BYTES = 8 * 1024 * 1024;
@@ -15,7 +15,7 @@ const MAX_GENERIC_STRING_LENGTH = 100_000;
 const MAX_GENERIC_LIST_LENGTH = 200;
 
 export type CmsEntityStatus = "published" | "draft" | "archived";
-export type CmsProductCategory = "meat" | "beer" | "bird";
+export type CmsProductCategory = "meat" | "beer" | "bird" | "water";
 export type CmsIsoDateTime = string;
 
 export type CmsEntity<TPayload> = {
@@ -54,7 +54,7 @@ export type CmsProductEntity = CmsEntity<CmsProductPayload>;
 export type CmsNewsEntity = CmsEntity<CmsNewsPayload>;
 
 export type CmsContent = {
-  schemaVersion: 1 | typeof CMS_SCHEMA_VERSION;
+  schemaVersion: 1 | 2 | typeof CMS_SCHEMA_VERSION;
   products: CmsProductEntity[];
   news: CmsNewsEntity[];
 };
@@ -72,10 +72,10 @@ export class CmsContentValidationError extends TypeError {
 type UnknownRecord = Record<string, unknown>;
 
 const entityStatuses = ["published", "draft", "archived"] as const;
-const productCategories = ["meat", "beer", "bird"] as const;
+const productCategories = ["meat", "beer", "bird", "water"] as const;
 const newsCategories = ["cases", "supplies", "cooking", "farms"] as const;
 const productBadges = ["хит", "new", "витрина", "ферма"] as const;
-const meatChannels = ["horeca", "retail"] as const;
+const meatChannels = ["horeca", "retail", "both"] as const;
 const meatSpecies = ["beef", "lamb", "pork", "poultry"] as const;
 const meatProductTypes = [
   "steak",
@@ -612,7 +612,7 @@ export function normalizeCmsContent(value: unknown): CmsContent {
   assertKnownKeys(record, ["schemaVersion", "products", "news"], "$");
 
   if (!isSupportedCmsSchemaVersion(record.schemaVersion)) {
-    validationError("$.schemaVersion", `expected 1 or ${CMS_SCHEMA_VERSION}`);
+    validationError("$.schemaVersion", `expected 1, 2 or ${CMS_SCHEMA_VERSION}`);
   }
 
   const productRecords = assertArray(record.products, "$.products", MAX_PRODUCTS);
@@ -626,6 +626,9 @@ export function normalizeCmsContent(value: unknown): CmsContent {
   );
   if (record.schemaVersion === 1 && news.some((entity) => [entity.draft, entity.published].some((payload) => payload?.content.some((block) => block.type === "richText")))) {
     validationError("$.schemaVersion", "rich text requires schema version 2");
+  }
+  if (record.schemaVersion < 3 && products.some((entity) => [entity.draft, entity.published].some((payload) => payload?.category === "water" || payload?.catalog.meat?.channel === "both"))) {
+    validationError("$.schemaVersion", "water and dual sales channels require schema version 3");
   }
 
   assertUniqueEntities(products, "$.products");

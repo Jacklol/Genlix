@@ -39,3 +39,5 @@
   .photoActions button, .makeMain { min-height: 44px; }
   .thumbnailMedia { height: 105px; }
 }
+.categorySection { border: 0; padding: 0; margin: 0; min-width: 0; }
+.categorySection[hidden] { display: none; }

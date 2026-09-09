@@ -74,11 +74,11 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
 
   return (
     <TextArticleLayout
-      activeLink="Новости"
-      backLink={{ href: "/news", label: "← Все новости" }}
+      activeLink="Блог"
+      backLink={{ href: "/news", label: "← В блог" }}
       breadcrumbs={[
         { label: "Главная", href: "/" },
-        { label: "Новости", href: "/news" },
+        { label: "Блог", href: "/news" },
         { label: article.title },
       ]}
       content={article.content}

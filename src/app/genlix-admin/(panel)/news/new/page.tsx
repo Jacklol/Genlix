@@ -14,7 +14,7 @@ export default async function NewNewsPage({ searchParams }: NewNewsPageProps) {
     <main className={styles.content}>
       <header className={styles.pageHeader}>
         <div>
-          <h1>Новая новость</h1>
+          <h1>Новая статья</h1>
           <p>Материал можно сохранить черновиком и опубликовать позже.</p>
         </div>
       </header>

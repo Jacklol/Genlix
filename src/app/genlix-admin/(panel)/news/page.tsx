@@ -16,11 +16,11 @@ export default async function AdminNewsPage() {
     <main className={styles.content}>
       <header className={styles.pageHeader}>
         <div>
-          <h1>Новости</h1>
+          <h1>Блог</h1>
           <p>{articles.length} материалов, включая черновики и архив.</p>
         </div>
         <Link className={styles.primaryLink} href="/genlix-admin/news/new">
-          + Добавить новость
+          + Добавить статью
         </Link>
       </header>
 

@@ -26,7 +26,7 @@ export default async function EditNewsPage({ params, searchParams }: EditNewsPag
     <main className={styles.content}>
       <header className={styles.pageHeader}>
         <div>
-          <h1>{payload?.title ?? "Новость"}</h1>
+          <h1>{payload?.title ?? "Статья блога"}</h1>
           <p>Редактирование материала и обложки.</p>
         </div>
         {entity.published && entity.status !== "archived" ? (

@@ -6,7 +6,7 @@ export type ProductSpec = {
   value: string;
 };
 
-export type MeatSalesChannel = "horeca" | "retail";
+export type MeatSalesChannel = "horeca" | "retail" | "both";
 
 export type MeatSpecies = "beef" | "lamb" | "pork" | "poultry";
 

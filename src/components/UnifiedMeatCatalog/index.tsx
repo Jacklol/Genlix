@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 
 import homeStyles from "@/app/home.module.css";
 import { ProductCard } from "@/components/ProductCard";
+import { CatalogSelect } from "@/components/CatalogSelect";
 import { MeatCutsMap } from "@/components/MeatCutsMap";
 import { meatCutRegions } from "@/lib/meat-cuts";
 import {
@@ -27,6 +28,7 @@ import {
 } from "@/lib/catalog";
 
 import styles from "./UnifiedMeatCatalog.module.css";
+import { catalogHref, commonFilters, matchesChannel, matchesFilter, productHref } from "@/lib/catalog/filter-engine";
 
 type CatalogFilters = Pick<
   MeatCatalogFilters,
@@ -125,12 +127,12 @@ function buildCatalogHref(pathname: string, filters: CatalogFilters, includeSpec
 function filterCatalogProducts(products: MeatCatalogItem[], filters: CatalogFilters) {
   return products.filter(
     (product) =>
-      (!filters.species || product.meat.species === filters.species) &&
-      (!filters.manufacturer || product.brand === filters.manufacturer) &&
-      (!filters.country || product.meat.country === filters.country) &&
-      (!filters.packaging || product.meat.packaging === filters.packaging) &&
-      (!filters.channel || product.meat.channel === filters.channel) &&
-      (!filters.cutId || product.meat.cutIds.includes(filters.cutId)),
+      matchesFilter(product.meat.species, filters.species) &&
+      matchesFilter(product.brand, filters.manufacturer) &&
+      matchesFilter(product.meat.country, filters.country) &&
+      matchesFilter(product.meat.packaging, filters.packaging) &&
+      matchesChannel(product.meat.channel, filters.channel) &&
+      matchesFilter(product.meat.cutIds, filters.cutId),
   );
 }
 
@@ -207,7 +209,7 @@ export function UnifiedMeatCatalog({
   const channelOptions = useMemo(
     () =>
       meatFilterOptions.channels.filter((option) =>
-        availableProducts.some((product) => product.meat.channel === option.value),
+        availableProducts.some((product) => matchesChannel(product.meat.channel, option.value)),
       ),
     [availableProducts],
   );
@@ -257,7 +259,7 @@ export function UnifiedMeatCatalog({
     event.preventDefault();
 
     if (draftFilters.species === "poultry") {
-      router.push("/catalog/bird");
+      router.push(catalogHref("/catalog/bird", commonFilters(draftFilters)));
       return;
     }
 
@@ -400,118 +402,98 @@ export function UnifiedMeatCatalog({
               <div className={styles.filterFields}>
               <label className={styles.field} htmlFor={speciesId}>
                 <span>Вид мяса</span>
-                <select
+                <CatalogSelect
                   id={speciesId}
+                  label="Вид мяса"
+                  options={speciesOptions}
+                  emptyLabel="Все виды мяса"
                   value={draftFilters.species ?? ""}
-                  onChange={(event) =>
+                  onChange={(value) =>
                     setDraftFilters((current) => ({
                       ...current,
-                      species: event.target.value
-                        ? (event.target.value as MeatSpecies)
+                      species: value
+                        ? (value as MeatSpecies)
                         : undefined,
-                      cutId: event.target.value === "beef" ? current.cutId : undefined,
+                      cutId: value === "beef" ? current.cutId : undefined,
                     }))
                   }
-                >
-                  <option value="">Все виды мяса</option>
-                  {speciesOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                />
               </label>
 
               <label className={styles.field} htmlFor={manufacturerId}>
                 <span>Производитель</span>
-                <select
+                <CatalogSelect
                   id={manufacturerId}
+                  label="Производитель"
+                  options={manufacturerOptions}
+                  emptyLabel="Все производители"
                   value={draftFilters.manufacturer ?? ""}
-                  onChange={(event) =>
+                  onChange={(value) =>
                     setDraftFilters((current) => ({
                       ...current,
-                      manufacturer: event.target.value
-                        ? (event.target.value as MeatManufacturer)
+                      manufacturer: value
+                        ? (value as MeatManufacturer)
                         : undefined,
                     }))
                   }
-                >
-                  <option value="">Все производители</option>
-                  {manufacturerOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                />
               </label>
 
               <label className={styles.field} htmlFor={countryId}>
                 <span>Страна</span>
-                <select
+                <CatalogSelect
                   id={countryId}
+                  label="Страна"
+                  options={countryOptions}
+                  emptyLabel="Все страны"
                   value={draftFilters.country ?? ""}
-                  onChange={(event) =>
+                  onChange={(value) =>
                     setDraftFilters((current) => ({
                       ...current,
-                      country: event.target.value
-                        ? (event.target.value as MeatCountry)
+                      country: value
+                        ? (value as MeatCountry)
                         : undefined,
                     }))
                   }
-                >
-                  <option value="">Все страны</option>
-                  {countryOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                />
               </label>
 
               <label className={styles.field} htmlFor={packagingId}>
                 <span>Упаковка</span>
-                <select
+                <CatalogSelect
                   id={packagingId}
+                  label="Упаковка"
+                  options={packagingOptions}
+                  emptyLabel="Любая упаковка"
                   value={draftFilters.packaging ?? ""}
-                  onChange={(event) =>
+                  onChange={(value) =>
                     setDraftFilters((current) => ({
                       ...current,
-                      packaging: event.target.value
-                        ? (event.target.value as MeatPackaging)
+                      packaging: value
+                        ? (value as MeatPackaging)
                         : undefined,
                     }))
                   }
-                >
-                  <option value="">Любая упаковка</option>
-                  {packagingOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                />
               </label>
 
               <label className={styles.field} htmlFor={channelId}>
                 <span>Формат поставки</span>
-                <select
+                <CatalogSelect
                   id={channelId}
+                  label="Формат поставки"
+                  options={channelOptions}
+                  emptyLabel="HoReCa и ритейл"
                   value={draftFilters.channel ?? ""}
-                  onChange={(event) =>
+                  onChange={(value) =>
                     setDraftFilters((current) => ({
                       ...current,
-                      channel: event.target.value
-                        ? (event.target.value as MeatSalesChannel)
+                      channel: value
+                        ? (value as MeatSalesChannel)
                         : undefined,
                     }))
                   }
-                >
-                  <option value="">HoReCa и ритейл</option>
-                  {channelOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                />
               </label>
               </div>
 
@@ -591,7 +573,9 @@ export function UnifiedMeatCatalog({
           {filteredProducts.length > 0 ? (
             <div className={styles.grid}>
               {filteredProducts.map((product) => (
-                <ProductCard key={product.slug} {...product} />
+                <ProductCard key={product.slug} {...product} href={productHref(product.slug, buildCatalogHref(
+                  speciesPage ? `/catalog/meat/${speciesPage}` : "/catalog/meat", appliedFilters, !speciesPage,
+                ))} />
               ))}
             </div>
           ) : (

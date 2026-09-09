@@ -118,23 +118,6 @@
   text-align: right;
 }
 
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 16px;
-}
-
-.tag {
-  padding: 4px 10px;
-  border-radius: 100px;
-  background: var(--card-accent-bg);
-  font-weight: 600;
-  color: var(--ink-deep);
-  font-size: 12px;
-  line-height: 1;
-}
-
 .recommendation {
   display: flex;
   align-items: center;

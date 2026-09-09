@@ -15,6 +15,7 @@ export const catalogSections = [
   { label: "Мясо", href: "/catalog/meat" },
   { label: "Птица", href: "/catalog/bird" },
   { label: "Пиво", href: "/catalog/beer" },
+  { label: "Вода", href: "/catalog/water" },
 ] as const;
 
 export const navItems = [
@@ -22,20 +23,14 @@ export const navItems = [
   { label: "О компании", href: "/about" },
   { label: "Каталог", href: "/#catalog" },
   { label: "Партнёры", href: "/partners" },
-  { label: "Новости", href: "/news" },
+  { label: "Блог", href: "/news" },
   { label: "Контакты", href: "/#contacts" },
 ] as const;
 
 export const footerColumns = [
   {
     title: "Каталог",
-    links: [
-      { label: "Мраморная говядина", href: "/#catalog" },
-      { label: "Фермерская птица", href: "/#catalog" },
-      { label: "Премиальные соки", href: "/#catalog" },
-      { label: "Импортная вода", href: "/#catalog" },
-      { label: "Деликатесы", href: "/#catalog" },
-    ],
+    links: catalogSections,
   },
   {
     title: "Компания",

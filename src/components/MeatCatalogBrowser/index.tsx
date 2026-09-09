@@ -4,6 +4,7 @@ import { useId, useMemo, useState, type Ref } from "react";
 
 import homeStyles from "@/app/home.module.css";
 import { ProductCard } from "@/components/ProductCard";
+import { CatalogSelect } from "@/components/CatalogSelect";
 import {
   meatFilterOptions,
   type MeatCatalogFilters,
@@ -123,12 +124,13 @@ export function MeatCatalogBrowser({
           <div className={styles.filterFields}>
             <label className={styles.field} htmlFor={speciesId}>
               <span>Вид мяса</span>
-              <select
+              <CatalogSelect
                 id={speciesId}
+                label="Вид мяса"
+                options={availableOptions.species}
+                emptyLabel="Все виды"
                 value={filters.species ?? ""}
-                onChange={(event) => {
-                  const value = event.target.value;
-
+                onChange={(value) => {
                   setFilters((current) => ({
                     ...current,
                     species: value
@@ -136,24 +138,18 @@ export function MeatCatalogBrowser({
                       : undefined,
                   }));
                 }}
-              >
-                <option value="">Все виды</option>
-                {availableOptions.species.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              />
             </label>
 
             <label className={styles.field} htmlFor={productTypeId}>
               <span>Тип продукта</span>
-              <select
+              <CatalogSelect
                 id={productTypeId}
+                label="Тип продукта"
+                options={availableOptions.productTypes}
+                emptyLabel="Все типы"
                 value={filters.productType ?? ""}
-                onChange={(event) => {
-                  const value = event.target.value;
-
+                onChange={(value) => {
                   setFilters((current) => ({
                     ...current,
                     productType: value
@@ -161,24 +157,18 @@ export function MeatCatalogBrowser({
                       : undefined,
                   }));
                 }}
-              >
-                <option value="">Все типы</option>
-                {availableOptions.productTypes.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              />
             </label>
 
             <label className={styles.field} htmlFor={packagingId}>
               <span>Фасовка</span>
-              <select
+              <CatalogSelect
                 id={packagingId}
+                label="Фасовка"
+                options={availableOptions.packaging}
+                emptyLabel="Любая фасовка"
                 value={filters.packaging ?? ""}
-                onChange={(event) => {
-                  const value = event.target.value;
-
+                onChange={(value) => {
                   setFilters((current) => ({
                     ...current,
                     packaging: value
@@ -186,14 +176,7 @@ export function MeatCatalogBrowser({
                       : undefined,
                   }));
                 }}
-              >
-                <option value="">Любая фасовка</option>
-                {availableOptions.packaging.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              />
             </label>
           </div>
 

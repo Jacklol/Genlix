@@ -275,7 +275,7 @@ async function verifyRemoteSnapshot(row: SupabaseSnapshotRow) {
 
   if (!isSupportedCmsSchemaVersion(row.schema_version)) {
     throw new Error(
-      `Unsupported CMS schema version ${String(row.schema_version)}; expected 1 or 2`,
+      `Unsupported CMS schema version ${String(row.schema_version)}; expected 1, 2 or 3`,
     );
   }
 
@@ -419,7 +419,7 @@ export async function loadCmsSnapshot(): Promise<CmsSnapshotResult> {
           return {
             mode: "fallback",
             snapshot: createSeedSnapshot(),
-            warning: "База подготовлена, но исходные товары и новости ещё не перенесены.",
+            warning: "База подготовлена, но исходные товары и статьи блога ещё не перенесены.",
             writable: false,
           };
         }

@@ -21,7 +21,7 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
           <Link href="/genlix-admin">Обзор</Link>
           <Link href="/genlix-admin/requests">Заявки</Link>
           <Link href="/genlix-admin/products">Товары</Link>
-          <Link href="/genlix-admin/news">Новости</Link>
+          <Link href="/genlix-admin/news">Блог</Link>
           <Link href="/genlix-admin/backups">История и копии</Link>
         </nav>
         <div className={styles.sidebarFooter}>

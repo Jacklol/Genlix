@@ -6,11 +6,12 @@ import { Autoplay, EffectFade } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import styles from "@/app/home.module.css";
+import { getHeroStorySceneIndex, getRemainingMapIntroMs, heroStoryScenes } from "@/lib/home-hero-story";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
 
-export type HomeHeroVariant = 1 | 2 | 3 | 5;
+export type HomeHeroVariant = 1 | 2 | 3 | 5 | 6;
 
 type HomeHeroProps = {
   variant?: HomeHeroVariant;
@@ -364,7 +365,7 @@ function VideoHero({ active }: { active: boolean }) {
   );
 }
 
-function SupplyMapHero() {
+function SupplyMapHero({ visualOnly = false, forcePaused = false, illuminated = false }: { visualOnly?: boolean; forcePaused?: boolean; illuminated?: boolean } = {}) {
   const [paused, setPaused] = useState(false);
   const [pageHidden, setPageHidden] = useState(false);
 
@@ -375,7 +376,7 @@ function SupplyMapHero() {
     return () => document.removeEventListener("visibilitychange", updateVisibility);
   }, []);
 
-  const animationPaused = paused || pageHidden;
+  const animationPaused = paused || pageHidden || forcePaused;
 
   return (
     <>
@@ -387,6 +388,7 @@ function SupplyMapHero() {
       >
         <div className={styles.supplyMapPlane}>
           <div className={styles.supplyMapImage} />
+          {illuminated ? <div className={styles.supplyMapCityLights} /> : null}
           <svg
             className={styles.supplyMapGraphic}
             viewBox="0 0 1823 863"
@@ -408,6 +410,26 @@ function SupplyMapHero() {
                 </feMerge>
               </filter>
             </defs>
+
+            {illuminated ? (
+              <g className={styles.supplyMapLights}>
+                <defs>
+                  <radialGradient id="supply-city-light">
+                    <stop offset="0" stopColor="#fff5db" stopOpacity="0.95" />
+                    <stop offset="0.12" stopColor="#ffc48f" stopOpacity="0.8" />
+                    <stop offset="0.38" stopColor="#ff8a50" stopOpacity="0.28" />
+                    <stop offset="1" stopColor="#ff7048" stopOpacity="0" />
+                  </radialGradient>
+                </defs>
+                {supplyRoutes.map((route) => (
+                  <g key={route.id} transform={`translate(${route.origin[0]} ${route.origin[1]})`}>
+                    <circle className={styles.supplyCityGlow} r="22" />
+                    <circle className={styles.supplyCityLight} r="1.8" />
+                  </g>
+                ))}
+                <circle className={styles.supplyCityGlow} cx="1168" cy="259" r="52" />
+              </g>
+            ) : null}
 
             <g className={styles.supplyRoutes}>
               {supplyRoutes.map((route) => {
@@ -483,6 +505,7 @@ function SupplyMapHero() {
       </div>
 
       <div className={styles.supplyMapShade} aria-hidden="true" />
+      {!visualOnly ? <>
       <div className={`${styles.shell} ${styles.supplyMapShell}`}>
         <div className={`${styles.heroCopy} ${styles.supplyMapCopy}`}>
           <p className={`${styles.eyebrow} ${styles.heroReveal}`} style={{ animationDelay: "120ms" }}>
@@ -512,8 +535,149 @@ function SupplyMapHero() {
         {paused ? <span className={styles.playIcon} /> : <><i /><i /></>}
         {paused ? "Продолжить" : "Пауза"}
       </button>
+      </> : null}
     </>
   );
+}
+
+function JourneySequence({ onReplay }: { onReplay: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const mapElapsedRef = useRef(0);
+  const [paused, setPaused] = useState(true);
+  const [pageHidden, setPageHidden] = useState(false);
+  const [introComplete, setIntroComplete] = useState(false);
+  const [videoStarted, setVideoStarted] = useState(false);
+  const [mapCycle, setMapCycle] = useState(0);
+  const [sceneIndex, setSceneIndex] = useState(0);
+  const [playbackIssue, setPlaybackIssue] = useState<"blocked" | "error" | null>(null);
+  const motionPaused = paused || pageHidden;
+  const videoVisible = videoStarted && playbackIssue !== "error";
+  const activeSceneIndex = videoVisible ? sceneIndex : 0;
+
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setPaused(preference.matches);
+    const updateVisibility = () => setPageHidden(document.hidden);
+    updatePreference();
+    updateVisibility();
+    preference.addEventListener("change", updatePreference);
+    document.addEventListener("visibilitychange", updateVisibility);
+    return () => {
+      preference.removeEventListener("change", updatePreference);
+      document.removeEventListener("visibilitychange", updateVisibility);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (motionPaused || introComplete) return;
+    const startedAt = performance.now();
+    const timer = window.setTimeout(() => setIntroComplete(true), getRemainingMapIntroMs(mapElapsedRef.current));
+    return () => {
+      window.clearTimeout(timer);
+      mapElapsedRef.current += performance.now() - startedAt;
+    };
+  }, [motionPaused, introComplete]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !introComplete || motionPaused) return;
+    // Keep the final frame during the fade back to the map; rewind only
+    // when the next ten-second map intro has finished.
+    if (video.ended) video.currentTime = 0;
+    let cancelled = false;
+    void video.play().catch(() => {
+      if (!cancelled) setPlaybackIssue(video.error ? "error" : "blocked");
+    });
+    return () => {
+      cancelled = true;
+      video.pause();
+    };
+  }, [introComplete, motionPaused]);
+
+  const returnToMap = () => {
+    mapElapsedRef.current = 0;
+    setIntroComplete(false);
+    setVideoStarted(false);
+    setSceneIndex(0);
+    setMapCycle((value) => value + 1);
+  };
+
+  const togglePlayback = () => {
+    if (playbackIssue && introComplete) {
+      const video = videoRef.current;
+      if (!video) return;
+      if (video.error) video.load();
+      setPlaybackIssue(null);
+      setPaused(false);
+      // Retry directly from the gesture, including browsers that block autoplay.
+      void video.play().catch(() => setPlaybackIssue(video.error ? "error" : "blocked"));
+    } else setPaused((value) => !value);
+  };
+  const playLabel = playbackIssue && introComplete ? "Запустить видео" : paused ? "Продолжить" : "Пауза";
+
+  return (
+    <div className={styles.journeySequence} data-story-stage={videoVisible ? "video" : "map"} data-story-scene={heroStoryScenes[activeSceneIndex].id}>
+      <div className={`${styles.journeyMap} ${videoVisible ? styles.journeyMapHidden : ""}`} aria-hidden="true">
+        <SupplyMapHero key={mapCycle} visualOnly illuminated forcePaused={motionPaused || videoVisible} />
+      </div>
+      <div className={`${styles.journeyVideo} ${videoVisible ? styles.journeyVideoVisible : ""}`} aria-hidden="true">
+        <video
+          className={styles.heroVideo}
+          ref={videoRef}
+          muted
+          playsInline
+          preload="auto"
+          onEnded={returnToMap}
+          onPlaying={() => { setVideoStarted(true); setPlaybackIssue(null); }}
+          onTimeUpdate={(event) => setSceneIndex(getHeroStorySceneIndex(event.currentTarget.currentTime))}
+          onSeeked={(event) => setSceneIndex(getHeroStorySceneIndex(event.currentTarget.currentTime))}
+          onError={() => setPlaybackIssue("error")}
+        >
+          <source src="/assets/home/hero-video.mp4" type="video/mp4" onError={() => setPlaybackIssue("error")} />
+        </video>
+        <div className={styles.heroVideoShade} />
+      </div>
+
+      <div className={`${styles.shell} ${styles.supplyMapShell}`}>
+        <div className={`${styles.heroCopy} ${styles.supplyMapCopy} ${styles.journeyCopy}`}>
+          <div className={styles.journeyCaptions}>
+            {heroStoryScenes.map((scene, index) => (
+              <div
+                key={scene.id}
+                className={`${styles.journeyCaption} ${index === activeSceneIndex ? styles.journeyCaptionActive : ""}`}
+                aria-hidden={index !== activeSceneIndex}
+              >
+                <p className={styles.eyebrow}>{scene.eyebrow}</p>
+                <h1 id={index === activeSceneIndex ? "hero-title" : undefined}>{scene.title}</h1>
+                <p className={styles.heroLead}>{scene.text}</p>
+              </div>
+            ))}
+          </div>
+          <HeroActions />
+        </div>
+      </div>
+
+      <div className={styles.journeyControls}>
+        {playbackIssue && introComplete ? <p className={styles.journeyNotice} role="status">{playbackIssue === "error" ? "Видео не загрузилось. Попробуйте ещё раз." : "Нажмите, чтобы запустить видео."}</p> : null}
+        <button type="button" className={styles.videoToggle} onClick={onReplay} aria-label="Начать с карты заново">Сначала</button>
+        <button
+          type="button"
+          className={styles.videoToggle}
+          onClick={togglePlayback}
+          aria-label={playbackIssue && introComplete ? "Запустить видео" : paused ? "Продолжить показ" : "Приостановить показ"}
+          aria-pressed={paused || Boolean(playbackIssue && introComplete)}
+        >
+          {paused || playbackIssue ? <span className={styles.playIcon} /> : <><i /><i /></>}
+          {playLabel}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function JourneyHero() {
+  const [replay, setReplay] = useState(0);
+  return <JourneySequence key={replay} onReplay={() => setReplay((value) => value + 1)} />;
 }
 
 export function HomeHero({ variant = 1 }: HomeHeroProps) {
@@ -549,6 +713,7 @@ export function HomeHero({ variant = 1 }: HomeHeroProps) {
         variant === 2 ? styles.heroVariantSlider : "",
         variant === 3 ? styles.heroVariantVideo : "",
         variant === 5 ? styles.heroVariantSupplyMap : "",
+        variant === 6 ? styles.heroVariantJourney : "",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -560,6 +725,7 @@ export function HomeHero({ variant = 1 }: HomeHeroProps) {
       {variant === 2 ? <SliderHero /> : null}
       {variant === 3 ? <VideoHero active /> : null}
       {variant === 5 ? <SupplyMapHero /> : null}
+      {variant === 6 ? <JourneyHero /> : null}
     </section>
   );
 }

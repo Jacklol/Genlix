@@ -1,5 +1,6 @@
 import type { ProductBadge } from "@/components/ProductCard";
 import { meatCharacteristicFields } from "@/lib/catalog/meat-characteristics";
+import { allCategoryFields, categoryFields } from "@/lib/catalog/category-fields";
 import type {
   CatalogProduct,
   MeatCookingMethod,
@@ -23,9 +24,9 @@ import type {
 } from "./types";
 import { normalizeCmsImageUrl, normalizeCmsLink } from "./types";
 
-const productCategories = new Set<CmsProductCategory>(["meat", "beer", "bird"]);
+const productCategories = new Set<CmsProductCategory>(["meat", "beer", "bird", "water"]);
 const badges = new Set<ProductBadge>(["хит", "new", "витрина", "ферма"]);
-const channels = new Set<MeatSalesChannel>(["horeca", "retail"]);
+const channels = new Set<MeatSalesChannel>(["horeca", "retail", "both"]);
 const species = new Set<MeatSpecies>(["beef", "lamb", "pork", "poultry"]);
 const productTypes = new Set<MeatProductType>([
   "steak",
@@ -259,6 +260,7 @@ function defaultBreadcrumbs(category: CmsProductCategory, title: string) {
     beer: { href: "/catalog/beer", label: "Пиво" },
     bird: { href: "/catalog/bird", label: "Птица" },
     meat: { href: "/catalog/meat", label: "Мясо" },
+    water: { href: "/catalog/water", label: "Вода" },
   }[category];
 
   return [
@@ -267,6 +269,45 @@ function defaultBreadcrumbs(category: CmsProductCategory, title: string) {
     categoryConfig,
     { label: title },
   ];
+}
+
+function mergeCategoryCharacteristics(category: CmsProductCategory, form: FormData, specs: ProductSpec[], existing: ProductSpec[] = []) {
+  let result = [...specs];
+  // Keep hidden-category and older-form values. Switching categories is not a
+  // request to erase previously saved metadata.
+  const managedLabels = new Set(allCategoryFields.map((field) => field.label));
+  for (const [index, spec] of existing.entries()) {
+    const { label } = spec;
+    if (!managedLabels.has(label)) continue;
+    if (category === "meat" && meatCharacteristicFields.some((field) => field.label === label && form.has(field.name))) continue;
+    if (result.some((item) => item.label === label)) continue;
+    const next = existing.slice(index + 1).find((item) => result.some((entry) => entry.label === item.label));
+    const position = next ? result.findIndex((item) => item.label === next.label) : result.length;
+    result.splice(position, 0, spec);
+  }
+  for (const field of category === "meat" ? [] : categoryFields[category]) {
+    if (!form.has(field.name)) continue;
+    let source = value(form, field.name);
+    if (source.length > 160) throw new CmsFormError(`Поле «${field.label}» слишком длинное`);
+    const unchanged = existing.some((spec) => spec.label === field.label && spec.value === source);
+    if (source && field.options && !field.options.includes(source) && !unchanged) {
+      throw new CmsFormError(`Выберите значение поля «${field.label}» из списка`);
+    }
+    if (source && field.numeric && !unchanged) {
+      const numberSource = source.replace(",", ".").replace(/%$/, "").trim();
+      const valid = field.numeric === "integer" ? /^[1-9]\d{0,6}$/.test(numberSource)
+        : /^\d{1,6}(?:\.\d{1,3})?$/.test(numberSource);
+      if (!valid || (field.numeric === "percent" && Number(numberSource) > 100)) {
+        throw new CmsFormError(`Поле «${field.label}»: укажите ${field.numeric === "integer" ? "целое положительное число" : field.numeric === "percent" ? "число от 0 до 100" : "неотрицательное число"}`);
+      }
+      source = `${Number(numberSource)}${field.numeric === "percent" ? "%" : ""}`;
+    }
+    const position = result.findIndex((spec) => spec.label === field.label);
+    result = result.filter((spec) => spec.label !== field.label);
+    if (source) result.splice(position < 0 ? result.length : position, 0, { label: field.label, value: source });
+  }
+  if (result.length > 100) throw new CmsFormError("Допускается не более 100 характеристик товара");
+  return result;
 }
 
 export function buildProductPayloadFromForm(
@@ -282,9 +323,10 @@ export function buildProductPayloadFromForm(
     "Основное изображение",
   );
   const parsedSpecs = parseSpecs(value(formData, "specs"));
-  const specs = category === "meat" || existing?.category === "meat"
+  const meatSpecs = category === "meat" || existing?.category === "meat"
     ? mergeMeatCharacteristics(formData, parsedSpecs, existing?.catalog.specs)
     : parsedSpecs;
+  const specs = mergeCategoryCharacteristics(category, formData, meatSpecs, existing?.catalog.specs);
   const tags = splitList(value(formData, "tags"), "Метки", 50);
   const recommendation = formData.has("recommendation")
     ? optional(formData, "recommendation")
@@ -297,6 +339,7 @@ export function buildProductPayloadFromForm(
     image,
     specs,
     title,
+    ...(existing?.catalog.meat ? { meat: existing.catalog.meat } : {}),
     ...(badge ? { badge } : {}),
     ...(buttonLabel ? { buttonLabel } : {}),
     ...(recommendation ? { recommendation } : {}),
@@ -354,11 +397,11 @@ export function buildProductPayloadFromForm(
     buttonHref,
     buttonLabel: buttonLabel ?? "Запросить поставку",
     category: required(formData, "detailCategory", "Название категории", 160),
-    cookingMethods: splitList(
+    cookingMethods: formData.has("cookingMethods") ? splitList(
       value(formData, "cookingMethods"),
       "Текстовые способы приготовления",
       50,
-    ),
+    ) : existing?.detail.cookingMethods ?? [],
     description: required(formData, "description", "Описание", 5000),
     images,
     packaging: required(formData, "packagingDisplay", "Фасовка", 300),
@@ -399,7 +442,7 @@ export function parseTextBlocks(source: string): TextContentBlock[] {
     .filter(Boolean);
 
   if (!chunks.length) {
-    throw new CmsFormError("Добавьте текст новости");
+    throw new CmsFormError("Добавьте текст статьи");
   }
 
   return chunks.map((chunk) => {
@@ -450,8 +493,8 @@ export function buildNewsPayloadFromForm(
 }
 
 function parseNewsContent(formData: FormData): TextContentBlock[] {
-  if (!formData.has("richContent")) return parseTextBlocks(required(formData, "content", "Текст новости", 100_000));
-  const source = required(formData, "richContent", "Текст новости", MAX_RICH_TEXT_BYTES);
+  if (!formData.has("richContent")) return parseTextBlocks(required(formData, "content", "Текст статьи", 100_000));
+  const source = required(formData, "richContent", "Текст статьи", MAX_RICH_TEXT_BYTES);
   try {
     return [normalizeRichDocument(JSON.parse(source), { image: normalizeCmsImageUrl, link: normalizeCmsLink })];
   } catch (error) {

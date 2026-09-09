@@ -26,13 +26,13 @@ export default async function AdminDashboard({ searchParams }: AdminDashboardPro
       <header className={styles.pageHeader}>
         <div>
           <h1>Обзор</h1>
-          <p>Каталог и новости Genlix в одном защищённом разделе.</p>
+          <p>Каталог и блог Genlix в одном защищённом разделе.</p>
         </div>
       </header>
 
       {error ? <p className={styles.alert}>{error}</p> : null}
       {initialized ? (
-        <p className={styles.successAlert}>Исходные товары и новости перенесены в базу.</p>
+        <p className={styles.successAlert}>Исходные товары и статьи блога перенесены в базу.</p>
       ) : null}
 
       <div className={styles.statsGrid}>
@@ -41,7 +41,7 @@ export default async function AdminDashboard({ searchParams }: AdminDashboardPro
           <strong>{publishedProducts}</strong>
         </article>
         <article className={styles.statCard}>
-          <span>Опубликовано новостей</span>
+          <span>Опубликовано статей в блоге</span>
           <strong>{publishedNews}</strong>
         </article>
         <article className={styles.statCard}>
@@ -73,7 +73,7 @@ export default async function AdminDashboard({ searchParams }: AdminDashboardPro
         {backendMode === "supabase" && !cms.writable ? (
           <form action={initializeAdminCms} className={styles.initializeForm}>
             <button className={styles.primaryButton} type="submit">
-              Перенести 24 товара и 8 новостей в Supabase
+              Перенести 24 товара и 8 статей блога в Supabase
             </button>
           </form>
         ) : null}

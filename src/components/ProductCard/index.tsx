@@ -82,7 +82,6 @@ export function ProductCard({
   brand,
   title,
   specs,
-  tags = [],
   recommendation,
   buttonLabel = "Запросить розничную поставку",
   buttonHref,
@@ -139,16 +138,6 @@ export function ProductCard({
             </div>
           ))}
         </dl>
-
-        {tags.length > 0 ? (
-          <div className={styles.tags}>
-            {tags.map((tag) => (
-              <span className={styles.tag} key={tag}>
-                {tag}
-              </span>
-            ))}
-          </div>
-        ) : null}
 
         {SHOW_PRODUCT_PAIRINGS && recommendation ? (
           <div className={styles.recommendation}>

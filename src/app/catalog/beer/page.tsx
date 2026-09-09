@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { CatalogCategoryNav } from "@/components/CatalogCategoryNav";
-import { CatalogEmptyState } from "@/components/CatalogEmptyState";
+import { CategoryCatalogSection } from "@/components/CategoryCatalog/Section";
+import type { CatalogQuery } from "@/lib/catalog/filter-engine";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { ProductCardsSection } from "@/components/ProductCardsSection";
 import { SubscribeSection } from "@/components/SubscribeSection";
-import { getPublishedCategoryProducts } from "@/lib/cms/repository";
 import homeStyles from "@/app/home.module.css";
 import styles from "./beer.module.css";
 
@@ -18,8 +16,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function BeerPage() {
-  const products = await getPublishedCategoryProducts("beer");
+export default async function BeerPage({ searchParams }: { searchParams: Promise<CatalogQuery> }) {
 
   return (
     <main className={homeStyles.page}>
@@ -33,8 +30,6 @@ export default async function BeerPage() {
         ]}
       />
 
-      <CatalogCategoryNav activeCategory="beer" />
-
       <section className={styles.hero} aria-labelledby="beer-title">
         <div className={styles.heroInner}>
           <p className={styles.brandBadge}>
@@ -42,17 +37,12 @@ export default async function BeerPage() {
           </p>
           <h1 id="beer-title">Премиальное пиво</h1>
           <p className={styles.heroLead}>
-            Эксклюзивный ассортимент крафтового и импортного пива для ресторанов, баров и розничных
-            торговых сетей. Прямые поставки от ведущих пивоварен мира.
+            Крафтовое и импортное пиво для ресторанов, баров и розничных сетей.
           </p>
         </div>
       </section>
 
-      {products.length > 0 ? (
-        <ProductCardsSection title="Пиво" products={products} />
-      ) : (
-        <CatalogEmptyState categoryName="Пиво" />
-      )}
+      <CategoryCatalogSection category="beer" searchParams={searchParams} />
 
       <SubscribeSection />
       <Footer />

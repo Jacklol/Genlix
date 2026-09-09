@@ -11,8 +11,15 @@
 }
 
 .info {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   padding-top: 8px;
+}
+
+.info > * {
+  flex-shrink: 0;
 }
 
 .metaRow {
@@ -92,32 +99,6 @@
   font-weight: 600;
 }
 
-.cookingTitle {
-  margin: 28px 0 12px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.tag {
-  padding: 8px 16px;
-  border-radius: 100px;
-  font-weight: 600;
-  background: var(--surface-soft);
-  color: var(--text-secondary);
-  font-size: 12px;
-  line-height: 1;
-}
-
 .recommendation {
   display: inline-flex;
   align-items: center;
@@ -146,13 +127,17 @@
   text-decoration-skip-ink: none;
 }
 
+.action {
+  margin-top: auto;
+  padding-top: 28px;
+}
+
 .button {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   min-height: 52px;
-  margin-top: 28px;
   padding: 16px 24px 14px;
   border: 0;
   background: var(--red);

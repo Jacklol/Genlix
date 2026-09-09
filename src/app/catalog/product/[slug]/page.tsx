@@ -14,9 +14,12 @@ import {
 } from "@/lib/cms/repository";
 import { getAbsoluteSiteUrl, serializeJsonLd } from "@/lib/seo";
 import homeStyles from "@/app/home.module.css";
+import Link from "next/link";
+import { safeCatalogReturn, type CatalogQuery } from "@/lib/catalog/filter-engine";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<CatalogQuery>;
 };
 
 export const dynamic = "force-dynamic";
@@ -62,7 +65,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage({ params, searchParams }: ProductPageProps) {
   const { slug } = await params;
   const product = await getPublishedProductBySlug(slug);
 
@@ -71,6 +74,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const similarProducts = await getPublishedSimilarProducts(slug);
+  const returnTo = safeCatalogReturn((await searchParams).returnTo);
   const canonicalUrl = getAbsoluteSiteUrl(
     `/catalog/product/${encodeURIComponent(product.slug)}`,
   );
@@ -137,6 +141,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       />
       <Header activeLink="Каталог" static />
       <Breadcrumbs items={product.breadcrumbs} />
+      {returnTo ? <div className={homeStyles.shell}><Link href={returnTo} style={{ display: "inline-block", marginBottom: 20, fontSize: 13, textDecoration: "underline" }}>← Назад к выбранным товарам</Link></div> : null}
       <ProductDetailHero product={product} additionalSpecs={product.additionalSpecs} />
       {similarProducts.length > 0 ? (
         <ProductCardsSection title="Похожие товары" products={similarProducts} />
