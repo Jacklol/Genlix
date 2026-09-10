@@ -549,8 +549,11 @@ function JourneySequence({ onReplay }: { onReplay: () => void }) {
                 aria-hidden={index !== activeSceneIndex}
               >
                 <p className={styles.eyebrow}>{scene.eyebrow}</p>
-                <h1 id={index === activeSceneIndex ? "hero-title" : undefined}>{scene.title}</h1>
-                <p className={styles.heroLead}>{scene.text}</p>
+                <h1
+                  className={index === 0 ? styles.journeyIntroTitle : undefined}
+                  id={index === activeSceneIndex ? "hero-title" : undefined}
+                >{scene.title}</h1>
+                <p className={`${styles.heroLead} ${index === 0 ? styles.journeyIntroLead : ""}`}>{scene.text}</p>
               </div>
             ))}
           </div>

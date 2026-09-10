@@ -538,6 +538,22 @@
   white-space: pre-line;
 }
 
+/* These children stay mounted across story loops, so the entrance runs once.
+   Keep it separate from the caption container's existing crossfade. */
+.journeyIntroTitle,
+.journeyIntroLead {
+  animation: journeyIntroIn 640ms cubic-bezier(0.22, 1, 0.36, 1) 80ms backwards;
+}
+
+.journeyIntroLead {
+  animation-delay: 220ms;
+}
+
+@keyframes journeyIntroIn {
+  from { opacity: 0; transform: translateX(-32px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 .journeyControls {
   position: absolute;
   z-index: 4;
@@ -1827,6 +1843,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .page *, .page *::before, .page *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+  .journeyIntroTitle,
+  .journeyIntroLead { animation: none; }
   .heroReveal,
   .revealFromRight {
     opacity: 1;
