@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { AdminProductForm } from "@/components/AdminProductForm";
+import { AdminSiteLink } from "@/components/AdminSiteLink";
 import { loadCmsSnapshot } from "@/lib/cms/store";
 
 import styles from "../../../admin.module.css";
@@ -30,9 +31,7 @@ export default async function EditProductPage({ params, searchParams }: EditProd
           <p>Редактирование карточки и параметров фильтрации.</p>
         </div>
         {entity.published && entity.status !== "archived" ? (
-          <a className={styles.secondaryLink} href={`/catalog/product/${entity.slug}`} target="_blank">
-            Открыть на сайте ↗
-          </a>
+          <AdminSiteLink href={`/catalog/product/${entity.slug}`} />
         ) : null}
       </header>
       <AdminProductForm

@@ -6,7 +6,7 @@ import {
 import type { CmsNewsEntity, CmsNewsPayload } from "@/lib/cms/types";
 
 import { changeNewsState } from "@/app/genlix-admin/(panel)/news/actions";
-import { NewsEditorForm, NewsArticleEditor, NewsSubmitButton } from "@/components/AdminNewsEditor";
+import { NewsEditorForm, NewsArticleEditor, NewsSubmitButton, NewsPublicationDateField } from "@/components/AdminNewsEditor";
 import { NewsCoverEditor } from "@/components/AdminNewsEditor/NewsCoverEditor";
 import styles from "@/app/genlix-admin/admin.module.css";
 
@@ -66,10 +66,7 @@ export function AdminNewsForm({ entity, error, revision, saved }: AdminNewsFormP
                   required
                 />
               </label>
-              <label className={styles.field}>
-                <span>Дата публикации</span>
-                <input defaultValue={payload.publishedAt.slice(0, 10)} name="publishedAt" required type="date" />
-              </label>
+              <NewsPublicationDateField initialValue={payload.publishedAt.slice(0, 10)} />
               <label className={styles.field}>
                 <span>Категория</span>
                 <select defaultValue={payload.category} name="category">

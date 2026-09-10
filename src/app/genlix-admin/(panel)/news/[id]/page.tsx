@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { AdminNewsForm } from "@/components/AdminNewsForm";
+import { AdminSiteLink } from "@/components/AdminSiteLink";
 import { loadCmsSnapshot } from "@/lib/cms/store";
 
 import styles from "../../../admin.module.css";
@@ -30,9 +31,7 @@ export default async function EditNewsPage({ params, searchParams }: EditNewsPag
           <p>Редактирование материала и обложки.</p>
         </div>
         {entity.published && entity.status !== "archived" ? (
-          <a className={styles.secondaryLink} href={`/news/${entity.slug}`} target="_blank">
-            Открыть на сайте ↗
-          </a>
+          <AdminSiteLink href={`/news/${entity.slug}`} />
         ) : null}
       </header>
       <AdminNewsForm

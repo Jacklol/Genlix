@@ -18,7 +18,7 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
           GENLIX <span>admin</span>
         </Link>
         <nav aria-label="Разделы управления">
-          <Link href="/genlix-admin">Обзор</Link>
+          <Link href="/genlix-admin">Главная</Link>
           <Link href="/genlix-admin/requests">Заявки</Link>
           <Link href="/genlix-admin/products">Товары</Link>
           <Link href="/genlix-admin/news">Блог</Link>

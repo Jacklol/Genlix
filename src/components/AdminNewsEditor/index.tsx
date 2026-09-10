@@ -6,6 +6,7 @@ import { saveNews } from "@/app/genlix-admin/(panel)/news/actions";
 import type { TextContentBlock } from "@/lib/text-content";
 import { RICH_TEXT_VERSION, toEditorBlocks, type RichBlock } from "@/lib/rich-text";
 import { RichArticleContent } from "@/components/RichArticleContent";
+import { AdminDateField } from "@/components/AdminDateField";
 import adminStyles from "@/app/genlix-admin/admin.module.css";
 import articleStyles from "@/components/TextArticleLayout/TextArticleLayout.module.css";
 import styles from "./AdminNewsEditor.module.css";
@@ -64,6 +65,11 @@ export function NewsEditorForm({ children, initialTitle, initialTag }: { childre
 export function NewsSubmitButton({ intent, children, className }: { intent: "draft" | "publish"; children: ReactNode; className?: string }) {
   const { pending, uploading, ready } = useNewsEditor();
   return <button disabled={pending || uploading > 0 || !ready} name="intent" value={intent} type="submit" className={className}>{pending ? "Сохраняем…" : uploading ? "Загружаем фото…" : children}</button>;
+}
+
+export function NewsPublicationDateField({ initialValue }: { initialValue: string }) {
+  const { markDirty } = useNewsEditor();
+  return <AdminDateField name="publishedAt" label="Дата публикации" initialValue={initialValue} required onChange={markDirty} />;
 }
 
 export function NewsArticleEditor({ content }: { content: TextContentBlock[] }) {

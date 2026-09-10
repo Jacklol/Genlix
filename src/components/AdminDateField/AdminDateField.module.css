@@ -1,0 +1,44 @@
+.root { min-width: 0; }
+.control { position: relative; min-width: 0; }
+.root .dateInput { padding-right: 50px; }
+.toggle {
+  position: absolute; top: 0; right: 2px; bottom: 0; width: 44px;
+  display: grid; place-items: center; border: 0; border-radius: 8px;
+  color: #17375f; background: transparent; cursor: pointer;
+}
+.toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.popup {
+  position: absolute; z-index: 50; top: calc(100% + 8px); left: 0; width: 100%;
+  padding: 12px; border: 1px solid #d8dee8; border-radius: 12px;
+  background: #fff; color: #071b3c; box-shadow: 0 12px 36px rgba(9, 32, 67, .16);
+  overflow-y: auto; overscroll-behavior: contain;
+}
+.popup[data-above] { top: auto; bottom: calc(100% + 8px); }
+.toolbar { display: grid; grid-template-columns: 28px minmax(0, 1fr) 64px 28px; align-items: center; gap: 4px; margin-bottom: 12px; }
+.root .month, .root .year {
+  min-width: 0; min-height: 36px; padding: 6px; border: 1px solid #e0e5ec;
+  border-radius: 6px; font-size: 13px; line-height: 1.2;
+}
+.root .month { padding-right: 22px; background-position: right 5px center; background-size: 14px; }
+.root .year { padding: 6px 3px; text-align: center; appearance: textfield; }
+.year::-webkit-inner-spin-button, .year::-webkit-outer-spin-button { appearance: none; margin: 0; }
+.nav { width: 28px; min-height: 36px; display: grid; place-items: center; border: 0; border-radius: 6px; background: transparent; color: #17375f; cursor: pointer; }
+.nav svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.grid { display: grid; gap: 3px; }
+.weekday { padding: 5px 0; color: #69768a; text-align: center; font-size: 11px; font-weight: 700; }
+.day { display: block; width: 100%; min-height: 34px; padding: 3px 0; border: 1px solid transparent; border-radius: 7px; background: transparent; color: #071b3c; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.day[data-outside] { color: #8491a3; }
+.day[aria-current="date"] { border-color: #d94b45; }
+.day[data-selected] { color: #fff; background: #17375f; }
+.day:hover:not([data-selected]), .nav:hover, .toggle:hover { background: #edf2f8; }
+.footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; padding-top: 8px; border-top: 1px solid #e8ecf1; }
+.footer button { min-height: 36px; padding: 4px 2px; border: 0; background: none; color: #17375f; font: inherit; font-size: 12px; cursor: pointer; }
+.root :focus-visible { outline: 2px solid #17375f; outline-offset: 2px; }
+.root button:disabled { opacity: .4; cursor: default; }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 400px) {
+  .popup { padding: 8px; }
+  .toolbar { gap: 2px; grid-template-columns: 24px minmax(0, 1fr) 58px 24px; }
+  .nav { width: 24px; }
+}

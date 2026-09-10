@@ -108,6 +108,15 @@
   cursor: pointer;
 }
 
+.field select {
+  appearance: none;
+  padding-right: 42px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m3 5.5 5 5 5-5' stroke='%23071b3c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+}
+
 .loginForm button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
@@ -229,6 +238,11 @@
   line-height: 1;
 }
 
+.pageHeader > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .pageHeader p {
   margin: 0;
   color: #69768a;
@@ -246,6 +260,28 @@
   font-weight: 800;
   text-decoration: none;
 }
+
+.siteLink {
+  flex-shrink: 0;
+  gap: 8px;
+  padding-block: 12px;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.siteLink svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.siteLink:hover { background: #f8fafd; }
+.siteLink:focus-visible { outline: 2px solid #17375f; outline-offset: 3px; }
 
 .primaryLink {
   color: #fff;

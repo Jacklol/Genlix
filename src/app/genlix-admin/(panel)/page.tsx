@@ -25,7 +25,7 @@ export default async function AdminDashboard({ searchParams }: AdminDashboardPro
     <main className={styles.content}>
       <header className={styles.pageHeader}>
         <div>
-          <h1>Обзор</h1>
+          <h1>Главная</h1>
           <p>Каталог и блог Genlix в одном защищённом разделе.</p>
         </div>
       </header>
