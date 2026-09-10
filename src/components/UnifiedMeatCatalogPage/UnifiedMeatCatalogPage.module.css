@@ -19,7 +19,7 @@
   position: relative;
   min-height: clamp(260px, 25vw, 360px);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   overflow: hidden;
   background:
     linear-gradient(90deg, rgba(2, 17, 43, 0.94) 0%, rgba(2, 17, 43, 0.78) 42%, rgba(2, 17, 43, 0.24) 76%),
@@ -30,7 +30,7 @@
 
 .heroCopy {
   max-width: 900px;
-  padding: 50px 0 48px;
+  padding: 48px 0;
 }
 
 .heroCopy p {
@@ -71,7 +71,7 @@
   }
 
   .heroCopy {
-    padding: 38px 0 34px;
+    padding: 36px 0;
   }
 
   .heroCopy h1 {

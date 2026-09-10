@@ -1,59 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
-import type { Swiper as SwiperType } from "swiper";
-import { Autoplay, EffectFade } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { lazy, Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
+import Image from "next/image";
+import { HeroActions } from "./HeroActions";
 
 import styles from "@/app/home.module.css";
-import { getHeroStorySceneIndex, getRemainingMapIntroMs, heroStoryScenes } from "@/lib/home-hero-story";
+import { getHeroStorySceneIndex, getRemainingMapIntroMs, getGrowingRouteDelayMs, heroMapScene, heroStoryScenes, HERO_STORY_VIDEO_SRC } from "@/lib/home-hero-story";
 
-import "swiper/css";
-import "swiper/css/effect-fade";
+const SliderHero = lazy(() => import("./SliderHero"));
+const journeyScenes = [heroMapScene, ...heroStoryScenes];
 
 export type HomeHeroVariant = 1 | 2 | 3 | 5 | 6;
 
 type HomeHeroProps = {
   variant?: HomeHeroVariant;
 };
-
-const slides = [
-  {
-    eyebrow: "01 / Производители",
-    title: <>Отбираем лучшее<br />у проверенных поставщиков</>,
-    text: "Прямые контракты и строгий контроль качества каждой партии.",
-    image: "/assets/about/control1.png",
-    position: "center",
-  },
-  {
-    eyebrow: "02 / Логистика",
-    title: <>Доставляем точно<br />и без разрывов</>,
-    text: "Собственная логистика и отгрузка для HoReCa и ритейла 24/7.",
-    image: "/assets/about/control2.png",
-    position: "center",
-  },
-  {
-    eyebrow: "03 / Хранение",
-    title: <>Сохраняем качество<br />на каждом градусе</>,
-    text: "Контролируем температурный режим, хранение и созревание премиального мяса.",
-    image: "/assets/about/control3.png",
-    position: "center",
-  },
-  {
-    eyebrow: "04 / Ресторан",
-    title: <>Продукт, которому<br />доверяют шефы</>,
-    text: "Поставляем сырьё, которое раскрывается в блюде и возвращает гостя в ресторан.",
-    image: "/assets/news/news_hero.png",
-    position: "center",
-  },
-  {
-    eyebrow: "05 / Ассортимент",
-    title: <>Всё для сильной<br />премиальной карты</>,
-    text: "Мясо, птица, пиво, вода и гастрономические дополнения — у одного поставщика.",
-    image: "/assets/home/product-strip.png",
-    position: "center",
-  },
-] as const;
 
 const belarusOutline =
   "M 1185.8 268.8 L 1183.5 263.2 L 1189.8 260.5 L 1181.5 252.4 L 1182.1 247.5 L 1170.1 244 L 1163.8 246.9 L 1163.1 249.1 L 1164.5 249.5 L 1160.2 251.9 L 1160.1 256.3 L 1150.4 257.6 L 1152.3 265.1 L 1149 267.7 L 1151 268.9 L 1150.9 272.3 L 1157.9 269.7 L 1180.5 274 L 1182.2 268.9 Z";
@@ -184,19 +145,6 @@ const supplyWaveDuration = 6;
 const supplyWaveCount = 5;
 const supplyCycleDuration = supplyWaveDuration * supplyWaveCount;
 
-function HeroActions() {
-  return (
-    <div className={`${styles.heroActions} ${styles.heroReveal}`} style={{ animationDelay: "560ms" }}>
-      <a className={styles.primaryButton} href="#contacts">
-        Стать партнёром
-      </a>
-      <a className={styles.secondaryButton} href="#catalog">
-        Перейти в каталог
-      </a>
-    </div>
-  );
-}
-
 function StaticHero() {
   return (
     <>
@@ -221,87 +169,6 @@ function StaticHero() {
         </div>
       </div>
     </>
-  );
-}
-
-function SliderArrow({ next = false }: { next?: boolean }) {
-  return (
-    <svg viewBox="0 0 28 12" aria-hidden="true">
-      <path d={next ? "M0 6h26m-5-5 5 5-5 5" : "M28 6H2m5-5-5 5 5 5"} />
-    </svg>
-  );
-}
-
-function SliderHero() {
-  const [swiper, setSwiper] = useState<SwiperType | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updatePreference = () => setReducedMotion(media.matches);
-    updatePreference();
-    media.addEventListener("change", updatePreference);
-    return () => media.removeEventListener("change", updatePreference);
-  }, []);
-
-  return (
-    <div className={styles.sliderHero}>
-      <Swiper
-        className={styles.heroSlider}
-        modules={[Autoplay, EffectFade]}
-        effect="fade"
-        fadeEffect={{ crossFade: true }}
-        speed={900}
-        loop
-        autoplay={reducedMotion ? false : { delay: 5200, disableOnInteraction: false }}
-        onSwiper={setSwiper}
-        onRealIndexChange={(instance) => setActiveIndex(instance.realIndex)}
-      >
-        {slides.map((slide, index) => (
-          <SwiperSlide className={styles.heroSlide} key={slide.eyebrow}>
-            <div
-              className={styles.heroSlideImage}
-              style={{ backgroundImage: `url("${slide.image}")`, backgroundPosition: slide.position }}
-              aria-hidden="true"
-            />
-            <div className={styles.shell}>
-              <div className={styles.sliderCopy}>
-                <p className={styles.eyebrow}>{slide.eyebrow}</p>
-                <h1 id={index === 0 ? "hero-title" : undefined}>{slide.title}</h1>
-                <p className={styles.heroLead}>{slide.text}</p>
-                <HeroActions />
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-
-      <div className={`${styles.shell} ${styles.heroSliderUi}`}>
-        <div className={styles.heroProgress} aria-label={`Слайд ${activeIndex + 1} из ${slides.length}`}>
-          {slides.map((slide, index) => (
-            <button
-              type="button"
-              className={index === activeIndex ? styles.heroProgressActive : undefined}
-              aria-label={`Перейти к слайду ${index + 1}`}
-              aria-current={index === activeIndex ? "true" : undefined}
-              key={slide.eyebrow}
-              onClick={() => swiper?.slideToLoop(index)}
-            >
-              <span />
-            </button>
-          ))}
-        </div>
-        <div className={styles.heroSliderArrows}>
-          <button type="button" aria-label="Предыдущий слайд" onClick={() => swiper?.slidePrev()}>
-            <SliderArrow />
-          </button>
-          <button type="button" aria-label="Следующий слайд" onClick={() => swiper?.slideNext()}>
-            <SliderArrow next />
-          </button>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -365,7 +232,15 @@ function VideoHero({ active }: { active: boolean }) {
   );
 }
 
-function SupplyMapHero({ visualOnly = false, forcePaused = false, illuminated = false }: { visualOnly?: boolean; forcePaused?: boolean; illuminated?: boolean } = {}) {
+type SupplyMapHeroProps = {
+  visualOnly?: boolean;
+  forcePaused?: boolean;
+  illuminated?: boolean;
+  growing?: boolean;
+  onMapReady?: () => void;
+};
+
+function SupplyMapHero({ visualOnly = false, forcePaused = false, illuminated = false, growing = false, onMapReady }: SupplyMapHeroProps = {}) {
   const [paused, setPaused] = useState(false);
   const [pageHidden, setPageHidden] = useState(false);
 
@@ -381,13 +256,23 @@ function SupplyMapHero({ visualOnly = false, forcePaused = false, illuminated = 
   return (
     <>
       <div
-        className={[styles.supplyMapLayer, animationPaused ? styles.supplyMapPaused : ""]
+        className={[styles.supplyMapLayer, growing ? styles.supplyMapGrowing : "", animationPaused ? styles.supplyMapPaused : ""]
           .filter(Boolean)
           .join(" ")}
         aria-hidden="true"
       >
         <div className={styles.supplyMapPlane}>
-          <div className={styles.supplyMapImage} />
+          <Image
+            className={styles.supplyMapImage}
+            src="/assets/home/hero-map-clean.png"
+            alt=""
+            fill
+            sizes="(max-aspect-ratio: 1823/863) 212vh, 100vw"
+            quality={90}
+            preload
+            onLoad={onMapReady}
+            onError={onMapReady}
+          />
           {illuminated ? <div className={styles.supplyMapCityLights} /> : null}
           <svg
             className={styles.supplyMapGraphic}
@@ -432,16 +317,19 @@ function SupplyMapHero({ visualOnly = false, forcePaused = false, illuminated = 
             ) : null}
 
             <g className={styles.supplyRoutes}>
-              {supplyRoutes.map((route) => {
+              {supplyRoutes.map((route, index) => {
                 const routeStyle = {
                   "--supply-delay": `${route.wave * supplyWaveDuration + route.phase}s`,
                   "--supply-cycle": `${supplyCycleDuration}s`,
+                  "--route-reveal-delay": `${getGrowingRouteDelayMs(index)}ms`,
+                  "--route-cargo-delay": `${getGrowingRouteDelayMs(index) + 1100}ms`,
                 } as CSSProperties;
 
                 return (
                   <g
                     className={styles.supplyRouteGroup}
                     data-wave={route.wave}
+                    data-route-index={index}
                     key={route.id}
                     style={routeStyle}
                   >
@@ -550,9 +438,11 @@ function JourneySequence({ onReplay }: { onReplay: () => void }) {
   const [mapCycle, setMapCycle] = useState(0);
   const [sceneIndex, setSceneIndex] = useState(0);
   const [playbackIssue, setPlaybackIssue] = useState<"blocked" | "error" | null>(null);
+  const [mapReady, setMapReady] = useState(false);
+  const [videoEnabled, setVideoEnabled] = useState(false);
   const motionPaused = paused || pageHidden;
   const videoVisible = videoStarted && playbackIssue !== "error";
-  const activeSceneIndex = videoVisible ? sceneIndex : 0;
+  const activeSceneIndex = videoVisible ? sceneIndex + 1 : 0;
 
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -569,14 +459,21 @@ function JourneySequence({ onReplay }: { onReplay: () => void }) {
   }, []);
 
   useEffect(() => {
-    if (motionPaused || introComplete) return;
+    if (!mapReady || motionPaused || introComplete) return;
     const startedAt = performance.now();
     const timer = window.setTimeout(() => setIntroComplete(true), getRemainingMapIntroMs(mapElapsedRef.current));
     return () => {
       window.clearTimeout(timer);
       mapElapsedRef.current += performance.now() - startedAt;
     };
-  }, [motionPaused, introComplete]);
+  }, [mapReady, motionPaused, introComplete]);
+
+  useEffect(() => {
+    // Let the map paint first. Reduced-motion/hidden tabs don't fetch video.
+    if (!mapReady || motionPaused || videoEnabled) return;
+    const timer = window.setTimeout(() => setVideoEnabled(true), 1500);
+    return () => window.clearTimeout(timer);
+  }, [mapReady, motionPaused, videoEnabled]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -592,7 +489,7 @@ function JourneySequence({ onReplay }: { onReplay: () => void }) {
       cancelled = true;
       video.pause();
     };
-  }, [introComplete, motionPaused]);
+  }, [introComplete, motionPaused, videoEnabled]);
 
   const returnToMap = () => {
     mapElapsedRef.current = 0;
@@ -616,32 +513,36 @@ function JourneySequence({ onReplay }: { onReplay: () => void }) {
   const playLabel = playbackIssue && introComplete ? "Запустить видео" : paused ? "Продолжить" : "Пауза";
 
   return (
-    <div className={styles.journeySequence} data-story-stage={videoVisible ? "video" : "map"} data-story-scene={heroStoryScenes[activeSceneIndex].id}>
+    <div className={styles.journeySequence} data-map-ready={mapReady} data-story-stage={videoVisible ? "video" : "map"} data-story-scene={journeyScenes[activeSceneIndex].id}>
       <div className={`${styles.journeyMap} ${videoVisible ? styles.journeyMapHidden : ""}`} aria-hidden="true">
-        <SupplyMapHero key={mapCycle} visualOnly illuminated forcePaused={motionPaused || videoVisible} />
+        <SupplyMapHero key={mapCycle} visualOnly illuminated growing onMapReady={() => setMapReady(true)} forcePaused={!mapReady || motionPaused || videoVisible} />
       </div>
       <div className={`${styles.journeyVideo} ${videoVisible ? styles.journeyVideoVisible : ""}`} aria-hidden="true">
-        <video
+        {videoEnabled ? <video
           className={styles.heroVideo}
           ref={videoRef}
           muted
           playsInline
           preload="auto"
           onEnded={returnToMap}
-          onPlaying={() => { setVideoStarted(true); setPlaybackIssue(null); }}
+          onPlaying={(event) => {
+            setSceneIndex(getHeroStorySceneIndex(event.currentTarget.currentTime));
+            setVideoStarted(true);
+            setPlaybackIssue(null);
+          }}
           onTimeUpdate={(event) => setSceneIndex(getHeroStorySceneIndex(event.currentTarget.currentTime))}
           onSeeked={(event) => setSceneIndex(getHeroStorySceneIndex(event.currentTarget.currentTime))}
           onError={() => setPlaybackIssue("error")}
         >
-          <source src="/assets/home/hero-video.mp4" type="video/mp4" onError={() => setPlaybackIssue("error")} />
-        </video>
+          <source src={HERO_STORY_VIDEO_SRC} type="video/mp4" onError={() => setPlaybackIssue("error")} />
+        </video> : null}
         <div className={styles.heroVideoShade} />
       </div>
 
       <div className={`${styles.shell} ${styles.supplyMapShell}`}>
         <div className={`${styles.heroCopy} ${styles.supplyMapCopy} ${styles.journeyCopy}`}>
           <div className={styles.journeyCaptions}>
-            {heroStoryScenes.map((scene, index) => (
+            {journeyScenes.map((scene, index) => (
               <div
                 key={scene.id}
                 className={`${styles.journeyCaption} ${index === activeSceneIndex ? styles.journeyCaptionActive : ""}`}
@@ -722,7 +623,7 @@ export function HomeHero({ variant = 1 }: HomeHeroProps) {
       data-hero-version={variant}
     >
       {variant === 1 ? <StaticHero /> : null}
-      {variant === 2 ? <SliderHero /> : null}
+      {variant === 2 ? <Suspense fallback={<StaticHero />}><SliderHero /></Suspense> : null}
       {variant === 3 ? <VideoHero active /> : null}
       {variant === 5 ? <SupplyMapHero /> : null}
       {variant === 6 ? <JourneyHero /> : null}

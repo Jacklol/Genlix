@@ -1,13 +1,13 @@
-import type { CSSProperties } from "react";
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 
-import { AdvantagesSlider } from "@/components/AdvantagesSlider";
+import { DeferredAdvantages, DeferredTestimonials } from "@/components/HomeDeferredSliders";
 import { Footer } from "@/components/Footer";
 import { HomeExperience } from "@/components/HomeExperience";
 import { PhilosophyStat } from "@/components/PhilosophyStat";
 import { Reveal } from "@/components/Reveal";
-import { TestimonialsSlider } from "@/components/TestimonialsSlider";
 import { YandexMap } from "@/components/YandexMap";
 import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
 import { ContactHoursIcon } from "@/components/icons/ContactHoursIcon";
@@ -15,7 +15,7 @@ import { ContactLocationIcon } from "@/components/icons/ContactLocationIcon";
 import { ContactPhoneIcon } from "@/components/icons/ContactPhoneIcon";
 import { ContactRequestForm } from "@/components/ContactRequestForm";
 import { getContactProductContext } from "@/lib/contact-requests/context";
-import { getPublishedNewsArticles } from "@/lib/cms/repository";
+import { HomeBlog, HomeBlogPlaceholder } from "@/components/HomeBlog";
 import styles from "./home.module.css";
 
 export const dynamic = "force-dynamic";
@@ -34,11 +34,6 @@ const categories = [
   { name: "Вода", image: "/assets/home/category4.jpg", href: "/catalog/water" },
   { name: "Снеки", image: "/assets/home/category5.jpg", href: "#contacts" },
 ] as const;
-
-function getNewsGridClass(index: number) {
-  const pattern = index % 4;
-  return pattern === 0 || pattern === 3 ? styles.newsGridWide : styles.newsGridNarrow;
-}
 
 function Heading({
   eyebrow,
@@ -61,15 +56,13 @@ function Heading({
   );
 }
 
-export default async function Home({ searchParams }: HomeProps) {
+async function HomeContactForm({ searchParams }: HomeProps) {
   const { product } = await searchParams;
   const productSlug = Array.isArray(product) ? product[0] : product;
-  const [newsArticles, contactProduct] = await Promise.all([
-    getPublishedNewsArticles(),
-    getContactProductContext(productSlug),
-  ]);
-  const homeNews = newsArticles.slice(0, 4);
+  return <ContactRequestForm product={await getContactProductContext(productSlug)} />;
+}
 
+export default function Home({ searchParams }: HomeProps) {
   return (
     <main className={styles.page} id="top">
       <HomeExperience />
@@ -86,8 +79,15 @@ export default async function Home({ searchParams }: HomeProps) {
                 <a
                   className={styles.categoryCard}
                   href={category.href}
-                  style={{ "--category-image": `url("${category.image}")` } as CSSProperties}
                 >
+                  <Image
+                    className={styles.categoryImage}
+                    src={category.image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 600px) 80vw, (max-width: 920px) 48vw, 25vw"
+                    loading="lazy"
+                  />
                   <span className={styles.categoryShade} />
                   <span className={styles.categoryLabel}>
                     {category.name}
@@ -123,7 +123,7 @@ export default async function Home({ searchParams }: HomeProps) {
           <Reveal variant="fade-up">
             <Heading eyebrow="Почему выбирают нас" first="Преимущества для" accent="партнёров" id="advantages-title" />
           </Reveal>
-          <AdvantagesSlider />
+          <DeferredAdvantages />
           <div className={styles.centeredCta}>
             <a className={styles.outlineButton} href="#contacts">Стать партнёром</a>
           </div>
@@ -136,43 +136,14 @@ export default async function Home({ searchParams }: HomeProps) {
             <h2 id="testimonials-title">Что говорят о нас<br /><span>наши клиенты</span></h2>
           </Reveal>
           <Reveal className={styles.testimonialSlider} delay={120} variant="fade-right">
-            <TestimonialsSlider />
+            <DeferredTestimonials />
           </Reveal>
         </div>
       </section>
 
-      <section className={styles.newsSection} id="news" aria-labelledby="news-title">
-        <div className={styles.shell}>
-          <div className={styles.newsHeading}>
-            <Reveal variant="fade-up">
-              <Heading eyebrow="Блог" first="События индустрии" accent="и опыт компании" id="news-title" />
-            </Reveal>
-            <Link className={styles.outlineButton} href="/news">Перейти в блог</Link>
-          </div>
-          <div className={styles.newsGrid} id="news-grid">
-            {homeNews.map((item, index) => (
-              <Reveal
-                className={getNewsGridClass(index)}
-                delay={index * 100}
-                key={item.slug}
-                variant="fade-up"
-              >
-                <a
-                  className={styles.newsCard}
-                  href={item.href}
-                  style={{ "--news-image": `url("${item.image}")` } as CSSProperties}
-                >
-                  <span className={styles.newsShade} />
-                  <div>
-                    <span>{item.tag}</span>
-                    <h3>{item.title}</h3>
-                  </div>
-                </a>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      <Suspense fallback={<HomeBlogPlaceholder />}>
+        <HomeBlog />
+      </Suspense>
 
       <section className={styles.contactSection} id="contacts" aria-labelledby="contacts-title">
         <div className={`${styles.shell} ${styles.contactGrid}`}>
@@ -222,7 +193,14 @@ export default async function Home({ searchParams }: HomeProps) {
             </div>
           </Reveal>
           <Reveal delay={140} variant="fade-right">
-            <ContactRequestForm product={contactProduct} />
+            <Suspense fallback={
+              <div className={styles.contactForm} style={{ minHeight: 640 }} aria-busy="true">
+                <h3>Заявка на партнёрство</h3>
+                <p>Загружаем форму…</p>
+              </div>
+            }>
+              <HomeContactForm searchParams={searchParams} />
+            </Suspense>
           </Reveal>
         </div>
       </section>
