@@ -132,6 +132,16 @@
   padding-top: 28px;
 }
 
+.videos {
+  margin-top: 40px;
+}
+
+@media (min-width: 1101px) {
+  .layoutWithVideos {
+    --product-photo-height: clamp(600px, 55vw, 753px);
+  }
+}
+
 .button {
   display: flex;
   align-items: center;
@@ -170,6 +180,10 @@
 }
 
 @media (max-width: 600px) {
+  .videos {
+    margin-top: 24px;
+  }
+
   .section {
     padding-bottom: 56px;
   }

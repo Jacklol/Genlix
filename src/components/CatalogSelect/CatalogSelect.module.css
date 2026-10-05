@@ -20,6 +20,22 @@
   transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 .value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inlineLabel { color: var(--muted); font-weight: 500; }
+.trigger[data-variant="filter"], .trigger[data-variant="dark"] {
+  min-height: 50px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.trigger[data-variant="dark"] {
+  border-color: rgba(255, 255, 255, .4);
+  background: rgba(255, 255, 255, .15);
+  color: var(--paper);
+}
+.trigger[data-variant="dark"] .inlineLabel { color: rgba(255, 255, 255, .7); }
+.trigger[data-variant="dark"] .chevron { color: var(--paper); }
+.trigger[data-variant="dark"]:hover:not(:disabled), .trigger[data-variant="dark"][data-open] { border-color: var(--paper); }
+.trigger[data-variant="dark"]:focus-visible { outline-color: var(--paper); }
 .chevron { width: 16px; height: 16px; flex-shrink: 0; color: var(--navy); transition: transform 140ms ease; }
 .chevron path, .option svg path { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .trigger:hover:not(:disabled), .trigger[data-open] { border-color: var(--navy); }
@@ -60,9 +76,18 @@
 .option[data-active] { background: var(--surface-soft); box-shadow: inset 2px 0 var(--navy); }
 .option[aria-selected="true"] { color: var(--navy); font-weight: 750; }
 .option svg { flex-shrink: 0; width: 16px; height: 16px; }
+.list[data-variant="filter"], .list[data-variant="dark"] { border-radius: 8px; }
+.list[data-variant="dark"] {
+  border-color: rgba(255, 255, 255, .4);
+  background: #030f22;
+  color: var(--paper);
+}
+.list[data-variant="dark"] .option[data-active] { background: rgba(255, 255, 255, .12); box-shadow: inset 2px 0 var(--paper); }
+.list[data-variant="dark"] .option[aria-selected="true"] { color: var(--paper); }
 @keyframes appear { from { opacity: 0; } to { opacity: 1; } }
 @media (max-width: 600px) {
   .trigger { min-height: 44px; font-size: 16px; }
+  .trigger[data-variant="filter"], .trigger[data-variant="dark"] { font-size: 14px; }
   .option { min-height: 44px; font-size: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {

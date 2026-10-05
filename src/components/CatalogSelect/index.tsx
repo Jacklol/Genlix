@@ -13,12 +13,13 @@ type CatalogSelectProps = {
   options: readonly SelectOption[];
   emptyLabel?: string;
   disabled?: boolean;
+  variant?: "default" | "filter" | "dark";
   onChange: (value: string) => void;
 };
 
 /** Select-only combobox: focus stays on the trigger, navigation doesn't commit
  * until Enter/Space/Tab or an option click; Escape cancels the pending choice. */
-export function CatalogSelect({ id, label, value = "", options, emptyLabel = "Все", disabled = false, onChange }: CatalogSelectProps) {
+export function CatalogSelect({ id, label, value = "", options, emptyLabel = "Все", disabled = false, variant = "default", onChange }: CatalogSelectProps) {
   const generatedId = useId();
   const triggerId = id ?? `catalog-select-${generatedId}`;
   const listId = `${triggerId}-listbox`;
@@ -125,14 +126,17 @@ export function CatalogSelect({ id, label, value = "", options, emptyLabel = "В
     <button ref={trigger} id={triggerId} type="button" role="combobox" aria-label={label}
       aria-expanded={expanded} aria-controls={expanded ? listId : undefined} aria-haspopup="listbox"
       aria-activedescendant={expanded ? `${listId}-${active}` : undefined}
-      disabled={disabled} className={styles.trigger} data-open={expanded || undefined}
+      disabled={disabled} className={styles.trigger} data-variant={variant} data-open={expanded || undefined}
       onKeyDown={handleKeyDown} onClick={() => { if (expanded) closeList(); else openList(); }}
       onBlur={(event) => { if (!list.current?.contains(event.relatedTarget)) closeList(); }}>
-      <span className={styles.value}>{items[selectedIndex].label}</span>
+      <span className={styles.value}>
+        {variant !== "default" ? <span className={styles.inlineLabel}>{label}: </span> : null}
+        <span>{items[selectedIndex].label}</span>
+      </span>
       <svg className={styles.chevron} aria-hidden="true" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4" /></svg>
     </button>
     {expanded && position ? createPortal(
-      <div ref={list} id={listId} role="listbox" aria-label={label} className={styles.list} style={position}
+      <div ref={list} id={listId} role="listbox" aria-label={label} className={styles.list} data-variant={variant} style={position}
         onMouseDown={(event) => event.preventDefault()}>
         {items.map((option, index) => <div key={option.value} id={`${listId}-${index}`} role="option"
           aria-selected={index === selectedIndex} className={styles.option} data-active={index === active || undefined}

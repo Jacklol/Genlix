@@ -373,7 +373,10 @@ export function UnifiedMeatCatalog({
         </div>
       ) : hero}
 
-      <section className={styles.filtersSection} aria-label="Фильтры каталога мяса">
+      <section
+        className={`${styles.filtersSection} ${speciesPage === "beef" ? styles.darkFilters : ""}`}
+        aria-label="Фильтры каталога мяса"
+      >
         <div className={homeStyles.shell}>
           <details
             className={styles.filterDisclosure}
@@ -405,8 +408,9 @@ export function UnifiedMeatCatalog({
                 <CatalogSelect
                   id={speciesId}
                   label="Вид мяса"
+                  variant={speciesPage === "beef" ? "dark" : "filter"}
                   options={speciesOptions}
-                  emptyLabel="Все виды мяса"
+                  emptyLabel="Все"
                   value={draftFilters.species ?? ""}
                   onChange={(value) =>
                     setDraftFilters((current) => ({
@@ -425,8 +429,9 @@ export function UnifiedMeatCatalog({
                 <CatalogSelect
                   id={manufacturerId}
                   label="Производитель"
+                  variant={speciesPage === "beef" ? "dark" : "filter"}
                   options={manufacturerOptions}
-                  emptyLabel="Все производители"
+                  emptyLabel="Все"
                   value={draftFilters.manufacturer ?? ""}
                   onChange={(value) =>
                     setDraftFilters((current) => ({
@@ -444,8 +449,9 @@ export function UnifiedMeatCatalog({
                 <CatalogSelect
                   id={countryId}
                   label="Страна"
+                  variant={speciesPage === "beef" ? "dark" : "filter"}
                   options={countryOptions}
-                  emptyLabel="Все страны"
+                  emptyLabel="Все"
                   value={draftFilters.country ?? ""}
                   onChange={(value) =>
                     setDraftFilters((current) => ({
@@ -463,8 +469,9 @@ export function UnifiedMeatCatalog({
                 <CatalogSelect
                   id={packagingId}
                   label="Упаковка"
+                  variant={speciesPage === "beef" ? "dark" : "filter"}
                   options={packagingOptions}
-                  emptyLabel="Любая упаковка"
+                  emptyLabel="Любая"
                   value={draftFilters.packaging ?? ""}
                   onChange={(value) =>
                     setDraftFilters((current) => ({
@@ -482,8 +489,9 @@ export function UnifiedMeatCatalog({
                 <CatalogSelect
                   id={channelId}
                   label="Формат поставки"
+                  variant={speciesPage === "beef" ? "dark" : "filter"}
                   options={channelOptions}
-                  emptyLabel="HoReCa и ритейл"
+                  emptyLabel="Любой"
                   value={draftFilters.channel ?? ""}
                   onChange={(value) =>
                     setDraftFilters((current) => ({

@@ -4,6 +4,7 @@ import {
   ProductEditorForm, ProductImagesEditor, ProductSlugField, ProductSubmitButton, ProductCategorySection, ProductCategoryLabel,
 } from "@/components/AdminProductEditor";
 import { SHOW_PRODUCT_PAIRINGS } from "@/lib/catalog/features";
+import { AdminProductVideosEditor } from "@/components/AdminProductVideosEditor";
 
 import {
   getEditableProductPayload,
@@ -128,6 +129,7 @@ export function AdminProductForm({
           </section>
 
           <ProductImagesEditor />
+          <AdminProductVideosEditor videos={detail.videos} poster={detail.images[0]} />
 
           <ProductCategorySection categories={["meat"]}>
           <section className={styles.formSection}>

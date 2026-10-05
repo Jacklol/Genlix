@@ -1,103 +1,75 @@
 .gallery {
+  --photo-height: var(--product-photo-height, clamp(460px, 47vw, 600px));
   display: grid;
-  grid-template-columns: 100px minmax(0, 1fr);
-  gap: 20px;
-  align-items: center;
+  grid-template-columns: clamp(84px, 8vw, 140px) minmax(0, 1fr);
+  gap: 12px 20px;
+  align-items: start;
   min-width: 0;
 }
 
 .singleGallery {
-  display: block;
+  --photo-height: var(--product-photo-height, clamp(420px, 43vw, 520px));
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .thumbsColumn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100px;
-  min-height: 0;
-}
-
-.navButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  cursor: pointer;
-  line-height: 1;
-  transition: color 160ms ease, opacity 160ms ease;
-}
-
-.navButton:hover {
-  color: var(--ink-deep);
-}
-
-.navButton:disabled {
-  color: var(--muted);
-  cursor: default;
-  opacity: 0.6;
-}
-
-.thumbsSwiper {
-  width: 100px;
-  height: 436px;
-}
-
-.thumbSlide {
-  width: 100px !important;
-  height: 100px !important;
-  cursor: pointer;
+  display: grid;
+  grid-template-rows: repeat(var(--thumbnail-count), minmax(0, 1fr));
+  gap: 12px;
+  height: var(--photo-height);
+  min-width: 0;
 }
 
 .thumbButton {
   position: relative;
   display: block;
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
   padding: 0;
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 0;
   background: var(--surface-muted);
   cursor: pointer;
 }
 
-.thumbButtonActive {
-  border-color: var(--ink-deep);
+.thumbButton::after {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  content: "";
+  transition: background-color 160ms ease;
 }
 
-.thumbImage {
+.thumbButton:hover::after {
+  background: rgba(0, 0, 0, .15);
+}
+
+.thumbButtonActive::after {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--ink-deep);
+}
+
+.thumbButton:focus-visible,
+.moreButton:focus-visible {
+  outline: 2px solid var(--ink-deep);
+  outline-offset: 3px;
+}
+
+.thumbImage,
+.mainImage {
   object-fit: cover;
 }
 
-.mainSwiper {
-  width: 100%;
-  height: clamp(460px, 47vw, 600px);
-  min-width: 0;
-}
-
-.mainSlide {
+.mainPhoto {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: var(--photo-height);
+  min-width: 0;
   overflow: hidden;
   background: var(--surface-muted);
-}
-
-.singleSlide {
-  height: clamp(420px, 43vw, 520px);
-}
-
-.mainImage {
-  object-fit: cover;
 }
 
 .emptyMessage {
@@ -105,48 +77,64 @@
   font-size: 14px;
 }
 
-@media (min-width: 1101px) {
-  .mainSwiper {
-    /* Keep the photo and CTA baseline aligned even when the thumbnail rail is taller. */
-    align-self: end;
-  }
+.morePhotos {
+  grid-column: 1 / -1;
+}
+
+.moreButton {
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-deep);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.additionalPhotos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.additionalPhotos .thumbButton {
+  aspect-ratio: 1;
+  height: auto;
 }
 
 @media (max-width: 920px) {
   .gallery {
-    grid-template-columns: 1fr;
+    --photo-height: clamp(280px, 72vw, 320px);
+    grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }
 
+  .mainPhoto {
+    grid-row: 1;
+  }
+
   .thumbsColumn {
-    display: grid;
-    grid-template-columns: 44px minmax(0, 1fr) 44px;
-    order: 2;
+    grid-template-columns: repeat(var(--thumbnail-count), minmax(0, 1fr));
+    grid-template-rows: auto;
     gap: 8px;
-    width: 100%;
+    height: auto;
   }
 
-  .thumbsSwiper {
-    width: 100%;
-    height: 72px;
+  .thumbsColumn .thumbButton {
+    aspect-ratio: 1;
+    height: auto;
   }
 
-  .thumbSlide {
-    width: 72px !important;
-    height: 72px !important;
+  .additionalPhotos {
+    gap: 8px;
   }
+}
 
-  .thumbButton {
-    width: 72px;
-    height: 72px;
-  }
-
-  .navButton {
-    transform: rotate(-90deg);
-  }
-
-  .mainSwiper,
-  .singleSlide {
-    height: clamp(280px, 72vw, 320px);
+@media (prefers-reduced-motion: reduce) {
+  .thumbButton::after {
+    transition: none;
   }
 }

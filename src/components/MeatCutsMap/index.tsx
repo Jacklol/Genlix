@@ -269,6 +269,7 @@ export function MeatCutsMap({
                   id={cutSelectId}
                   label="Часть туши"
                   emptyLabel="Все отрубы"
+                  variant="dark"
                   options={meatCutRegions.filter((region) => region.enabled !== false).map((region) => ({
                     value: region.id, label: `${region.titleRu} / ${region.titleEn}`,
                   }))}

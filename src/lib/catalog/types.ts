@@ -68,6 +68,7 @@ export type ProductDetailData = {
   slug: string;
   breadcrumbs: BreadcrumbItem[];
   images: string[];
+  videos?: string[];
   brand: string;
   category: string;
   title: string;

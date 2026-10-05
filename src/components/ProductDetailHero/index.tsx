@@ -6,6 +6,7 @@ import { SHOW_PRODUCT_PAIRINGS } from "@/lib/catalog/features";
 import { hasSpecValue } from "@/lib/catalog/category-fields";
 
 import { ProductDetailGallery } from "@/components/ProductDetailGallery";
+import { ProductVideos } from "@/components/ProductVideos";
 
 import styles from "./ProductDetailHero.module.css";
 
@@ -38,7 +39,7 @@ export function ProductDetailHero({ product, additionalSpecs = [] }: ProductDeta
   return (
     <section className={styles.section} aria-labelledby="product-detail-title">
       <div className={homeStyles.shell}>
-        <div className={styles.layout}>
+        <div className={`${styles.layout} ${product.videos?.length ? styles.layoutWithVideos : ""}`}>
           <ProductDetailGallery images={product.images} title={product.title} />
 
           <div className={styles.info}>
@@ -86,6 +87,11 @@ export function ProductDetailHero({ product, additionalSpecs = [] }: ProductDeta
                 {product.buttonLabel ?? "Запросить поставку"}
               </a>
             </div>
+            {product.videos?.length ? (
+              <div className={styles.videos}>
+                <ProductVideos videos={product.videos} title={product.title} poster={product.images[0]} />
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

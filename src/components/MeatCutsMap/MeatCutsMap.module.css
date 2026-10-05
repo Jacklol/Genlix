@@ -43,7 +43,8 @@
 
 .section.filterMode {
   padding: 0 0 16px;
-  background: var(--paper);
+  background: #030f22;
+  color: var(--paper);
 }
 
 .filterMode .header {
@@ -63,7 +64,7 @@
 
 .filterMode .subtitle {
   margin: 0;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 14px;
   line-height: 1.4;
 }
@@ -77,6 +78,15 @@
 .filterMode .cutSelector {
   max-width: 340px;
   margin: 0 auto;
+}
+
+.filterMode .cutSelector label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .header {

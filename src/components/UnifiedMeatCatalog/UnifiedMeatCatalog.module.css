@@ -1,8 +1,14 @@
 .filtersSection {
-  padding: 12px 0;
+  padding: 24px 0 32px;
   border-block: 1px solid rgba(5, 32, 76, 0.1);
   background: var(--section-muted-bg);
   color: var(--ink-deep);
+}
+
+.darkFilters {
+  border: 0;
+  background: #030f22;
+  color: var(--paper);
 }
 
 .eyebrow {
@@ -43,8 +49,8 @@
 
 .filterFields {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: 1fr 1.2fr .8fr 1fr 1.3fr;
+  gap: 12px;
 }
 
 .field {
@@ -54,12 +60,12 @@
 }
 
 .field > span {
-  color: var(--muted);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  line-height: 1.25;
-  text-transform: uppercase;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .filterActions {
@@ -131,7 +137,7 @@
 }
 
 .applyButton {
-  min-height: 36px;
+  min-height: 50px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -173,18 +179,38 @@
 }
 
 .resetButton {
-  min-height: 36px;
-  padding: 0 4px;
-  border: 0;
+  min-height: 50px;
+  padding: 12px;
+  border: 1px solid currentColor;
   background: transparent;
   color: var(--navy);
   cursor: pointer;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.08em;
-  text-decoration: underline;
   text-transform: uppercase;
-  text-underline-offset: 4px;
+}
+
+.darkFilters .resetButton,
+.darkFilters .activeFiltersLabel {
+  color: var(--paper);
+}
+
+.darkFilters .chip {
+  border-color: rgba(255, 255, 255, .4);
+  background: rgba(255, 255, 255, .08);
+  color: var(--paper);
+}
+
+.darkFilters .chip:hover {
+  border-color: var(--paper);
+  background: rgba(255, 255, 255, .15);
+}
+
+.darkFilters .applyButton:focus-visible,
+.darkFilters .resetButton:focus-visible,
+.darkFilters .chip:focus-visible {
+  outline-color: var(--paper);
 }
 
 .catalogSection {
@@ -288,7 +314,7 @@
   text-transform: uppercase;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1400px) {
   .filterFields {
     grid-column: 1 / -1;
   }
@@ -341,6 +367,7 @@
 
   .filterDisclosure {
     border: 1px solid rgba(5, 32, 76, 0.16);
+    border-radius: 8px;
     background: var(--paper);
   }
 
@@ -411,6 +438,27 @@
 
   .field:last-child {
     grid-column: 1 / -1;
+  }
+
+  .darkFilters .filterDisclosure {
+    border-color: rgba(255, 255, 255, .4);
+    background: transparent;
+  }
+
+  .darkFilters .filterSummary strong {
+    color: var(--paper);
+  }
+
+  .darkFilters .filterSummary small {
+    color: rgba(255, 255, 255, .7);
+  }
+
+  .darkFilters .filterSummary:focus-visible {
+    outline-color: var(--paper);
+  }
+
+  .darkFilters .filterDisclosure[open] .filterSummary {
+    border-bottom-color: rgba(255, 255, 255, .2);
   }
 
   .filterActions {

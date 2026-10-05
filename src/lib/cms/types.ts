@@ -2,10 +2,11 @@ import type { CatalogProduct, ProductDetailData } from "@/lib/catalog/types";
 import type { NewsCategory } from "@/lib/news";
 import type { TextContentBlock } from "@/lib/text-content";
 import { normalizeRichDocument } from "@/lib/rich-text";
+import { MAX_PRODUCT_VIDEOS, normalizeProductVideoUrl } from "@/lib/catalog/product-videos";
 
-export const CMS_SCHEMA_VERSION = 3 as const;
-export function isSupportedCmsSchemaVersion(value: unknown): value is 1 | 2 | 3 {
-  return value === 1 || value === 2 || value === CMS_SCHEMA_VERSION;
+export const CMS_SCHEMA_VERSION = 4 as const;
+export function isSupportedCmsSchemaVersion(value: unknown): value is 1 | 2 | 3 | 4 {
+  return value === 1 || value === 2 || value === 3 || value === CMS_SCHEMA_VERSION;
 }
 
 const MAX_CMS_SNAPSHOT_BYTES = 8 * 1024 * 1024;
@@ -54,7 +55,7 @@ export type CmsProductEntity = CmsEntity<CmsProductPayload>;
 export type CmsNewsEntity = CmsEntity<CmsNewsPayload>;
 
 export type CmsContent = {
-  schemaVersion: 1 | 2 | typeof CMS_SCHEMA_VERSION;
+  schemaVersion: 1 | 2 | 3 | typeof CMS_SCHEMA_VERSION;
   products: CmsProductEntity[];
   news: CmsNewsEntity[];
 };
@@ -386,6 +387,7 @@ function normalizeProductDetail(
     [
       "breadcrumbs",
       "images",
+      "videos",
       "brand",
       "category",
       "title",
@@ -407,6 +409,11 @@ function normalizeProductDetail(
   );
   const buttonLabel = normalizeOptionalString(record, "buttonLabel", path);
   const buttonHref = normalizeOptionalString(record, "buttonHref", path);
+  const videos = record.videos === undefined ? undefined : assertArray(record.videos, `${path}.videos`, MAX_PRODUCT_VIDEOS).map((video, index) => {
+    const videoPath = `${path}.videos[${index}]`;
+    const normalized = normalizeProductVideoUrl(normalizeString(video, videoPath, 2_000));
+    return normalized ?? validationError(videoPath, "expected a YouTube or direct HTTPS MP4/WebM video URL");
+  });
 
   return {
     breadcrumbs: normalizeBreadcrumbs(record.breadcrumbs, `${path}.breadcrumbs`),
@@ -426,6 +433,7 @@ function normalizeProductDetail(
     ...(buttonHref === undefined
       ? {}
       : { buttonHref: normalizeCmsLink(buttonHref, `${path}.buttonHref`) }),
+    ...(videos === undefined ? {} : { videos }),
   };
 }
 
@@ -612,7 +620,7 @@ export function normalizeCmsContent(value: unknown): CmsContent {
   assertKnownKeys(record, ["schemaVersion", "products", "news"], "$");
 
   if (!isSupportedCmsSchemaVersion(record.schemaVersion)) {
-    validationError("$.schemaVersion", `expected 1, 2 or ${CMS_SCHEMA_VERSION}`);
+    validationError("$.schemaVersion", `expected 1, 2, 3 or ${CMS_SCHEMA_VERSION}`);
   }
 
   const productRecords = assertArray(record.products, "$.products", MAX_PRODUCTS);
@@ -629,6 +637,9 @@ export function normalizeCmsContent(value: unknown): CmsContent {
   }
   if (record.schemaVersion < 3 && products.some((entity) => [entity.draft, entity.published].some((payload) => payload?.category === "water" || payload?.catalog.meat?.channel === "both"))) {
     validationError("$.schemaVersion", "water and dual sales channels require schema version 3");
+  }
+  if (record.schemaVersion < 4 && products.some((entity) => [entity.draft, entity.published].some((payload) => payload?.detail.videos !== undefined))) {
+    validationError("$.schemaVersion", "product videos require schema version 4");
   }
 
   assertUniqueEntities(products, "$.products");

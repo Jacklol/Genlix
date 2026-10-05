@@ -1,6 +1,7 @@
 import type { ProductBadge } from "@/components/ProductCard";
 import { meatCharacteristicFields } from "@/lib/catalog/meat-characteristics";
 import { allCategoryFields, categoryFields } from "@/lib/catalog/category-fields";
+import { MAX_PRODUCT_VIDEOS, normalizeProductVideoUrl } from "@/lib/catalog/product-videos";
 import type {
   CatalogProduct,
   MeatCookingMethod,
@@ -379,6 +380,13 @@ export function buildProductPayloadFromForm(
     (galleryImage, index) => safeImageUrl(galleryImage, `Галерея, изображение ${index + 1}`),
   );
   const images = Array.from(new Set([image, ...gallery]));
+  const videos = formData.has("videos")
+    ? Array.from(new Set(splitList(value(formData, "videos"), "Видео", MAX_PRODUCT_VIDEOS, /\r?\n/).map((source, index) => {
+        const normalized = normalizeProductVideoUrl(source);
+        if (!normalized) throw new CmsFormError(`Видео ${index + 1}: укажите YouTube-ссылку или прямую HTTPS-ссылку на MP4/WebM`);
+        return normalized;
+      })))
+    : existing?.detail.videos;
   const buttonHref = safeLink(
     optional(formData, "buttonHref", 300) ?? "/#contacts",
     "Ссылка кнопки",
@@ -404,6 +412,7 @@ export function buildProductPayloadFromForm(
     ) : existing?.detail.cookingMethods ?? [],
     description: required(formData, "description", "Описание", 5000),
     images,
+    ...(videos?.length ? { videos } : {}),
     packaging: required(formData, "packagingDisplay", "Фасовка", 300),
     shelfLife: required(formData, "shelfLife", "Срок годности", 300),
     storage: required(formData, "storage", "Условия хранения", 500),

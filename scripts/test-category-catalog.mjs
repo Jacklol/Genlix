@@ -125,7 +125,7 @@ test("v1/v2 remain readable; new water/both-channel payloads require v3", () => 
     snapshot.products.find((p) => p.published.catalog.meat).published.catalog.meat.channel = "both";
     assert.throws(() => normalizeCmsContent(snapshot), /version 3/);
     snapshot.schemaVersion = CMS_SCHEMA_VERSION;
-    assert.equal(normalizeCmsContent(snapshot).schemaVersion, 3);
+    assert.equal(normalizeCmsContent(snapshot).schemaVersion, CMS_SCHEMA_VERSION);
   }
 });
 test("no price field/filter exists and blank placeholders produce no detail rows", () => {
