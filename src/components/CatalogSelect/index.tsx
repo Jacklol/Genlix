@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
+import Image from "next/image";
 import { createPortal } from "react-dom";
 import { findSelectMatch, moveSelectIndex, selectPopupPosition } from "@/lib/catalog/select-navigation";
+import { useCatalogFilterPresentation } from "@/components/CatalogFilterPresentation/context";
 import styles from "./CatalogSelect.module.css";
 
 type SelectOption = { value: string; label: string };
@@ -12,19 +14,27 @@ type CatalogSelectProps = {
   value?: string;
   options: readonly SelectOption[];
   emptyLabel?: string;
+  includeEmptyOption?: boolean;
   disabled?: boolean;
   variant?: "default" | "filter" | "dark";
+  chevronSrc?: string;
+  placeholder?: string;
+  showSelection?: boolean;
+  onCommit?: (value: string) => void;
   onChange: (value: string) => void;
 };
 
 /** Select-only combobox: focus stays on the trigger, navigation doesn't commit
  * until Enter/Space/Tab or an option click; Escape cancels the pending choice. */
-export function CatalogSelect({ id, label, value = "", options, emptyLabel = "Все", disabled = false, variant = "default", onChange }: CatalogSelectProps) {
+export function CatalogSelect({ id, label, value = "", options, emptyLabel = "Все", includeEmptyOption = true, disabled = false, variant = "default", chevronSrc, placeholder = label, showSelection = true, onCommit, onChange }: CatalogSelectProps) {
+  const presentation = useCatalogFilterPresentation();
   const generatedId = useId();
   const triggerId = id ?? `catalog-select-${generatedId}`;
   const listId = `${triggerId}-listbox`;
-  const items = [{ value: "", label: emptyLabel }, ...options.filter((option) => option.value !== "")];
+  const items = [...(includeEmptyOption ? [{ value: "", label: emptyLabel }] : []), ...options.filter((option) => option.value !== "")];
   const selectedIndex = Math.max(0, items.findIndex((item) => item.value === value));
+  const selectedLabel = items[selectedIndex]?.label ?? "";
+  const showValue = Boolean(value) && showSelection;
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(selectedIndex);
   const [position, setPosition] = useState<ReturnType<typeof selectPopupPosition>>();
@@ -47,6 +57,7 @@ export function CatalogSelect({ id, label, value = "", options, emptyLabel = "В
   function choose(index: number, restoreFocus = true) {
     closeList();
     if (restoreFocus) trigger.current?.focus({ preventScroll: true });
+    if (items[index]) onCommit?.(items[index].value);
     if (items[index] && items[index].value !== value) onChange(items[index].value);
   }
 
@@ -127,16 +138,24 @@ export function CatalogSelect({ id, label, value = "", options, emptyLabel = "В
       aria-expanded={expanded} aria-controls={expanded ? listId : undefined} aria-haspopup="listbox"
       aria-activedescendant={expanded ? `${listId}-${active}` : undefined}
       disabled={disabled} className={styles.trigger} data-variant={variant} data-open={expanded || undefined}
+      data-appearance={presentation ? "glass" : undefined} data-placeholder={presentation && !showValue || undefined}
+      title={presentation ? showValue ? selectedLabel : placeholder : undefined}
       onKeyDown={handleKeyDown} onClick={() => { if (expanded) closeList(); else openList(); }}
       onBlur={(event) => { if (!list.current?.contains(event.relatedTarget)) closeList(); }}>
       <span className={styles.value}>
-        {variant !== "default" ? <span className={styles.inlineLabel}>{label}: </span> : null}
-        <span>{items[selectedIndex].label}</span>
+        {presentation ? <span>{showValue ? selectedLabel : placeholder}</span> : <>
+          {variant !== "default" ? <span className={styles.inlineLabel}>{label}: </span> : null}
+          <span>{selectedLabel}</span>
+        </>}
       </span>
-      <svg className={styles.chevron} aria-hidden="true" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4" /></svg>
+      {chevronSrc ? (
+        <span className={`${styles.chevron} ${styles.assetChevron}`} aria-hidden="true">
+          <Image src={chevronSrc} alt="" width={5.25} height={9.33333} />
+        </span>
+      ) : <svg className={styles.chevron} aria-hidden="true" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4" /></svg>}
     </button>
     {expanded && position ? createPortal(
-      <div ref={list} id={listId} role="listbox" aria-label={label} className={styles.list} data-variant={variant} style={position}
+      <div ref={list} id={listId} role="listbox" aria-label={label} className={styles.list} data-variant={variant} data-appearance={presentation ? "glass" : undefined} style={position}
         onMouseDown={(event) => event.preventDefault()}>
         {items.map((option, index) => <div key={option.value} id={`${listId}-${index}`} role="option"
           aria-selected={index === selectedIndex} className={styles.option} data-active={index === active || undefined}

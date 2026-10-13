@@ -2,11 +2,13 @@ import type { ProductDetailData } from "@/lib/catalog";
 import type { ProductSpec } from "@/lib/catalog/types";
 import homeStyles from "@/app/home.module.css";
 import { getContactRequestHref } from "@/lib/contact-requests/link";
+import type { ContactProductContext } from "@/lib/contact-requests/types";
 import { SHOW_PRODUCT_PAIRINGS } from "@/lib/catalog/features";
 import { hasSpecValue } from "@/lib/catalog/category-fields";
 
 import { ProductDetailGallery } from "@/components/ProductDetailGallery";
 import { ProductVideos } from "@/components/ProductVideos";
+import { ContactRequestModal } from "@/components/ContactRequestModal";
 
 import styles from "./ProductDetailHero.module.css";
 
@@ -33,9 +35,13 @@ function BeerIcon() {
 type ProductDetailHeroProps = {
   product: ProductDetailData;
   additionalSpecs?: ProductSpec[];
+  requestProduct?: ContactProductContext;
 };
 
-export function ProductDetailHero({ product, additionalSpecs = [] }: ProductDetailHeroProps) {
+export function ProductDetailHero({ product, additionalSpecs = [], requestProduct }: ProductDetailHeroProps) {
+  const requestHref = getContactRequestHref(product.slug, product.buttonHref);
+  const opensRequestForm = requestHref === getContactRequestHref(product.slug);
+
   return (
     <section className={styles.section} aria-labelledby="product-detail-title">
       <div className={homeStyles.shell}>
@@ -80,12 +86,17 @@ export function ProductDetailHero({ product, additionalSpecs = [] }: ProductDeta
             ) : null}
 
             <div className={styles.action}>
-              <a
-                className={styles.button}
-                href={getContactRequestHref(product.slug, product.buttonHref)}
-              >
-                {product.buttonLabel ?? "Запросить поставку"}
-              </a>
+              {opensRequestForm ? (
+                <ContactRequestModal
+                  className={styles.button}
+                  label={product.buttonLabel ?? "Запросить поставку"}
+                  product={requestProduct ?? { slug: product.slug, title: product.title }}
+                />
+              ) : (
+                <a className={styles.button} href={requestHref}>
+                  {product.buttonLabel ?? "Запросить поставку"}
+                </a>
+              )}
             </div>
             {product.videos?.length ? (
               <div className={styles.videos}>

@@ -8,13 +8,13 @@ import { Footer } from "@/components/Footer";
 import { HomeExperience } from "@/components/HomeExperience";
 import { PhilosophyStat } from "@/components/PhilosophyStat";
 import { Reveal } from "@/components/Reveal";
-import { YandexMap } from "@/components/YandexMap";
 import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
 import { ContactHoursIcon } from "@/components/icons/ContactHoursIcon";
 import { ContactLocationIcon } from "@/components/icons/ContactLocationIcon";
 import { ContactPhoneIcon } from "@/components/icons/ContactPhoneIcon";
 import { ContactRequestForm } from "@/components/ContactRequestForm";
 import { getContactProductContext } from "@/lib/contact-requests/context";
+import { contactDetails, officeLocation } from "@/lib/site-data";
 import { HomeBlog, HomeBlogPlaceholder } from "@/components/HomeBlog";
 import styles from "./home.module.css";
 
@@ -153,22 +153,22 @@ export default function Home({ searchParams }: HomeProps) {
             <h2 id="contacts-title">Обсудим <span>условия поставок?</span></h2>
             <p>Заполните форму, и наш категорийный менеджер подготовит коммерческое предложение под ваше меню.</p>
             <address>
-              <a href="tel:+74951234567">
+              <a href={contactDetails.phoneHref}>
                 <i aria-hidden="true">
                   <ContactPhoneIcon />
                 </i>
                 <span>
                   <small>Телефон для связи</small>
-                  <strong>+7 (495) 123-45-67</strong>
+                  <strong>{contactDetails.phone}</strong>
                 </span>
               </a>
-              <a href="mailto:b2b@gildia-dist.ru">
+              <a href={contactDetails.emailHref}>
                 <i aria-hidden="true">
                   <ContactEmailIcon />
                 </i>
                 <span>
-                  <small>Email подразделения продаж</small>
-                  <strong>b2b@gildia-dist.ru</strong>
+                  <small>Электронная почта</small>
+                  <strong>{contactDetails.email}</strong>
                 </span>
               </a>
               <span>
@@ -176,8 +176,8 @@ export default function Home({ searchParams }: HomeProps) {
                   <ContactLocationIcon />
                 </i>
                 <span>
-                  <small>Центральный офис и склад</small>
-                  <strong>г. Москва, ул. Кутузовский проспект, д. 12, стр. 4</strong>
+                  <small>Офис</small>
+                  <strong>{officeLocation.address}</strong>
                 </span>
               </span>
               <span>
@@ -185,8 +185,8 @@ export default function Home({ searchParams }: HomeProps) {
                   <ContactHoursIcon />
                 </i>
                 <span>
-                  <small>Режим работы склада</small>
-                  <strong>Круглосуточный приём и отгрузка заказов 24/7</strong>
+                  <small>Режим работы офиса</small>
+                  <strong>{officeLocation.hours}</strong>
                 </span>
               </span>
             </address>
@@ -203,10 +203,6 @@ export default function Home({ searchParams }: HomeProps) {
             </Suspense>
           </Reveal>
         </div>
-      </section>
-
-      <section className={styles.yandexMapSection} aria-label="Карта офиса Genlix">
-        <YandexMap />
       </section>
 
       <Footer />

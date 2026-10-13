@@ -19,14 +19,17 @@ export default function WaterPage({ searchParams }: { searchParams: Promise<Cata
   return <main className={homeStyles.page}>
     <Header activeLink="Каталог" static />
     <Breadcrumbs items={[{ label: "Главная", href: "/" }, { label: "Каталог", href: "/#catalog" }, { label: "Вода" }]} />
-    <section className={`${heroStyles.hero} ${styles.hero}`} aria-labelledby="water-title">
-      <div className={heroStyles.heroInner}>
-        <p className={heroStyles.brandBadge}><strong>Genlix Premium</strong></p>
-        <h1 id="water-title">Питьевая и минеральная вода</h1>
-        <p className={heroStyles.heroLead}>Вода для ресторанов, гостиниц и розничных сетей.</p>
-      </div>
-    </section>
-    <CategoryCatalogSection category="water" searchParams={searchParams} />
+    <CategoryCatalogSection
+      category="water" searchParams={searchParams}
+      heroClassName={`${heroStyles.hero} ${styles.hero}`} heroTitleId="water-title"
+      hero={
+        <div className={heroStyles.heroInner}>
+          <p className={heroStyles.brandBadge}><strong>Genlix Premium</strong></p>
+          <h1 id="water-title">Питьевая и минеральная вода</h1>
+          <p className={heroStyles.heroLead}>Вода для ресторанов, гостиниц и розничных сетей.</p>
+        </div>
+      }
+    />
     <SubscribeSection /><Footer />
   </main>;
 }

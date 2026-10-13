@@ -30,19 +30,23 @@ export default async function BeerPage({ searchParams }: { searchParams: Promise
         ]}
       />
 
-      <section className={styles.hero} aria-labelledby="beer-title">
-        <div className={styles.heroInner}>
-          <p className={styles.brandBadge}>
-            <strong>Genlix Premium</strong>
-          </p>
-          <h1 id="beer-title">Премиальное пиво</h1>
-          <p className={styles.heroLead}>
-            Крафтовое и импортное пиво для ресторанов, баров и розничных сетей.
-          </p>
-        </div>
-      </section>
-
-      <CategoryCatalogSection category="beer" searchParams={searchParams} />
+      <CategoryCatalogSection
+        category="beer"
+        searchParams={searchParams}
+        heroClassName={styles.hero}
+        heroTitleId="beer-title"
+        hero={
+          <div className={styles.heroInner}>
+            <p className={styles.brandBadge}>
+              <strong>Genlix Premium</strong>
+            </p>
+            <h1 id="beer-title">Премиальное пиво</h1>
+            <p className={styles.heroLead}>
+              Крафтовое и импортное пиво для ресторанов, баров и розничных сетей.
+            </p>
+          </div>
+        }
+      />
 
       <SubscribeSection />
       <Footer />

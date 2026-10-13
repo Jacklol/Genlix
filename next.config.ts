@@ -55,6 +55,9 @@ for (const configuredHost of (process.env.CMS_ALLOWED_MEDIA_HOSTS ?? "").split("
 }
 
 const nextConfig: NextConfig = {
+  outputFileTracingIncludes: {
+    "/api/genlix-admin/products/excel": ["./assets/templates/*.xlsx"],
+  },
   allowedDevOrigins: ["127.0.0.1"],
   images: {
     remotePatterns,

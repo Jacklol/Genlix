@@ -37,6 +37,8 @@
 .trigger[data-variant="dark"]:hover:not(:disabled), .trigger[data-variant="dark"][data-open] { border-color: var(--paper); }
 .trigger[data-variant="dark"]:focus-visible { outline-color: var(--paper); }
 .chevron { width: 16px; height: 16px; flex-shrink: 0; color: var(--navy); transition: transform 140ms ease; }
+.assetChevron { display: flex; align-items: center; justify-content: center; }
+.assetChevron img { flex-shrink: 0; transform: rotate(-90deg); }
 .chevron path, .option svg path { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .trigger:hover:not(:disabled), .trigger[data-open] { border-color: var(--navy); }
 .trigger[data-open] .chevron { transform: rotate(180deg); }
@@ -93,4 +95,32 @@
 @media (prefers-reduced-motion: reduce) {
   .trigger, .chevron { transition: none; }
   .list { animation: none; }
+}
+
+.trigger[data-appearance] {
+  min-height: var(--catalog-control-height);
+  gap: 12px;
+  padding: 16px 20px;
+  border-color: var(--catalog-control-border);
+  border-radius: var(--catalog-control-radius);
+  background: var(--catalog-control-background);
+  color: var(--catalog-filter-text);
+  font-size: var(--catalog-control-font-size);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.trigger[data-appearance][data-placeholder] { color: var(--catalog-filter-muted); font-weight: 500; }
+.trigger[data-appearance="glass"] { backdrop-filter: blur(12px); }
+.trigger[data-appearance]:hover:not(:disabled),
+.trigger[data-appearance][data-open] { border-color: var(--catalog-filter-text); background: var(--catalog-control-hover-background); }
+.trigger[data-appearance]:focus-visible { outline-color: var(--catalog-filter-text); }
+.trigger[data-appearance] .chevron { color: var(--catalog-filter-text); }
+.trigger[data-appearance]:disabled { opacity: .55; }
+
+.list[data-appearance] { padding: 8px; border-radius: 12px; }
+.list[data-appearance] .option { min-height: 48px; padding: 12px; border-radius: 8px; font-size: 16px; }
+
+@media (max-width: 600px) {
+  .trigger[data-appearance] { padding-inline: 16px; }
 }

@@ -24,9 +24,12 @@ export default async function AdminProductsPage() {
           <h1>Товары</h1>
           <p>{products.length} позиций, включая черновики и архив.</p>
         </div>
+        <div className={styles.inlineActions}>
+        <Link className={styles.primaryLink} href="/genlix-admin/products/import">Импорт Excel</Link>
         <Link className={styles.primaryLink} href="/genlix-admin/products/new">
           + Добавить товар
         </Link>
+        </div>
       </header>
 
       <div className={styles.tableWrap}>

@@ -16,6 +16,7 @@ import { getAbsoluteSiteUrl, serializeJsonLd } from "@/lib/seo";
 import homeStyles from "@/app/home.module.css";
 import Link from "next/link";
 import { safeCatalogReturn, type CatalogQuery } from "@/lib/catalog/filter-engine";
+import { getContactProductContext } from "@/lib/contact-requests/context";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -73,7 +74,10 @@ export default async function ProductPage({ params, searchParams }: ProductPageP
     notFound();
   }
 
-  const similarProducts = await getPublishedSimilarProducts(slug);
+  const [similarProducts, requestProduct] = await Promise.all([
+    getPublishedSimilarProducts(slug),
+    getContactProductContext(slug),
+  ]);
   const returnTo = safeCatalogReturn((await searchParams).returnTo);
   const canonicalUrl = getAbsoluteSiteUrl(
     `/catalog/product/${encodeURIComponent(product.slug)}`,
@@ -142,7 +146,7 @@ export default async function ProductPage({ params, searchParams }: ProductPageP
       <Header activeLink="Каталог" static />
       <Breadcrumbs items={product.breadcrumbs} />
       {returnTo ? <div className={homeStyles.shell}><Link href={returnTo} style={{ display: "inline-block", marginBottom: 20, fontSize: 13, textDecoration: "underline" }}>← Назад к выбранным товарам</Link></div> : null}
-      <ProductDetailHero product={product} additionalSpecs={product.additionalSpecs} />
+      <ProductDetailHero product={product} additionalSpecs={product.additionalSpecs} requestProduct={requestProduct} />
       {similarProducts.length > 0 ? (
         <ProductCardsSection title="Похожие товары" products={similarProducts} />
       ) : null}

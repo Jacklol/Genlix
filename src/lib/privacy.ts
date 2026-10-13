@@ -1,4 +1,5 @@
 import type { TextContentBlock, TextPage } from "@/lib/text-content";
+import { contactDetails } from "@/lib/site-data";
 
 export const privacyPolicy: TextPage = {
   tag: "Правовая информация",
@@ -70,7 +71,7 @@ export const privacyPolicy: TextPage = {
     },
     {
       type: "paragraph",
-      text: "По вопросам обработки персональных данных вы можете связаться с нами через форму на сайте или по email: b2b@gildia-dist.ru.",
+      text: `По вопросам обработки персональных данных вы можете связаться с нами через форму на сайте или по email: ${contactDetails.email}.`,
     },
   ] satisfies TextContentBlock[],
 };

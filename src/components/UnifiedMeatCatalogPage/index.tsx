@@ -9,8 +9,8 @@ import {
   type MeatCatalogFilters,
   type MeatSpecies,
 } from "@/lib/catalog";
-import { getPublishedMeatItems } from "@/lib/cms/repository";
-import { meatCutRegions } from "@/lib/meat-cuts";
+import { getCatalogCommonOptions, getPublishedMeatItems } from "@/lib/cms/repository";
+import { findCatalogMeatCut } from "@/lib/catalog/meat-catalog-artwork";
 import homeStyles from "@/app/home.module.css";
 
 import styles from "./UnifiedMeatCatalogPage.module.css";
@@ -69,7 +69,7 @@ function normalizeInitialFilters(
 
   if (
     speciesPage === "beef" &&
-    meatCutRegions.some((region) => region.id === filters.cutId && region.enabled !== false)
+    findCatalogMeatCut(filters.cutId)
   ) {
     normalized.cutId = filters.cutId;
   }
@@ -107,7 +107,7 @@ export async function UnifiedMeatCatalogPage({
   initialFilters = {},
   speciesPage,
 }: UnifiedMeatCatalogPageProps) {
-  const products = await getPublishedMeatItems();
+  const [products, categoryOptions] = await Promise.all([getPublishedMeatItems(), getCatalogCommonOptions()]);
 
   if (
     speciesPage &&
@@ -117,6 +117,7 @@ export async function UnifiedMeatCatalogPage({
   }
 
   const content = speciesPage ? pageContent[speciesPage] : pageContent.all;
+  const bullHero = speciesPage === "beef";
   const filters = normalizeInitialFilters(initialFilters, products, speciesPage);
   const filterStateKey = [
     filters.species,
@@ -132,6 +133,7 @@ export async function UnifiedMeatCatalogPage({
       <Header activeLink="Каталог" static />
 
       <Breadcrumbs
+        variant={bullHero ? "dark" : "default"}
         items={[
           { label: "Главная", href: "/" },
           { label: "Каталог", href: "/#catalog" },
@@ -145,12 +147,14 @@ export async function UnifiedMeatCatalogPage({
       />
 
       <UnifiedMeatCatalog
-        hero={speciesPage === "beef" ? (
-          <header className={styles.beefHeader}>
-            <h1 id="meat-page-title">Говядина</h1>
+        categoryOptions={categoryOptions}
+        heroClassName={styles.hero}
+        hero={bullHero ? (
+          <header className={styles.catalogHeading}>
+            <h1 id="meat-page-title">{content.title}</h1>
           </header>
         ) : (
-          <section className={styles.hero} aria-labelledby="meat-page-title">
+          <div className={styles.heroContent}>
             <div className={homeStyles.shell}>
               <div className={styles.heroCopy}>
                 <p>{content.eyebrow}</p>
@@ -158,7 +162,7 @@ export async function UnifiedMeatCatalogPage({
                 <span>{content.description}</span>
               </div>
             </div>
-          </section>
+          </div>
         )}
         initialFilters={filters}
         key={filterStateKey}

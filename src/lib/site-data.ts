@@ -1,14 +1,23 @@
+// Legal address: https://food-store.by/contacts/ and
+// https://contragento.by/company/191772353 (checked 2026-10-12).
 export const footerCompanyInfo = [
-  "УНП 7656768768768,",
-  "Юридический адрес: текст",
-  "Р/с BY 000 000 000 000",
-  "Банк",
+  "ООО «Генликс», УНП 191772353",
+  "Юридический адрес: 223056, Республика Беларусь, Минская область, Минский район, Сеницкий с/с, район д. Щитомиричи, д. 27, корп. 4, пом. 141",
 ] as const;
 
+// Office and contacts: https://genlix.by/contacts/ (checked 2026-10-12).
 export const officeLocation = {
-  latitude: 55.744037,
-  longitude: 37.539522,
-  address: "г. Москва, ул. Кутузовский проспект, д. 12, стр. 4",
+  latitude: 53.886594,
+  longitude: 27.560825,
+  address: "Республика Беларусь, г. Минск, ул. Могилёвская, 43А, 2-й этаж",
+  hours: "Пн–Пт · 9:00–17:00",
+} as const;
+
+export const contactDetails = {
+  phone: "+375 (29) 659-52-92",
+  phoneHref: "tel:+375296595292",
+  email: "genlix@yandex.by",
+  emailHref: "mailto:genlix@yandex.by",
 } as const;
 
 export const catalogSections = [
@@ -24,7 +33,7 @@ export const navItems = [
   { label: "Каталог", href: "/#catalog" },
   { label: "Партнёры", href: "/partners" },
   { label: "Блог", href: "/news" },
-  { label: "Контакты", href: "/#contacts" },
+  { label: "Контакты", href: "/contacts" },
 ] as const;
 
 export const footerColumns = [
@@ -39,15 +48,15 @@ export const footerColumns = [
       { label: "Стандарты качества", href: "/#about" },
       { label: "Логистика 24/7", href: "/#partners" },
       { label: "Условия оплаты", href: "/#contacts" },
-      { label: "Контакты", href: "/#contacts" },
+      { label: "Контакты", href: "/contacts" },
     ],
   },
   {
     title: "Контакты",
     links: [
-      { label: "b2b@gildia-dist.ru", href: "mailto:b2b@gildia-dist.ru" },
-      { label: "+7 (495) 123-45-67", href: "tel:+74951234567" },
-      { label: "Адрес склада", href: "/#contacts" },
+      { label: contactDetails.email, href: contactDetails.emailHref },
+      { label: contactDetails.phone, href: contactDetails.phoneHref },
+      { label: "Адрес офиса", href: "/contacts#location" },
       { label: "Заявка на прайс", href: "/#contacts" },
       { label: "Telegram-канал", href: "/#contacts" },
     ],

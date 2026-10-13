@@ -30,21 +30,25 @@ export default async function BirdPage({ searchParams }: { searchParams: Promise
         ]}
       />
 
-      <section className={styles.hero} aria-labelledby="bird-title">
-        <div className={styles.heroInner}>
-          <p className={styles.brandBadge}>
-            <strong>Premium Poultry</strong>
-          </p>
-          <h1 id="bird-title">
-            Фермерская птица
-          </h1>
-          <p className={styles.heroLead}>
-            Охлаждённая и замороженная птица для ресторанов и ритейла.
-          </p>
-        </div>
-      </section>
-
-      <CategoryCatalogSection category="bird" searchParams={searchParams} />
+      <CategoryCatalogSection
+        category="bird"
+        searchParams={searchParams}
+        heroClassName={styles.hero}
+        heroTitleId="bird-title"
+        hero={
+          <div className={styles.heroInner}>
+            <p className={styles.brandBadge}>
+              <strong>Premium Poultry</strong>
+            </p>
+            <h1 id="bird-title">
+              Фермерская птица
+            </h1>
+            <p className={styles.heroLead}>
+              Охлаждённая и замороженная птица для ресторанов и ритейла.
+            </p>
+          </div>
+        }
+      />
 
       <SubscribeSection />
       <Footer />

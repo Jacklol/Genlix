@@ -1,0 +1,17 @@
+.presentation {
+  --catalog-control-height: 64px;
+  --catalog-control-radius: 12px;
+  --catalog-control-background: rgba(255, 255, 255, .13);
+  --catalog-control-hover-background: rgba(255, 255, 255, .22);
+  --catalog-control-border: rgba(255, 255, 255, .5);
+  --catalog-control-font-size: 18px;
+  --catalog-filter-text: var(--paper);
+  --catalog-filter-muted: rgba(255, 255, 255, .8);
+  --catalog-filter-chip-background: rgba(255, 255, 255, .1);
+  --catalog-action-radius: 12px;
+  min-width: 0;
+}
+
+@media (max-width: 600px) {
+  .presentation { --catalog-control-font-size: 16px; }
+}

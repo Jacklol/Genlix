@@ -13,7 +13,7 @@
 
 .media {
   position: relative;
-  height: clamp(230px, 21vw, 258px);
+  height: 260px;
   overflow: hidden;
   background-color: var(--surface-muted);
 }
@@ -54,14 +54,12 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  padding: 8px 12px 6px;
+  padding: 4px 8px;
   background: var(--paper);
-  color: var(--ink-deep);
+  color: var(--text-secondary);
   font-size: 15px;
   font-weight: 900;
-  letter-spacing: 0.06em;
-  line-height: 1;
-  text-transform: uppercase;
+  line-height: normal;
   border-radius: 4px;
 }
 
@@ -69,14 +67,16 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  padding: 19px 20px 21px;
+  gap: 16px;
+  padding: 24px;
 }
 
 .title {
   margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: normal;
+  overflow-wrap: break-word;
 }
 
 .titleLink {
@@ -93,42 +93,42 @@
 .specs {
   display: grid;
   gap: 4px;
-  margin: 13px 0 0;
+  margin: 0;
 }
 
 .spec {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
   gap: 16px;
   align-items: start;
 }
 
 .spec dt {
   margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 110%;
+  color: #6b7280;
+  font-size: 15px;
+  line-height: normal;
 }
 
 .spec dd {
   margin: 0;
-  color: var(--ink-deep);
-  font-size: 14px;
+  color: var(--text-secondary);
+  font-size: 15px;
   font-weight: 600;
-  line-height: 110%;
+  line-height: normal;
   text-align: right;
+  overflow-wrap: break-word;
 }
 
 .recommendation {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
+  gap: 8px;
+  padding: 8px 16px 0;
   color: var(--ink-deep);
-  font-size: 13px;
-  line-height: 1.35;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: normal;
 }
 
 .recommendationIcon {
@@ -148,25 +148,6 @@
   color: var(--ink-deep);
 }
 
-.button {
-  width: 100%;
-  min-height: 47px;
-  margin-top: 28px;
-  padding: 15px 16px;
-  border: 1px solid var(--ink-deep);
-  background: var(--paper);
-  color: var(--ink-deep);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  text-align: center;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: background-color 180ms ease, color 180ms ease;
-}
-
 .card a.titleLink {
   color: var(--ink-deep);
 }
@@ -174,14 +155,4 @@
 .card a.titleLink:hover,
 .card a.titleLink:focus-visible {
   color: var(--ink);
-}
-
-.card a.button {
-  color: var(--ink-deep);
-}
-
-.button:hover,
-.card a.button:hover {
-  background: var(--ink-deep);
-  color: var(--paper);
 }

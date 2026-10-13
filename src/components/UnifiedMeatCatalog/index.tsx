@@ -14,8 +14,11 @@ import { useRouter } from "next/navigation";
 import homeStyles from "@/app/home.module.css";
 import { ProductCard } from "@/components/ProductCard";
 import { CatalogSelect } from "@/components/CatalogSelect";
+import { CatalogCategorySelect, type CatalogCategoryOptions } from "@/components/CatalogCategorySelect";
+import { CatalogFilterFields } from "@/components/CatalogFilterFields";
+import { CatalogFilterPresentation } from "@/components/CatalogFilterPresentation";
 import { MeatCutsMap } from "@/components/MeatCutsMap";
-import { meatCutRegions } from "@/lib/meat-cuts";
+import { findCatalogMeatCut } from "@/lib/catalog/meat-catalog-artwork";
 import {
   meatFilterOptions,
   type MeatCatalogFilters,
@@ -41,6 +44,8 @@ type CatalogFilterKey = keyof CatalogFilters;
 
 type UnifiedMeatCatalogProps = {
   hero: ReactNode;
+  heroClassName: string;
+  categoryOptions: CatalogCategoryOptions;
   products: MeatCatalogItem[];
   initialFilters?: CatalogFilters;
   speciesPage?: DedicatedSpecies;
@@ -138,11 +143,14 @@ function filterCatalogProducts(products: MeatCatalogItem[], filters: CatalogFilt
 
 export function UnifiedMeatCatalog({
   hero,
+  heroClassName,
+  categoryOptions,
   products,
   initialFilters = {},
   speciesPage,
 }: UnifiedMeatCatalogProps) {
   const router = useRouter();
+  const bullHero = speciesPage === "beef";
   const resultsRef = useRef<HTMLElement>(null);
   const generatedId = useId().replaceAll(":", "");
   const speciesId = `catalog-species-${generatedId}`;
@@ -225,11 +233,11 @@ export function UnifiedMeatCatalog({
 
   const hasAppliedFilters = Object.values(appliedFilters).some(Boolean);
   const activeFilterCount = Object.values(appliedFilters).filter(Boolean).length;
-  const selectedCut = meatCutRegions.find((region) => region.id === appliedFilters.cutId);
+  const selectedCut = findCatalogMeatCut(appliedFilters.cutId);
 
   const getFilterLabel = (key: CatalogFilterKey, value: string) => {
     if (key === "cutId") {
-      return meatCutRegions.find((region) => region.id === value)?.titleRu ?? value;
+      return findCatalogMeatCut(value)?.titleRu ?? value;
     }
 
     if (key === "manufacturer") {
@@ -360,24 +368,30 @@ export function UnifiedMeatCatalog({
 
   return (
     <>
-      {speciesPage === "beef" ? (
-        <div>
-          {hero}
+      <section
+        className={bullHero ? styles.bullBlock : heroClassName}
+        aria-labelledby="meat-page-title"
+        data-catalog-hero
+        data-meat-catalog-block={bullHero || undefined}
+      >
+        {hero}
+        {speciesPage === "beef" ? (
           <MeatCutsMap
             mode="filter"
+            artwork="catalog"
             selectedCutId={appliedFilters.cutId ?? null}
             subtitle="Нажмите на часть туши — подходящие товары появятся ниже"
             onCutSelect={(region) => selectCut(region.id)}
             onClearSelection={() => selectCut()}
           />
-        </div>
-      ) : hero}
+        ) : null}
 
       <section
-        className={`${styles.filtersSection} ${speciesPage === "beef" ? styles.darkFilters : ""}`}
+        className={`${styles.filtersSection} ${styles.darkFilters} ${bullHero ? "" : styles.imageFilters}`}
         aria-label="Фильтры каталога мяса"
       >
         <div className={homeStyles.shell}>
+          <CatalogFilterPresentation>
           <details
             className={styles.filterDisclosure}
             onToggle={(event) => {
@@ -402,13 +416,17 @@ export function UnifiedMeatCatalog({
             </summary>
 
             <form className={styles.filterPanel} onSubmit={applyFilters}>
-              <div className={styles.filterFields}>
+              <CatalogFilterFields className={styles.filterFields}>
+              <div className={styles.field}>
+                <CatalogCategorySelect activeCategory="meat" filters={draftFilters} options={categoryOptions} />
+              </div>
               <label className={styles.field} htmlFor={speciesId}>
                 <span>Вид мяса</span>
                 <CatalogSelect
                   id={speciesId}
                   label="Вид мяса"
-                  variant={speciesPage === "beef" ? "dark" : "filter"}
+                  variant="dark"
+                  chevronSrc="/assets/catalog/meat/catalog-hero/select-chevron.svg"
                   options={speciesOptions}
                   emptyLabel="Все"
                   value={draftFilters.species ?? ""}
@@ -429,7 +447,8 @@ export function UnifiedMeatCatalog({
                 <CatalogSelect
                   id={manufacturerId}
                   label="Производитель"
-                  variant={speciesPage === "beef" ? "dark" : "filter"}
+                  variant="dark"
+                  chevronSrc="/assets/catalog/meat/catalog-hero/select-chevron.svg"
                   options={manufacturerOptions}
                   emptyLabel="Все"
                   value={draftFilters.manufacturer ?? ""}
@@ -449,7 +468,8 @@ export function UnifiedMeatCatalog({
                 <CatalogSelect
                   id={countryId}
                   label="Страна"
-                  variant={speciesPage === "beef" ? "dark" : "filter"}
+                  variant="dark"
+                  chevronSrc="/assets/catalog/meat/catalog-hero/select-chevron.svg"
                   options={countryOptions}
                   emptyLabel="Все"
                   value={draftFilters.country ?? ""}
@@ -469,7 +489,8 @@ export function UnifiedMeatCatalog({
                 <CatalogSelect
                   id={packagingId}
                   label="Упаковка"
-                  variant={speciesPage === "beef" ? "dark" : "filter"}
+                  variant="dark"
+                  chevronSrc="/assets/catalog/meat/catalog-hero/select-chevron.svg"
                   options={packagingOptions}
                   emptyLabel="Любая"
                   value={draftFilters.packaging ?? ""}
@@ -489,7 +510,9 @@ export function UnifiedMeatCatalog({
                 <CatalogSelect
                   id={channelId}
                   label="Формат поставки"
-                  variant={speciesPage === "beef" ? "dark" : "filter"}
+                  placeholder="Поставка"
+                  variant="dark"
+                  chevronSrc="/assets/catalog/meat/catalog-hero/select-chevron.svg"
                   options={channelOptions}
                   emptyLabel="Любой"
                   value={draftFilters.channel ?? ""}
@@ -503,7 +526,7 @@ export function UnifiedMeatCatalog({
                   }
                 />
               </label>
-              </div>
+              </CatalogFilterFields>
 
               <div className={styles.filterActions}>
                 <button
@@ -549,7 +572,9 @@ export function UnifiedMeatCatalog({
 
             </form>
           </details>
+          </CatalogFilterPresentation>
         </div>
+      </section>
       </section>
 
       <section

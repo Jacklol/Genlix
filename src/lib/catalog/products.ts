@@ -180,7 +180,7 @@ export const catalogProducts = {
       country: "russia",
       productType: "fillet",
       packaging: "fixed-weight-vacuum",
-      cutIds: [],
+      cutIds: ["vyrezka"],
       cooking: ["grill", "fry"],
     }),
     recommendation: "Рекомендуемое пиво: IPA, Porter",

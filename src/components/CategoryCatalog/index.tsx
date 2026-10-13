@@ -1,18 +1,23 @@
 "use client";
 
-import { useId, useState, useTransition, type FormEvent } from "react";
+import { useId, useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ProductCard } from "@/components/ProductCard";
 import { CatalogSelect } from "@/components/CatalogSelect";
+import { CatalogCategorySelect, type CatalogCategoryOptions } from "@/components/CatalogCategorySelect";
+import { CatalogFilterFields } from "@/components/CatalogFilterFields";
+import { CatalogFilterPresentation } from "@/components/CatalogFilterPresentation";
 import { categoryFields, categoryLabels, type FilteredCategory } from "@/lib/catalog/category-fields";
 import { availableFilterOptions, catalogHref, filterCategoryProducts, filterLabel, productHref, type CatalogFilterValues, type CategoryCatalogItem } from "@/lib/catalog/filter-engine";
 import homeStyles from "@/app/home.module.css";
 import gridStyles from "@/components/ProductCardsSection/ProductCardsSection.module.css";
 import styles from "./CategoryCatalog.module.css";
 
-export function CategoryCatalog({ category, products, initialFilters }: {
+export function CategoryCatalog({ category, products, initialFilters, categoryOptions, hero, heroClassName, heroTitleId }: {
   category: FilteredCategory; products: CategoryCatalogItem[]; initialFilters: CatalogFilterValues;
+  hero: ReactNode; heroClassName: string; heroTitleId: string;
+  categoryOptions: CatalogCategoryOptions;
 }) {
   const router = useRouter();
   const id = useId();
@@ -26,8 +31,6 @@ export function CategoryCatalog({ category, products, initialFilters }: {
     { filter: "manufacturer", label: "Производитель", primary: true },
     ...categoryFields[category].filter((field) => field.filter),
   ];
-  const primary = fields.filter((field) => field.primary);
-  const extra = fields.filter((field) => !field.primary);
   const entries = Object.entries(filters).filter((entry): entry is [string, string] => Boolean(entry[1]));
   const path = `/catalog/${category}`;
   const returnTo = catalogHref(path, filters);
@@ -41,26 +44,36 @@ export function CategoryCatalog({ category, products, initialFilters }: {
   function fieldControl(field: typeof fields[number]) {
     const key = field.filter!;
     const options = availableFilterOptions(products, key);
+    const placeholder = ({ country: "Страна", channel: "Поставка", packaging: "Упаковка", part: "Разделка" } as Record<string, string>)[key] ?? field.label;
     return <label key={key} className={styles.field}>
       <span>{field.label}</span>
-      <CatalogSelect label={field.label} value={draft[key]} options={options}
+      <CatalogSelect label={field.label} value={draft[key]} options={options} variant="dark"
+        placeholder={placeholder}
+        chevronSrc="/assets/catalog/meat/catalog-hero/select-chevron.svg"
         emptyLabel={options.length ? "Все" : "Пока не указано"} disabled={!options.length || pending}
         onChange={(value) => setDraft((current) => ({ ...current, [key]: value || undefined }))} />
     </label>;
   }
   return <>
+    <section className={heroClassName} aria-labelledby={heroTitleId} data-catalog-hero>
+    {hero}
     <section className={styles.filters} aria-label={`Фильтры: ${categoryLabels[category]}`}>
       <div className={homeStyles.shell}>
+        <CatalogFilterPresentation>
         <button className={styles.mobileToggle} aria-expanded={mobileOpen} aria-controls={`${id}-filters`}
           onClick={() => setMobileOpen(!mobileOpen)} type="button">Фильтры{entries.length ? ` · ${entries.length}` : ""} <span aria-hidden="true">{mobileOpen ? "−" : "+"}</span></button>
         <form id={`${id}-filters`} onSubmit={submit} className={`${styles.form} ${mobileOpen ? styles.open : ""}`}>
-          <div className={styles.primary}>{primary.map(fieldControl)}</div>
-          <details className={styles.more}>
-            <summary>Ещё фильтры{extra.some((field) => filters[field.filter!]) ? " · выбраны" : ""}</summary>
-            <div className={styles.extra}>{extra.map(fieldControl)}</div>
-          </details>
+          <CatalogFilterFields className={styles.fields}>
+            <div className={styles.field}>
+              <CatalogCategorySelect activeCategory={category} filters={draft} options={categoryOptions} disabled={pending} />
+            </div>
+            {fields.map(fieldControl)}
+          </CatalogFilterFields>
           <div className={styles.actions}>
-            <button className={styles.apply} disabled={pending} type="submit">{pending ? "Применяем…" : `Применить · ${previewCount}`}</button>
+            <button className={styles.apply} disabled={pending} type="submit"
+              aria-label={pending ? "Применяем фильтры…" : `Применить фильтры — показать ${previewCount} товаров`}>
+              <span>{pending ? "Применяем…" : "Применить"}</span><small aria-hidden="true">{previewCount}</small>
+            </button>
             <button className={styles.reset} disabled={pending || !Object.values(draft).some(Boolean) && !entries.length} type="button" onClick={() => apply({})}>Сбросить</button>
           </div>
         </form>
@@ -70,7 +83,9 @@ export function CategoryCatalog({ category, products, initialFilters }: {
             {filterLabel(key, value)} <span aria-hidden="true">×</span>
           </button>)}
         </div> : null}
+        </CatalogFilterPresentation>
       </div>
+    </section>
     </section>
     <section className={styles.results} aria-labelledby={`${id}-title`} aria-busy={pending}>
       <div className={homeStyles.shell}>

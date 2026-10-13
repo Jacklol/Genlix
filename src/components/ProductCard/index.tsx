@@ -1,6 +1,5 @@
 import Image from "next/image";
 
-import { getContactRequestHref } from "@/lib/contact-requests/link";
 import { SHOW_PRODUCT_PAIRINGS } from "@/lib/catalog/features";
 
 import styles from "./ProductCard.module.css";
@@ -83,12 +82,9 @@ export function ProductCard({
   title,
   specs,
   recommendation,
-  buttonLabel = "Запросить розничную поставку",
-  buttonHref,
 }: ProductCardData) {
   const badgeData = badge ? badgeStyles[badge] : null;
   const productHref = href ?? (slug ? `/catalog/product/${slug}` : undefined);
-  const requestHref = getContactRequestHref(slug, buttonHref);
 
   const mediaContent = (
     <>
@@ -146,10 +142,6 @@ export function ProductCard({
             <ChevronDownIcon />
           </div>
         ) : null}
-
-        <a className={styles.button} href={requestHref}>
-          {buttonLabel}
-        </a>
       </div>
     </article>
   );

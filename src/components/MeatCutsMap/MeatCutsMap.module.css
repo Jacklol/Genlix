@@ -89,6 +89,125 @@
   white-space: nowrap;
 }
 
+.catalogInner {
+  width: 100%;
+}
+
+.artworkToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px clamp(16px, 4vw, 64px) 8px;
+  color: rgba(255, 255, 255, .75);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.artworkLayoutName { min-width: 110px; color: var(--paper); font-weight: 600; }
+.artworkSwitcher {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .06);
+}
+
+.artworkSwitcher button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--paper);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.artworkSwitcher button:hover { background: rgba(255, 255, 255, .15); }
+.artworkSwitcher button[aria-pressed="true"] { background: var(--paper); color: var(--ink-deep); }
+.artworkSwitcher button:focus-visible { outline: 2px solid var(--paper); outline-offset: 2px; }
+
+.catalogArtwork .header {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.catalogArtwork .map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+}
+
+.catalogArtwork .cutSelector {
+  width: min(340px, calc(100% - 32px));
+  margin: 12px auto 0;
+}
+
+.catalogRegion { cursor: pointer; outline: none; }
+.catalogRegionShape {
+  fill: transparent;
+  stroke: var(--paper);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+  transition: fill 160ms ease, stroke 160ms ease;
+}
+.catalogRegionLabel {
+  fill: var(--paper);
+  font-family: var(--font-montserrat), Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  paint-order: stroke fill;
+  stroke: rgba(3, 15, 34, .35);
+  stroke-width: 2;
+  pointer-events: none;
+}
+.catalogRegion:hover .catalogRegionShape,
+.catalogRegion:focus-visible .catalogRegionShape,
+.catalogRegionActive .catalogRegionShape { fill: rgba(206, 66, 68, .45); }
+.catalogRegion:focus-visible .catalogRegionShape { stroke: #ffda87; stroke-width: 5; }
+.mapTools { display: none; }
+
+@media (max-width: 600px) {
+  .artworkToolbar { justify-content: center; gap: 8px; padding-inline: 16px; }
+  .catalogArtwork .mapWrap { overflow-x: auto; overscroll-behavior-x: contain; }
+  .catalogArtwork .mapWrap[data-zoomed] [data-meat-catalog-artwork] {
+    width: 900px;
+    max-width: none;
+    margin-inline: 0;
+  }
+  .mapTools { display: flex; align-items: center; flex-direction: column; gap: 8px; margin: 12px 16px; }
+  .mapTools button {
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 255, 255, .4);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .08);
+    color: var(--paper);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .mapTools button:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
+  .mapTools p { margin: 0; color: rgba(255, 255, 255, .8); font-size: 12px; text-align: center; }
+}
+
 .header {
   max-width: 100%;
   margin-bottom: 40px;

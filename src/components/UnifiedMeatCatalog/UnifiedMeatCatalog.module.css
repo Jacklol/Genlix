@@ -1,3 +1,7 @@
+.bullBlock {
+  background: #030f22;
+}
+
 .filtersSection {
   padding: 24px 0 32px;
   border-block: 1px solid rgba(5, 32, 76, 0.1);
@@ -6,9 +10,24 @@
 }
 
 .darkFilters {
+  padding: 32px 0 64px;
   border: 0;
   background: #030f22;
   color: var(--paper);
+}
+
+.imageFilters {
+  background: transparent;
+}
+
+.darkFilters .filterFields button {
+  font-size: var(--catalog-control-font-size, clamp(12px, .78vw, 15px));
+}
+
+.darkFilters .applyButton,
+.darkFilters .resetButton {
+  padding-inline: 20px;
+  font-size: var(--catalog-control-font-size, clamp(12px, .78vw, 15px));
 }
 
 .eyebrow {
@@ -48,9 +67,7 @@
 }
 
 .filterFields {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr .8fr 1fr 1.3fr;
-  gap: 12px;
+  min-width: 0;
 }
 
 .field {
@@ -137,13 +154,14 @@
 }
 
 .applyButton {
-  min-height: 50px;
+  min-height: var(--catalog-control-height, 50px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 8px 12px;
   border: 1px solid var(--red);
+  border-radius: var(--catalog-action-radius, 0);
   background: var(--red);
   color: var(--paper);
   cursor: pointer;
@@ -179,9 +197,10 @@
 }
 
 .resetButton {
-  min-height: 50px;
+  min-height: var(--catalog-control-height, 50px);
   padding: 12px;
   border: 1px solid currentColor;
+  border-radius: var(--catalog-action-radius, 0);
   background: transparent;
   color: var(--navy);
   cursor: pointer;
@@ -193,24 +212,24 @@
 
 .darkFilters .resetButton,
 .darkFilters .activeFiltersLabel {
-  color: var(--paper);
+  color: var(--catalog-filter-text, var(--paper));
 }
 
 .darkFilters .chip {
-  border-color: rgba(255, 255, 255, .4);
-  background: rgba(255, 255, 255, .08);
-  color: var(--paper);
+  border-color: var(--catalog-control-border, rgba(255, 255, 255, .4));
+  background: var(--catalog-filter-chip-background, rgba(255, 255, 255, .08));
+  color: var(--catalog-filter-text, var(--paper));
 }
 
 .darkFilters .chip:hover {
-  border-color: var(--paper);
-  background: rgba(255, 255, 255, .15);
+  border-color: var(--catalog-filter-text, var(--paper));
+  background: var(--catalog-control-hover-background, rgba(255, 255, 255, .15));
 }
 
 .darkFilters .applyButton:focus-visible,
 .darkFilters .resetButton:focus-visible,
 .darkFilters .chip:focus-visible {
-  outline-color: var(--paper);
+  outline-color: var(--catalog-filter-text, var(--paper));
 }
 
 .catalogSection {
@@ -314,7 +333,7 @@
   text-transform: uppercase;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1700px) {
   .filterFields {
     grid-column: 1 / -1;
   }
@@ -327,12 +346,6 @@
   .activeFilters {
     grid-column: 1;
     grid-row: 2;
-  }
-}
-
-@media (max-width: 800px) {
-  .filterFields {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -355,12 +368,20 @@
     padding: 8px 0;
   }
 
+  .darkFilters {
+    padding: 16px 0 32px;
+  }
+
+  .darkFilters .filterFields button {
+    font-size: var(--catalog-control-font-size, 14px);
+  }
+
   .catalogHeader h2 {
     font-size: 36px;
   }
 
   .filterPanel {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 10px;
     padding: 10px;
   }
@@ -431,40 +452,33 @@
     transform: rotate(180deg);
   }
 
-  .filterFields {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  .field:last-child {
-    grid-column: 1 / -1;
-  }
-
   .darkFilters .filterDisclosure {
-    border-color: rgba(255, 255, 255, .4);
+    border-color: var(--catalog-control-border, rgba(255, 255, 255, .4));
     background: transparent;
   }
 
   .darkFilters .filterSummary strong {
-    color: var(--paper);
+    color: var(--catalog-filter-text, var(--paper));
   }
 
   .darkFilters .filterSummary small {
-    color: rgba(255, 255, 255, .7);
+    color: var(--catalog-filter-muted, rgba(255, 255, 255, .7));
   }
 
   .darkFilters .filterSummary:focus-visible {
-    outline-color: var(--paper);
+    outline-color: var(--catalog-filter-text, var(--paper));
   }
 
   .darkFilters .filterDisclosure[open] .filterSummary {
-    border-bottom-color: rgba(255, 255, 255, .2);
+    border-bottom-color: var(--catalog-control-border, rgba(255, 255, 255, .2));
   }
 
   .filterActions {
     grid-column: 1;
     grid-row: auto;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
     gap: 8px;
   }
 
@@ -490,14 +504,17 @@
   }
 
   .applyButton {
-    min-height: 44px;
+    min-height: var(--catalog-control-height, 44px);
     flex: 1;
   }
 
   .resetButton {
-    min-height: 44px;
+    min-height: var(--catalog-control-height, 44px);
     padding-inline: 10px;
   }
+
+  .darkFilters .applyButton,
+  .darkFilters .resetButton { padding-inline: 12px; }
 
   .catalogSection {
     padding: 24px 0 56px;

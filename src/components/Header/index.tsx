@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, type TransitionEvent } from "react";
 
 import type { HomeHeroVariant } from "@/components/HomeHero";
-import { catalogSections, navItems } from "@/lib/site-data";
+import { catalogSections, contactDetails, navItems } from "@/lib/site-data";
 
 import styles from "./Header.module.css";
 
@@ -154,10 +154,10 @@ export function Header({
           </div>
         ) : null}
         <div className={styles.actions}>
-          <a className={styles.phone} href="tel:+74951234567">
-            +7 (495) 123-45-67
+          <a className={styles.phone} href={contactDetails.phoneHref}>
+            {contactDetails.phone}
           </a>
-          <Link className={styles.cta} href="/#contacts">
+          <Link className={styles.cta} href={activeLink === "Контакты" ? "#request" : "/#contacts"}>
             Стать партнёром
           </Link>
         </div>
@@ -225,8 +225,8 @@ export function Header({
                     </a>
                   ),
                 )}
-                <a className={styles.mobilePhone} href="tel:+74951234567" onClick={closeMenu}>
-                  +7 (495) 123-45-67
+                <a className={styles.mobilePhone} href={contactDetails.phoneHref} onClick={closeMenu}>
+                  {contactDetails.phone}
                 </a>
               </nav>
             </div>

@@ -20,16 +20,37 @@ function FieldError({ children, id }: { children?: string; id: string }) {
   ) : null;
 }
 
-export function ContactRequestForm({ product }: { product?: ContactProductContext }) {
+type ContactRequestFormProps = {
+  product?: ContactProductContext;
+  onClose?: () => void;
+};
+
+export function ContactRequestForm({ product, onClose }: ContactRequestFormProps) {
   const [state, formAction, isPending] = useActionState(submitContactRequest, initialState);
   const formRef = useRef<HTMLFormElement>(null);
+  const successTitleRef = useRef<HTMLHeadingElement>(null);
   const defaultBusiness = product?.channel === "retail" ? "retail" : "horeca";
 
   useEffect(() => {
     if (state.status === "success") {
       formRef.current?.reset();
+      successTitleRef.current?.focus();
     }
   }, [state.status]);
+
+  if (state.status === "success" && onClose) {
+    return (
+      <div className={styles.contactForm}>
+        <h3 ref={successTitleRef} tabIndex={-1}>Заявка отправлена</h3>
+        <p className={`${styles.contactFormMessage} ${styles.contactFormSuccess}`} role="status">
+          {state.message}
+        </p>
+        <button className={styles.primaryButton} type="button" onClick={onClose}>
+          Закрыть
+        </button>
+      </div>
+    );
+  }
 
   return (
     <form action={formAction} className={styles.contactForm} ref={formRef}>
@@ -75,7 +96,7 @@ export function ContactRequestForm({ product }: { product?: ContactProductContex
           autoComplete="tel"
           inputMode="tel"
           name="phone"
-          placeholder="+7 (999) 123-45-67"
+          placeholder="+375 (29) 123-45-67"
           required
         />
         <FieldError id="contact-phone-error">{state.errors?.phone}</FieldError>
@@ -87,7 +108,7 @@ export function ContactRequestForm({ product }: { product?: ContactProductContex
           aria-invalid={Boolean(state.errors?.email)}
           autoComplete="email"
           name="email"
-          placeholder="name@company.ru"
+          placeholder="name@company.by"
           type="email"
         />
         <FieldError id="contact-email-error">{state.errors?.email}</FieldError>

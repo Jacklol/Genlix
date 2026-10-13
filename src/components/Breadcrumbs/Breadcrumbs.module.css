@@ -33,3 +33,22 @@
   color: var(--ink);
   font-weight: 600;
 }
+
+.dark {
+  background: #030f22;
+}
+
+.dark .nav,
+.dark .nav a {
+  color: #9e9e9e;
+}
+
+.dark .nav a:hover,
+.dark .current {
+  color: var(--paper);
+}
+
+.dark .separator {
+  display: inline-flex;
+  align-items: center;
+}

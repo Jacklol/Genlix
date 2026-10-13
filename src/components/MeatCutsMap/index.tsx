@@ -5,6 +5,8 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type 
 
 import homeStyles from "@/app/home.module.css";
 import { CatalogSelect } from "@/components/CatalogSelect";
+import { MeatCatalogArtwork, type MeatCatalogLayout } from "@/components/MeatCatalogArtwork";
+import { MEAT_CATALOG_ARTWORK_VIEWBOX, meatCatalogArtworkRegions } from "@/lib/catalog/meat-catalog-artwork";
 import {
   MEAT_CUTS_IMAGE,
   MEAT_CUTS_VIEWBOX,
@@ -19,6 +21,7 @@ type MeatCutsMapProps = {
   subtitle?: string;
   embedded?: boolean;
   mode?: "details" | "filter";
+  artwork?: "original" | "catalog";
   selectedCutId?: string | null;
   onCutSelect?: (region: MeatCutRegion) => void;
   onClearSelection?: () => void;
@@ -28,6 +31,7 @@ export function MeatCutsMap({
   subtitle = "Выберите интересующую часть туши",
   embedded = false,
   mode = "details",
+  artwork = "original",
   selectedCutId,
   onCutSelect,
   onClearSelection,
@@ -36,13 +40,22 @@ export function MeatCutsMap({
   const mapWrapRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const cutSelectId = useId();
+  const mapId = useId();
 
   const [internalActiveId, setInternalActiveId] = useState<string | null>(null);
   const [popupPosition, setPopupPosition] = useState<{ left: number; top: number } | null>(null);
+  const [mapZoomed, setMapZoomed] = useState(false);
+  const [bullLayout, setBullLayout] = useState<MeatCatalogLayout>("center");
 
   const isControlled = selectedCutId !== undefined;
+  const catalogArtwork = artwork === "catalog" && mode === "filter";
+  const viewBox = catalogArtwork ? MEAT_CATALOG_ARTWORK_VIEWBOX : MEAT_CUTS_VIEWBOX;
   const activeId = isControlled ? selectedCutId : internalActiveId;
-  const activeCut = meatCutRegions.find((region) => region.id === activeId) ?? null;
+  const regions = catalogArtwork ? meatCatalogArtworkRegions : meatCutRegions;
+  const activeCut = regions.find(region => region.id === activeId)
+    ?? (catalogArtwork ? meatCutRegions.find(region => region.id === activeId) : undefined) ?? null;
+  const selectableRegions = activeCut && !regions.some(region => region.id === activeCut.id)
+    ? [...regions, activeCut] : regions;
 
   const selectCut = (region: MeatCutRegion) => {
     if (!isControlled) {
@@ -52,7 +65,7 @@ export function MeatCutsMap({
     onCutSelect?.(region);
   };
 
-  const handleSelect = (region: MeatCutRegion, event: ReactMouseEvent<SVGPolygonElement>) => {
+  const handleSelect = (region: MeatCutRegion, event: ReactMouseEvent<SVGElement>) => {
     event.stopPropagation();
     selectCut(region);
   };
@@ -72,7 +85,8 @@ export function MeatCutsMap({
   };
 
   const updatePopupPosition = useCallback(() => {
-    if (!activeCut || mode === "filter") {
+    const popupCut = meatCutRegions.find(region => region.id === activeId);
+    if (!popupCut || mode === "filter") {
       setPopupPosition(null);
       return;
     }
@@ -90,7 +104,7 @@ export function MeatCutsMap({
       return;
     }
 
-    const centroid = getPolygonCentroid(activeCut.points);
+    const centroid = getPolygonCentroid(popupCut.points);
 
     if (!centroid) {
       setPopupPosition(null);
@@ -119,7 +133,7 @@ export function MeatCutsMap({
     );
 
     setPopupPosition({ left, top });
-  }, [activeCut, mode]);
+  }, [activeId, mode]);
 
   useLayoutEffect(() => {
     const frame = window.requestAnimationFrame(updatePopupPosition);
@@ -146,6 +160,66 @@ export function MeatCutsMap({
       window.removeEventListener("resize", updatePopupPosition);
     };
   }, [updatePopupPosition]);
+
+  const mapImage = (
+    <svg
+      ref={svgRef}
+      id={mapId}
+      aria-label="Интерактивная схема отрубов"
+      className={styles.map}
+      role="group"
+      viewBox={`0 0 ${viewBox.width} ${viewBox.height}`}
+      preserveAspectRatio="xMidYMid meet"
+      onClick={handleMapClick}
+    >
+      {!catalogArtwork ? (
+        <image
+          height={MEAT_CUTS_VIEWBOX.height}
+          href={MEAT_CUTS_IMAGE}
+          preserveAspectRatio="xMidYMid meet"
+          width={MEAT_CUTS_VIEWBOX.width}
+        />
+      ) : null}
+      {catalogArtwork ? meatCatalogArtworkRegions.map(region => {
+        const isActive = region.id === activeId || Boolean(activeId && region.legacyCutIds?.includes(activeId));
+        const { x, y, lines, rotate, fontSize } = region.label;
+        return <g key={region.id} role="button" tabIndex={0} aria-label={region.titleRu} aria-pressed={isActive}
+          data-cut-id={region.id} className={`${styles.catalogRegion} ${isActive ? styles.catalogRegionActive : ""}`}
+          onClick={event => handleSelect(region, event)} onKeyDown={event => {
+            if (event.key === "Enter" || event.key === " ") { event.preventDefault(); selectCut(region); }
+          }}>
+          <title>{region.titleRu}</title>
+          <path d={region.path} className={styles.catalogRegionShape} />
+          <text className={styles.catalogRegionLabel} x={x} y={y}
+            transform={rotate ? `rotate(${rotate} ${x} ${y})` : undefined}
+            style={fontSize ? { fontSize } : undefined} aria-hidden="true">
+            {lines.map((line, index) => <tspan key={line} x={x} dy={index === 0 ? `${-(lines.length - 1) * .6}em` : "1.2em"}>{line}</tspan>)}
+          </text>
+        </g>;
+      }) : meatCutRegions.map((region) => {
+        if (region.enabled === false) return null;
+        const isActive = region.id === activeId;
+        return (
+          <polygon
+            aria-label={`${region.titleRu} / ${region.titleEn}`}
+            aria-pressed={isActive}
+            className={`${styles.region} ${isActive ? styles.regionActive : ""}`}
+            key={region.id}
+            points={region.points}
+            role="button"
+            tabIndex={0}
+            onClick={(event) => handleSelect(region, event)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                selectCut(region);
+              }
+            }}
+          />
+        );
+      })}
+    </svg>
+  );
 
   const detailsContent = activeCut ? (
     <>
@@ -180,10 +254,11 @@ export function MeatCutsMap({
         styles.section,
         embedded ? styles.embedded : "",
         mode === "filter" ? styles.filterMode : "",
+        catalogArtwork ? styles.catalogArtwork : "",
       ].filter(Boolean).join(" ")}
       aria-labelledby="meat-cuts-map-title"
     >
-      <div className={embedded ? styles.embeddedInner : homeStyles.shell}>
+      <div className={catalogArtwork ? styles.catalogInner : embedded ? styles.embeddedInner : homeStyles.shell}>
         <div className={styles.header}>
           <h2 className={styles.title} id="meat-cuts-map-title">
             Интерактивная карта <span>мясных отрубов</span>
@@ -193,49 +268,18 @@ export function MeatCutsMap({
 
         <div className={styles.mapLayout}>
           <div className={styles.mapColumn}>
-            <div className={styles.mapWrap} ref={mapWrapRef}>
-              <svg
-                ref={svgRef}
-                aria-label="Интерактивная схема отрубов"
-                className={styles.map}
-                role="group"
-                viewBox={`0 0 ${MEAT_CUTS_VIEWBOX.width} ${MEAT_CUTS_VIEWBOX.height}`}
-                onClick={handleMapClick}
-              >
-                <image
-                  height={MEAT_CUTS_VIEWBOX.height}
-                  href={MEAT_CUTS_IMAGE}
-                  preserveAspectRatio="xMidYMid meet"
-                  width={MEAT_CUTS_VIEWBOX.width}
-                />
-
-                {meatCutRegions.map((region) => {
-                  if (region.enabled === false) {
-                    return null;
-                  }
-
-                  const isActive = region.id === activeId;
-
-                  return (
-                    <polygon
-                      aria-label={`${region.titleRu} / ${region.titleEn}`}
-                      aria-pressed={isActive}
-                      className={`${styles.region} ${isActive ? styles.regionActive : ""}`}
-                      key={region.id}
-                      points={region.points}
-                      role="button"
-                      tabIndex={0}
-                      onClick={(event) => handleSelect(region, event)}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          selectCut(region);
-                        }
-                      }}
-                    />
-                  );
-                })}
-              </svg>
+            {catalogArtwork ? <div className={styles.artworkToolbar}>
+              <span>Расположение</span>
+              <div className={styles.artworkSwitcher} role="group" aria-label="Расположение быка">
+                <button type="button" aria-label="Вариант 1: По центру" title="По центру"
+                  aria-pressed={bullLayout === "center"} onClick={() => setBullLayout("center")}>1</button>
+                <button type="button" aria-label="Вариант 2: Со смещением" title="Со смещением"
+                  aria-pressed={bullLayout === "offset"} onClick={() => setBullLayout("offset")}>2</button>
+              </div>
+              <span className={styles.artworkLayoutName}>{bullLayout === "center" ? "По центру" : "Со смещением"}</span>
+            </div> : null}
+            <div className={styles.mapWrap} ref={mapWrapRef} data-zoomed={mapZoomed || undefined}>
+              {catalogArtwork ? <MeatCatalogArtwork zoomed={mapZoomed} layout={bullLayout}>{mapImage}</MeatCatalogArtwork> : mapImage}
 
               {activeCut && mode === "details" ? (
                 <aside
@@ -256,6 +300,12 @@ export function MeatCutsMap({
               ) : null}
             </div>
 
+            {catalogArtwork ? <div className={styles.mapTools}>
+              <button type="button" aria-controls={mapId} aria-pressed={mapZoomed}
+                onClick={() => setMapZoomed(zoomed => !zoomed)}>{mapZoomed ? "Показать целиком" : "Увеличить схему"}</button>
+              {mapZoomed ? <p>Сдвигайте схему в стороны и нажмите на нужный отруб.</p> : null}
+            </div> : null}
+
             {activeCut && mode === "details" ? (
               <aside className={styles.detailsPopupBelow} aria-live="polite">
                 {detailsContent}
@@ -270,12 +320,13 @@ export function MeatCutsMap({
                   label="Часть туши"
                   emptyLabel="Все отрубы"
                   variant="dark"
-                  options={meatCutRegions.filter((region) => region.enabled !== false).map((region) => ({
-                    value: region.id, label: `${region.titleRu} / ${region.titleEn}`,
+                  chevronSrc={catalogArtwork ? "/assets/catalog/meat/catalog-hero/select-chevron.svg" : undefined}
+                  options={selectableRegions.filter((region) => region.enabled !== false).map((region) => ({
+                    value: region.id, label: catalogArtwork ? region.titleRu : `${region.titleRu} / ${region.titleEn}`,
                   }))}
                   value={activeId ?? ""}
                   onChange={(value) => {
-                    const region = meatCutRegions.find((cut) => cut.id === value);
+                    const region = selectableRegions.find((cut) => cut.id === value);
                     if (region) {
                       selectCut(region);
                     } else {
