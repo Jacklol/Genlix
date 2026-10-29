@@ -69,6 +69,36 @@ test("removing one photo does not remove any other image", () => {
   assert.deepEqual(payload.detail.images, remaining);
   assert.equal(payload.catalog.image, remaining[0]);
 });
+test("products without photos can be created in every category and restored from a snapshot", () => {
+  for (const category of ["meat", "bird", "beer", "water"]) {
+    const form = formWithImages([]);
+    form.set("category", category);
+    const payload = buildProductPayloadFromForm(form, undefined);
+    assert.equal(payload.catalog.image, "");
+    assert.deepEqual(payload.detail.images, []);
+    const copy = structuredClone(seed);
+    copy.products[0].published = payload;
+    assert.deepEqual(normalizeCmsContent(JSON.parse(JSON.stringify(copy))).products[0].published, JSON.parse(JSON.stringify(payload)));
+  }
+});
+test("all photos can be removed and a real photo can be added later", () => {
+  const withoutPhoto = buildProductPayloadFromForm(formWithImages([]), original);
+  assert.equal(withoutPhoto.catalog.image, "");
+  assert.deepEqual(withoutPhoto.detail.images, []);
+  assert.deepEqual(initialProductImages(withoutPhoto.catalog.image, withoutPhoto.detail.images), []);
+  const updated = buildProductPayloadFromForm(formWithImages(["/assets/new-photo.png"]), withoutPhoto);
+  assert.equal(updated.catalog.image, "/assets/new-photo.png");
+  assert.deepEqual(updated.detail.images, ["/assets/new-photo.png"]);
+});
+test("a gallery-only import uses the first real photo as the main image", () => {
+  const form = formWithImages([]);
+  form.set("images", "/assets/first.png\n/assets/second.png");
+  const payload = buildProductPayloadFromForm(form, original);
+  assert.equal(payload.catalog.image, "/assets/first.png");
+  assert.deepEqual(payload.detail.images, ["/assets/first.png", "/assets/second.png"]);
+  form.set("images", "javascript:alert(1)");
+  assert.throws(() => buildProductPayloadFromForm(form, original));
+});
 test("image URLs with commas round-trip intact and blob/unsafe URLs are refused", () => {
   const urls = ["/assets/main.png", "/uploads/photo,second.png"];
   assert.deepEqual(buildProductPayloadFromForm(formWithImages(urls), original).detail.images, urls);

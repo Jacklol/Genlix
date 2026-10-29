@@ -7,6 +7,7 @@ import {
 
 import { saveProduct, uploadProductImage } from "@/app/genlix-admin/(panel)/products/actions";
 import { createProductSlug } from "@/lib/catalog/product-slug";
+import { ProductPhotoPlaceholder } from "@/components/ProductPhotoPlaceholder";
 import {
   initialProductImages, moveProductImage, MAX_PRODUCT_IMAGES, MAX_PRODUCT_IMAGE_BYTES,
   PRODUCT_IMAGE_TYPES,
@@ -75,10 +76,6 @@ export function ProductEditorForm({ children, initialTitle, initialBrand, initia
     if (pending) return;
     if (images.some((item) => item.status !== "ready")) {
       setFormError("Дождитесь загрузки фото. Если есть ошибка — повторите загрузку или уберите фото из галереи.");
-      return;
-    }
-    if (!images.length) {
-      setFormError("Добавьте хотя бы одно фото товара.");
       return;
     }
     setFormError("");
@@ -233,7 +230,7 @@ export function ProductImagesEditor() {
   return (
     <section className={adminStyles.formSection} id="product-images" aria-labelledby="product-images-title">
       <h2 id="product-images-title">Фото товара</h2>
-      <p className={adminStyles.helpText}>Первое фото — главное, остальные — галерея. Перетаскивайте миниатюры или используйте кнопки под ними.</p>
+      <p className={adminStyles.helpText}>Фото необязательно: его можно добавить позже. Пока фото нет, на сайте будет заглушка. Первое фото — главное, остальные — галерея.</p>
       <input type="hidden" name="image" value={main?.status === "ready" ? main.url : ""} />
       <input type="hidden" name="images" value={images.slice(1).filter((item) => item.status === "ready").map((item) => item.url).join("\n")} />
 
@@ -325,7 +322,7 @@ export function ProductImagesEditor() {
               {main ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={main.url} alt="Главное фото в карточке каталога" className={styles.previewImage} />
-              ) : <span className={styles.emptyPreview}>Добавьте фото товара</span>}
+              ) : <ProductPhotoPlaceholder />}
               {brand ? <span className={cardStyles.brand}>{brand}</span> : null}
             </div>
             <div className={cardStyles.body}><h3 className={cardStyles.title}>{title || "Название товара"}</h3></div>

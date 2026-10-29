@@ -79,6 +79,7 @@ export function categoryDetailSpecs(category: FilteredCategory, specs: ProductSp
 }
 
 export const countryLabels: Record<string, string> = {
+  unspecified: "Не указана",
   argentina: "Аргентина", belarus: "Беларусь", brazil: "Бразилия", russia: "Россия",
   uruguay: "Уругвай", germany: "Германия", belgium: "Бельгия", czechia: "Чехия",
   france: "Франция", italy: "Италия", uk: "Великобритания", ireland: "Ирландия",

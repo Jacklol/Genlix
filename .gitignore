@@ -24,6 +24,9 @@ next-env.d.ts
 .vercel
 /.data/
 /public/uploads/
+# Supplier originals and normalized packages include unpublished prices.
+/assets/imports/primebeef-2026-10-29/source.xlsx
+/assets/imports/primebeef-2026-10-29/catalog.json
 
 # logs
 npm-debug.log*

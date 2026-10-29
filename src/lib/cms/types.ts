@@ -353,7 +353,7 @@ function normalizeCatalogProduct(value: unknown, path: string): Omit<CatalogProd
   return {
     title: normalizeString(record.title, `${path}.title`, 220),
     brand: normalizeString(record.brand, `${path}.brand`, 120),
-    image: normalizeCmsImageUrl(record.image, `${path}.image`),
+    image: record.image === "" ? "" : normalizeCmsImageUrl(record.image, `${path}.image`),
     specs: normalizeSpecs(record.specs, `${path}.specs`),
     ...(tags === undefined ? {} : { tags }),
     ...(recommendation === undefined ? {} : { recommendation }),

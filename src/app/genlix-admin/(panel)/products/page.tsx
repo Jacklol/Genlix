@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { loadCmsSnapshot } from "@/lib/cms/store";
 import { categoryLabels } from "@/lib/catalog/category-fields";
+import { ProductPhotoPlaceholder } from "@/components/ProductPhotoPlaceholder";
 
 import styles from "../../admin.module.css";
 
@@ -52,8 +53,10 @@ export default async function AdminProductsPage() {
                 <tr key={entity.id}>
                   <td>
                     <div className={styles.itemCell}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img alt="" className={styles.thumb} src={payload.catalog.image} />
+                      {payload.catalog.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img alt="" className={styles.thumb} src={payload.catalog.image} />
+                      ) : <span className={styles.thumb}><ProductPhotoPlaceholder compact /></span>}
                       <span>
                         <strong>{payload.catalog.title}</strong>
                         <small>{payload.catalog.brand} · /{entity.slug}</small>

@@ -36,6 +36,7 @@ test("template contains the exact category contracts, native dropdown references
     const fields = config.productSpreadsheetFields(category), sheet = wb.getWorksheet(config.PRODUCT_SHEET_NAMES[category]);
     assert.deepEqual(sheet.getRow(1).values.slice(1), fields.map(field => field.label));
     assert.equal(sheet.getRow(3).hasValues, false);
+    assert.match(sheet.getCell("E2").value, /^Необязательно\./);
     assert.ok(sheet.views.some(view => view.state === "frozen" && view.ySplit === 2 && view.xSplit === 3));
     for (const field of fields.filter(field => field.choices)) {
       const cell = sheet.getRow(3).getCell(fields.indexOf(field) + 1);
@@ -56,6 +57,29 @@ test("export/reimport of published catalog is byte-for-byte unchanged, preservin
   engine.applyProductImport(copy, plan);
   assert.equal(JSON.stringify(copy.products), JSON.stringify(seed.products));
   assert.equal(JSON.stringify(copy.news), JSON.stringify(seed.news));
+});
+
+test("previous V1 files can create and update products without photos, and blanks survive export/reimport", async () => {
+  const originalTemplate = await readFile(path.join(root, "assets/templates/genlix-products-v1.xlsx"));
+  const wb = await workbook(originalTemplate);
+  put(wb, first, 3, { image: "", images: "" });
+  put(wb, first, 4, { id: "", slug: "", sortOrder: "", title: "Новый товар без фото", image: "", images: "" });
+  const plan = await engine.planProductImport(await file(wb), seed, 7, "replace");
+  assert.deepEqual(plan.preview.issues, []);
+  assert.equal(plan.preview.counts.create, 1);
+  assert.equal(plan.preview.counts.update, 1);
+  const copy = structuredClone(seed);
+  engine.applyProductImport(copy, plan);
+  normalizeCmsContent(copy);
+  for (const entity of copy.products.filter(entity => entity.id === first.id || entity.published?.catalog.title === "Новый товар без фото")) {
+    assert.equal(entity.published.catalog.image, "");
+    assert.deepEqual(entity.published.detail.images, []);
+    assert.equal(engine.productSpreadsheetValues(entity).image, "");
+    assert.equal(engine.productSpreadsheetValues(entity).images, "");
+  }
+  const roundTrip = await engine.planProductImport(await engine.exportProductSpreadsheet(copy.products), copy, 8, "replace");
+  assert.deepEqual(roundTrip.preview.issues, []);
+  assert.equal(roundTrip.preview.counts.unchanged, copy.products.length);
 });
 
 test("replacement updates only referenced goods, adds new ones, retains news and fixed product URLs", async () => {

@@ -319,10 +319,11 @@ export function buildProductPayloadFromForm(
   const category = enumValue(formData, "category", "Раздел", productCategories);
   const title = required(formData, "title", "Название", 220);
   const brand = required(formData, "brand", "Производитель", 120);
-  const image = safeImageUrl(
-    uploadedImage ?? required(formData, "image", "Основное изображение", 2000),
-    "Основное изображение",
+  const mainImage = uploadedImage ?? optional(formData, "image", 2000);
+  const gallery = splitList(value(formData, "images"), "Галерея", 50, /\r?\n/).map(
+    (galleryImage, index) => safeImageUrl(galleryImage, `Галерея, изображение ${index + 1}`),
   );
+  const image = mainImage ? safeImageUrl(mainImage, "Основное изображение") : gallery[0] ?? "";
   const parsedSpecs = parseSpecs(value(formData, "specs"));
   const meatSpecs = category === "meat" || existing?.category === "meat"
     ? mergeMeatCharacteristics(formData, parsedSpecs, existing?.catalog.specs)
@@ -376,10 +377,7 @@ export function buildProductPayloadFromForm(
     };
   }
 
-  const gallery = splitList(value(formData, "images"), "Галерея", 50, /\r?\n/).map(
-    (galleryImage, index) => safeImageUrl(galleryImage, `Галерея, изображение ${index + 1}`),
-  );
-  const images = Array.from(new Set([image, ...gallery]));
+  const images = Array.from(new Set([image, ...gallery].filter(Boolean)));
   const videos = formData.has("videos")
     ? Array.from(new Set(splitList(value(formData, "videos"), "Видео", MAX_PRODUCT_VIDEOS, /\r?\n/).map((source, index) => {
         const normalized = normalizeProductVideoUrl(source);

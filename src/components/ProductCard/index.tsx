@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { SHOW_PRODUCT_PAIRINGS } from "@/lib/catalog/features";
+import { ProductPhotoPlaceholder } from "@/components/ProductPhotoPlaceholder";
 
 import styles from "./ProductCard.module.css";
 
@@ -88,14 +89,14 @@ export function ProductCard({
 
   const mediaContent = (
     <>
-      <Image
+      {image ? <Image
         alt={brand ? `${title} — ${brand}` : title}
         className={styles.mediaImage}
         fill
         loading="lazy"
         sizes="(max-width: 600px) calc(100vw - 32px), (max-width: 920px) calc(50vw - 36px), (max-width: 1280px) 33vw, 25vw"
         src={image}
-      />
+      /> : <ProductPhotoPlaceholder />}
       {badgeData ? (
         <span className={styles.badge} style={{ backgroundColor: badgeData.color }}>
           {badgeData.label}

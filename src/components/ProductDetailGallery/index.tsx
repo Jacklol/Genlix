@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, type CSSProperties } from "react";
+import { ProductPhotoPlaceholder } from "@/components/ProductPhotoPlaceholder";
 
 import styles from "./ProductDetailGallery.module.css";
 
@@ -59,7 +60,7 @@ export function ProductDetailGallery({ images, title }: ProductDetailGalleryProp
             src={activeImage}
           />
         ) : (
-          <span className={styles.emptyMessage}>Изображение готовится</span>
+          <ProductPhotoPlaceholder />
         )}
       </div>
 

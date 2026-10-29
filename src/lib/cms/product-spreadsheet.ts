@@ -285,11 +285,15 @@ export function applyProductImport(content: CmsContent, plan: Pick<ProductImport
 
 export async function exportProductSpreadsheet(products?: CmsProductEntity[]) {
   const template = await readFile(templatePath);
-  if (!products) return template;
   const workbook = await readProductSpreadsheetWorkbook(template);
   for (const category of PRODUCT_SHEET_CATEGORIES) {
     const sheet = workbook.getWorksheet(PRODUCT_SHEET_NAMES[category])!, fields = productSpreadsheetFields(category);
-    const list = products.filter(entity => entity.status === "published" && entity.published?.category === category).sort((a, b) => a.sortOrder - b.sortOrder);
+    // Keep the V1 column names compatible with files already downloaded.
+    const photoColumn = fields.findIndex(field => field.key === "image") + 1;
+    const galleryColumn = fields.findIndex(field => field.key === "images") + 1;
+    sheet.getRow(1).getCell(photoColumn).style = structuredClone(sheet.getRow(1).getCell(galleryColumn).style);
+    sheet.getRow(2).getCell(photoColumn).value = `Необязательно. ${fields[photoColumn - 1].description}`;
+    const list = (products ?? []).filter(entity => entity.status === "published" && entity.published?.category === category).sort((a, b) => a.sortOrder - b.sortOrder);
     list.forEach((entity, index) => {
       const row = sheet.getRow(index + PRODUCT_DATA_START_ROW), values = productSpreadsheetValues(entity);
       fields.forEach((field, column) => { row.getCell(column + 1).value = values[field.key] ?? ""; });

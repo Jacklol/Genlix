@@ -53,6 +53,7 @@ export function AdminProductImport({ writable, warning }: { writable: boolean; w
         <a className={admin.primaryLink} href="/api/genlix-admin/products/excel?type=catalog">Выгрузить текущий каталог</a>
       </div>
       <p className={admin.helpText}>Выгрузка содержит опубликованные товары с их ID. Черновики и архив в неё не включаются. Для нового товара очистите ID и адрес страницы. В ячейках с фото и видео размещайте каждую ссылку с новой строки.</p>
+      <p className={admin.helpText}>Фото необязательно. Если фотографий нет, оставьте ячейки пустыми — на сайте появится заглушка «Фото пока не добавлено».</p>
     </section>
     {!writable ? <p className={admin.alert} role="alert">{warning ?? "Хранилище доступно только для чтения."}</p> : null}
     <section className={admin.panel}>

@@ -35,7 +35,7 @@ const common: ProductSpreadsheetField[] = [
   { key: "title", label: "Название", description: "Полное название товара. До 220 символов.", required: true, maxLength: 220, width: 36 },
   { key: "brand", label: "Производитель / бренд", description: "Название производителя или бренда. До 120 символов.", required: true, maxLength: 120, width: 25 },
   { key: "description", label: "Описание", description: "Описание для страницы товара. До 5000 символов.", required: true, maxLength: 5_000, width: 48 },
-  { key: "image", label: "Главное фото", description: "Прямая HTTPS-ссылка с разрешённого медиахоста или путь /assets/… из выгрузки.", required: true, maxLength: 2_000, width: 45 },
+  { key: "image", label: "Главное фото", description: "Можно оставить пустым: на сайте будет заглушка. Прямая HTTPS-ссылка с разрешённого медиахоста или путь /assets/… из выгрузки.", maxLength: 2_000, width: 45 },
   { key: "images", label: "Дополнительные фото", description: "До 49 ссылок. Каждая с новой строки в ячейке (Alt+Enter). Главное фото уже указано отдельно.", width: 45 },
   { key: "videos", label: "Видео", description: "YouTube или прямые HTTPS-ссылки MP4/WebM, каждая с новой строки. До 50 роликов. Файлы до 50 МБ, большие — через YouTube.", width: 45 },
   { key: "detailCategory", label: "Категория на странице", description: "Подпись категории в карточке, например «Мраморная говядина». До 160 символов.", required: true, maxLength: 160, width: 28 },

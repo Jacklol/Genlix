@@ -32,6 +32,7 @@ import {
 
 import styles from "./UnifiedMeatCatalog.module.css";
 import { catalogHref, commonFilters, matchesChannel, matchesFilter, productHref } from "@/lib/catalog/filter-engine";
+import { countryLabels } from "@/lib/catalog/category-fields";
 
 type CatalogFilters = Pick<
   MeatCatalogFilters,
@@ -49,14 +50,6 @@ type UnifiedMeatCatalogProps = {
   products: MeatCatalogItem[];
   initialFilters?: CatalogFilters;
   speciesPage?: DedicatedSpecies;
-};
-
-const countryLabels: Record<string, string> = {
-  argentina: "Аргентина",
-  belarus: "Беларусь",
-  brazil: "Бразилия",
-  russia: "Россия",
-  uruguay: "Уругвай",
 };
 
 function isDedicatedSpecies(species?: MeatSpecies): species is DedicatedSpecies {
