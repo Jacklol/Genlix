@@ -14,6 +14,7 @@ const LOCAL_CURRENT_FILE = path.join(LOCAL_CMS_DIR, "current.json");
 const LOCAL_HISTORY_DIR = path.join(LOCAL_CMS_DIR, "history");
 const CMS_MEDIA_BUCKET = "cms-media";
 const CMS_REQUEST_TIMEOUT_MS = 10_000;
+const REMOTE_SNAPSHOT_COLUMNS = "revision,schema_version,content::text,checksum,created_at,actor,reason";
 
 const runtimeCmsCache = globalThis as typeof globalThis & {
   __genlixCmsLastKnownSnapshot?: CmsSnapshot;
@@ -135,12 +136,12 @@ export function getCmsBackendMode(): CmsBackendMode {
   return "fallback";
 }
 
-function serializeContent(content: CmsContent) {
-  return JSON.stringify(normalizeCmsContent(content));
+function hashSnapshotText(content: string) {
+  return createHash("sha256").update(content).digest("hex");
 }
 
 export function getCmsChecksum(content: CmsContent) {
-  return createHash("sha256").update(serializeContent(content)).digest("hex");
+  return hashSnapshotText(JSON.stringify(normalizeCmsContent(content)));
 }
 
 function createSeedSnapshot(): CmsSnapshot {
@@ -164,10 +165,11 @@ function normalizeSnapshot(row: SupabaseSnapshotRow, verifyLocalChecksum = true)
     throw new Error("CMS returned an invalid revision");
   }
 
-  const localChecksum = getCmsChecksum(content);
-  const checksum = row.checksum || localChecksum;
+  const checksum = verifyLocalChecksum
+    ? getCmsChecksum(content)
+    : row.checksum;
 
-  if (verifyLocalChecksum && row.checksum && row.checksum !== localChecksum) {
+  if (verifyLocalChecksum && row.checksum && row.checksum !== checksum) {
     throw new Error("CMS snapshot checksum mismatch");
   }
 
@@ -241,9 +243,30 @@ async function supabaseRequest<T>(
   return (await response.json()) as T;
 }
 
-async function loadRemoteSnapshot(): Promise<CmsSnapshot | null> {
+async function loadRemoteSnapshot(
+  signal?: AbortSignal,
+  cached?: CmsSnapshot,
+): Promise<CmsSnapshot | null> {
+  if (cached) {
+    const [current] = await supabaseRequest<Array<Pick<SupabaseSnapshotRow, "revision" | "schema_version" | "checksum">>>(
+      "/rest/v1/cms_current_snapshot?select=revision,schema_version,checksum&limit=1",
+      { signal },
+    );
+
+    if (!current) return null;
+
+    if (
+      Number(current.revision) === cached.revision &&
+      current.schema_version === cached.content.schemaVersion &&
+      current.checksum === cached.checksum
+    ) {
+      return cached;
+    }
+  }
+
   const rows = await supabaseRequest<SupabaseSnapshotRow[]>(
-    "/rest/v1/cms_current_snapshot?select=revision,schema_version,content,checksum,created_at,actor,reason&limit=1",
+    `/rest/v1/cms_current_snapshot?select=${REMOTE_SNAPSHOT_COLUMNS}&limit=1`,
+    { signal },
   );
 
   return rows[0] ? verifyRemoteSnapshot(rows[0]) : null;
@@ -265,21 +288,20 @@ async function getRemoteChecksum(content: CmsContent) {
   return checksum;
 }
 
-async function verifyRemoteSnapshot(row: SupabaseSnapshotRow) {
-  const snapshot = normalizeSnapshot(row, false);
-  const canonicalChecksum = await getRemoteChecksum(snapshot.content);
-
-  if (snapshot.checksum !== canonicalChecksum) {
+function verifyRemoteSnapshot(row: SupabaseSnapshotRow) {
+  // The database hashes jsonb::text. Selecting that exact text lets us check
+  // the stored digest before parsing, without sending the snapshot back.
+  if (typeof row.content !== "string" || hashSnapshotText(row.content) !== row.checksum) {
     throw new Error("CMS remote snapshot checksum mismatch");
   }
 
   if (!isSupportedCmsSchemaVersion(row.schema_version)) {
     throw new Error(
-      `Unsupported CMS schema version ${String(row.schema_version)}; expected 1, 2 or 3`,
+      `Unsupported CMS schema version ${String(row.schema_version)}`,
     );
   }
 
-  return snapshot;
+  return normalizeSnapshot({ ...row, content: JSON.parse(row.content) }, false);
 }
 
 async function readLocalSnapshotFile(filename: string) {
@@ -403,37 +425,48 @@ async function loadLocalSnapshot(): Promise<CmsSnapshot> {
   return initialized;
 }
 
+async function readSupabaseSnapshot(reuseVerifiedContent = false): Promise<CmsSnapshotResult> {
+  const snapshot = reuseVerifiedContent
+    ? await loadRemoteSnapshot(
+        AbortSignal.timeout(CMS_REQUEST_TIMEOUT_MS),
+        runtimeCmsCache.__genlixCmsLastKnownSnapshot,
+      )
+    : await loadRemoteSnapshot();
+
+  if (!snapshot || (snapshot.revision === 0 && !snapshot.content.products.length && !snapshot.content.news.length)) {
+    return {
+      mode: "fallback",
+      snapshot: createSeedSnapshot(),
+      warning: snapshot
+        ? "База подготовлена, но исходные товары и статьи блога ещё не перенесены."
+        : "Таблицы CMS созданы, но исходные данные ещё не перенесены.",
+      writable: false,
+    };
+  }
+
+  if (snapshot.revision >= (runtimeCmsCache.__genlixCmsLastKnownSnapshot?.revision ?? -1)) {
+    runtimeCmsCache.__genlixCmsLastKnownSnapshot = snapshot;
+  }
+  return { mode: "supabase", snapshot, writable: true };
+}
+
+export async function loadAdminCmsSnapshot(): Promise<CmsSnapshotResult | null> {
+  if (getCmsBackendMode() !== "supabase") return loadCmsSnapshot();
+
+  try {
+    return await readSupabaseSnapshot(true);
+  } catch (error) {
+    console.error("Admin CMS read failed", error);
+    return null;
+  }
+}
+
 export async function loadCmsSnapshot(): Promise<CmsSnapshotResult> {
   const mode = getCmsBackendMode();
 
   if (mode === "supabase") {
     try {
-      const snapshot = await loadRemoteSnapshot();
-
-      if (snapshot) {
-        if (
-          snapshot.revision === 0 &&
-          snapshot.content.products.length === 0 &&
-          snapshot.content.news.length === 0
-        ) {
-          return {
-            mode: "fallback",
-            snapshot: createSeedSnapshot(),
-            warning: "База подготовлена, но исходные товары и статьи блога ещё не перенесены.",
-            writable: false,
-          };
-        }
-
-        runtimeCmsCache.__genlixCmsLastKnownSnapshot = snapshot;
-        return { mode, snapshot, writable: true };
-      }
-
-      return {
-        mode: "fallback",
-        snapshot: createSeedSnapshot(),
-        warning: "Таблицы CMS созданы, но исходные данные ещё не перенесены.",
-        writable: false,
-      };
+      return await readSupabaseSnapshot();
     } catch (error) {
       console.error("CMS read failed", error);
       const lastKnownSnapshot = runtimeCmsCache.__genlixCmsLastKnownSnapshot;
@@ -442,8 +475,7 @@ export async function loadCmsSnapshot(): Promise<CmsSnapshotResult> {
         return {
           mode,
           snapshot: lastKnownSnapshot,
-          warning:
-            "База временно недоступна. Показана последняя проверенная копия; редактирование отключено.",
+          warning: "Не удалось получить данные из базы. Попробуйте ещё раз.",
           writable: false,
         };
       }
@@ -514,7 +546,6 @@ export async function commitCmsSnapshot(
   reason: string,
 ): Promise<CmsSnapshot> {
   const normalizedContent = normalizeCmsContent(content);
-  const localChecksum = getCmsChecksum(normalizedContent);
   const mode = getCmsBackendMode();
 
   if (mode === "supabase") {
@@ -560,7 +591,7 @@ export async function commitCmsSnapshot(
 
       const snapshot: CmsSnapshot = {
         actor,
-        checksum: localChecksum,
+        checksum: getCmsChecksum(normalizedContent),
         content: normalizedContent,
         createdAt: new Date().toISOString(),
         reason,
@@ -579,8 +610,11 @@ export async function mutateCmsContent(
   actor: string,
   reason: string,
   mutate: (content: CmsContent) => void,
+  preflight?: CmsSnapshotResult,
 ) {
-  const loaded = await loadCmsSnapshot();
+  // Only a server-side caller can reuse a verified read. The commit still
+  // checks the expected revision under the storage lock.
+  const loaded = preflight ?? await loadCmsSnapshot();
 
   if (!loaded.writable) {
     throw new Error(loaded.warning ?? "CMS is not writable");
@@ -641,7 +675,7 @@ export async function getCmsSnapshotByRevision(revision: number) {
 
   if (mode === "supabase") {
     const rows = await supabaseRequest<SupabaseSnapshotRow[]>(
-      `/rest/v1/cms_snapshots?select=revision,schema_version,content,checksum,created_at,actor,reason&revision=eq.${revision}&limit=1`,
+      `/rest/v1/cms_snapshots?select=${REMOTE_SNAPSHOT_COLUMNS}&revision=eq.${revision}&limit=1`,
     );
     return rows[0] ? verifyRemoteSnapshot(rows[0]) : null;
   }

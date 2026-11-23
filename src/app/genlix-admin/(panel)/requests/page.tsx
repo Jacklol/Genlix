@@ -9,6 +9,7 @@ import {
   listContactRequests,
 } from "@/lib/contact-requests/store";
 
+import { AdminDataUnavailable } from "../AdminDataNotice";
 import { changeContactRequestStatus } from "./actions";
 import styles from "../../admin.module.css";
 
@@ -34,7 +35,7 @@ export default async function RequestsPage({ searchParams }: RequestsPageProps) 
       requests = await listContactRequests();
     } catch (requestError) {
       console.error("Contact requests could not be loaded", requestError);
-      loadError = "Заявки пока недоступны. Проверьте подключение и миграцию Supabase.";
+      return <AdminDataUnavailable title="Заявки" />;
     }
   }
 

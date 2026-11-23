@@ -1,0 +1,5 @@
+.more { display: grid; justify-items: center; gap: 14px; margin-top: 32px; color: var(--ink-deep); }
+.more p { margin: 0; font-size: 14px; }
+.more button { min-height: 48px; padding: 12px 32px; border: 1px solid var(--ink-deep); border-radius: 8px; background: var(--ink-deep); color: var(--paper); font: inherit; font-weight: 700; cursor: pointer; }
+.more button:hover { background: var(--ink); }
+.more button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }

@@ -1,5 +1,6 @@
-import { getCmsBackendMode, loadCmsSnapshot } from "@/lib/cms/store";
+import { getCmsBackendMode, loadAdminCmsSnapshot } from "@/lib/cms/store";
 
+import { AdminDataUnavailable } from "./AdminDataNotice";
 import { initializeAdminCms } from "./cms-actions";
 import styles from "../admin.module.css";
 
@@ -10,8 +11,9 @@ type AdminDashboardProps = {
 export default async function AdminDashboard({ searchParams }: AdminDashboardProps) {
   const [{ error, initialized }, cms] = await Promise.all([
     searchParams,
-    loadCmsSnapshot(),
+    loadAdminCmsSnapshot(),
   ]);
+  if (!cms) return <AdminDataUnavailable title="Главная" />;
   const backendMode = getCmsBackendMode();
   const products = cms.snapshot.content.products;
   const news = cms.snapshot.content.news;

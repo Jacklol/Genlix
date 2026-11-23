@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { uploadNewsImage } from "@/app/genlix-admin/(panel)/news/actions";
+import { AdminImage } from "@/components/AdminImage";
 import { MAX_PRODUCT_IMAGE_BYTES, PRODUCT_IMAGE_TYPES } from "@/lib/cms/product-editor";
 import { useNewsEditor } from "./index";
 import adminStyles from "@/app/genlix-admin/admin.module.css";
@@ -95,8 +96,7 @@ export function NewsCoverEditor({ initialImage }: { initialImage: string }) {
         {shown ? <ul className={`${styles.thumbnails} ${coverStyles.singleThumbnail}`} aria-label="Обложка статьи">
           <li className={`${styles.thumbnail} ${styles.mainThumbnail} ${coverStyles.thumbnail}`}>
             <div className={styles.thumbnailMedia}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={shown.url} alt="Миниатюра обложки" draggable={false} />
+              <AdminImage src={shown.url} alt="Миниатюра обложки" width={192} height={115} />
               <span className={styles.imageNumber}>Обложка</span>
             </div>
             <span className={styles.fileName} title={shown.name}>{shown.name}</span>
@@ -124,8 +124,7 @@ export function NewsCoverEditor({ initialImage }: { initialImage: string }) {
         <article className={newsStyles.card}>
           <div className={newsStyles.cardMedia}>
             {shown ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={shown.url} alt="Обложка в карточке блога" className={styles.previewImage} />
+              <AdminImage src={shown.url} alt="Обложка в карточке блога" width={300} height={192} compact={false} />
             ) : <span className={styles.emptyPreview}>Добавьте обложку статьи</span>}
           </div>
           <div className={newsStyles.cardBody}>

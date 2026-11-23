@@ -113,14 +113,15 @@ export function Header({
                 </span>
                 <div className={styles.dropdownMenu} role="menu">
                   {catalogSections.map((section) => (
-                    <a href={section.href} key={section.href} role="menuitem">
+                    <Link href={section.href} key={section.href} role="menuitem" prefetch={false}>
                       {section.label}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
             ) : (
-              <a
+              <Link
+                prefetch={false}
                 className={[
                   label === activeLink ? styles.activeLink : "",
                   label === "Главная" ? styles.homeLink : "",
@@ -132,7 +133,7 @@ export function Header({
                 key={label}
               >
                 {label === "Главная" ? "Genlix" : label}
-              </a>
+              </Link>
             ),
           )}
         </nav>
@@ -214,15 +215,15 @@ export function Header({
                     <details className={styles.mobileCatalog} key={label}>
                       <summary>{label}</summary>
                       {catalogSections.map((section) => (
-                        <a href={section.href} key={section.href} onClick={closeMenu}>
+                        <Link href={section.href} key={section.href} onClick={closeMenu} prefetch={false}>
                           {section.label}
-                        </a>
+                        </Link>
                       ))}
                     </details>
                   ) : (
-                    <a href={href} key={label} onClick={closeMenu}>
+                    <Link href={href} key={label} onClick={closeMenu} prefetch={false}>
                       {label}
-                    </a>
+                    </Link>
                   ),
                 )}
                 <a className={styles.mobilePhone} href={contactDetails.phoneHref} onClick={closeMenu}>

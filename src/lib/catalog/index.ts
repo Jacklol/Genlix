@@ -1,5 +1,5 @@
 import type { CatalogProduct } from "@/components/CatalogProductsSection";
-import { findCatalogMeatCut } from "./meat-catalog-artwork";
+import type { MeatCatalogFilters, MeatCatalogItem } from "./meat-filters";
 import { matchesChannel } from "./filter-engine";
 
 import { productDetails, productDetailSlugs } from "./details";
@@ -46,97 +46,8 @@ export { meatSpecs, birdSpecs } from "./specs";
 export { catalogProducts } from "./products";
 export const GOVYAZHIJ_FARSH_SLUG = "govyazhij-farsh-domashnij";
 
-export type MeatFilterOption<TValue extends string> = {
-  value: TValue;
-  label: string;
-};
-
-export type MeatCatalogFilters = {
-  channel?: MeatSalesChannel;
-  species?: MeatSpecies;
-  manufacturer?: MeatManufacturer;
-  country?: MeatCountry;
-  productType?: MeatProductType;
-  packaging?: MeatPackaging;
-  cutId?: string;
-  cooking?: MeatCookingMethod;
-};
-
-export type MeatCatalogItem = ProductCardData & {
-  slug: string;
-  meat: MeatProductMetadata;
-};
-
-export const meatFilterOptions = {
-  channels: [
-    { value: "horeca", label: "HoReCa" },
-    { value: "retail", label: "Ритейл" },
-  ] satisfies MeatFilterOption<MeatSalesChannel>[],
-  species: [
-    { value: "beef", label: "Говядина" },
-    { value: "lamb", label: "Баранина" },
-    { value: "pork", label: "Свинина" },
-    { value: "poultry", label: "Птица" },
-  ] satisfies MeatFilterOption<MeatSpecies>[],
-  manufacturers: [
-    { value: "Primebeef", label: "Primebeef" },
-    { value: "Мираторг", label: "Мираторг" },
-  ] satisfies MeatFilterOption<MeatManufacturer>[],
-  countries: [
-    { value: "russia", label: "Россия" },
-  ] satisfies MeatFilterOption<MeatCountry>[],
-  productTypes: [
-    { value: "steak", label: "Стейки" },
-    { value: "large-cut", label: "Крупные отрубы" },
-    { value: "minced-meat", label: "Фарш" },
-    { value: "goulash", label: "Гуляш" },
-    { value: "fillet", label: "Филе" },
-    { value: "cutlets", label: "Котлеты" },
-  ] satisfies MeatFilterOption<MeatProductType>[],
-  packaging: [
-    { value: "large-block", label: "Крупный блок" },
-    { value: "fixed-weight-vacuum", label: "Вакуум, фиксированный вес" },
-    { value: "tray-or-box", label: "Лоток / короб" },
-  ] satisfies MeatFilterOption<MeatPackaging>[],
-  cooking: [
-    { value: "grill", label: "Гриль" },
-    { value: "fry", label: "Жарка" },
-    { value: "braise", label: "Тушение" },
-    { value: "bake", label: "Запекание" },
-    { value: "boil", label: "Варка" },
-  ] satisfies MeatFilterOption<MeatCookingMethod>[],
-} as const;
-
-type MeatCatalogQuery = Record<string, string | string[] | undefined>;
-
-function getQueryValue(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] : value;
-}
-
-function getFilterOptionValue<TValue extends string>(
-  value: string | undefined,
-  options: readonly MeatFilterOption<TValue>[],
-) {
-  return options.find((option) => option.value === value)?.value;
-}
-
-export function parseMeatCatalogFilters(query: MeatCatalogQuery): MeatCatalogFilters {
-  const manufacturer = getQueryValue(query.manufacturer)?.trim();
-  const country = getQueryValue(query.country)?.trim();
-
-  return {
-    species: getFilterOptionValue(getQueryValue(query.species), meatFilterOptions.species),
-    manufacturer:
-      manufacturer && manufacturer.length <= 100 ? manufacturer : undefined,
-    country: country && /^[a-z0-9-]{2,40}$/i.test(country) ? country : undefined,
-    packaging: getFilterOptionValue(
-      getQueryValue(query.packaging),
-      meatFilterOptions.packaging,
-    ),
-    channel: getFilterOptionValue(getQueryValue(query.channel), meatFilterOptions.channels),
-    cutId: findCatalogMeatCut(getQueryValue(query.cutId))?.id,
-  };
-}
+export { meatFilterOptions, parseMeatCatalogFilters } from "./meat-filters";
+export type { MeatFilterOption, MeatCatalogFilters, MeatCatalogItem } from "./meat-filters";
 
 function getProduct(slug: string): CatalogProductRecord {
   const product = catalogProducts[slug as keyof typeof catalogProducts];

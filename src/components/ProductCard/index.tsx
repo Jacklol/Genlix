@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ProductLink } from "./ProductLink";
 
 import { SHOW_PRODUCT_PAIRINGS } from "@/lib/catalog/features";
 import { ProductPhotoPlaceholder } from "@/components/ProductPhotoPlaceholder";
@@ -83,7 +84,8 @@ export function ProductCard({
   title,
   specs,
   recommendation,
-}: ProductCardData) {
+  eagerImage = false,
+}: ProductCardData & { eagerImage?: boolean }) {
   const badgeData = badge ? badgeStyles[badge] : null;
   const productHref = href ?? (slug ? `/catalog/product/${slug}` : undefined);
 
@@ -93,7 +95,7 @@ export function ProductCard({
         alt={brand ? `${title} — ${brand}` : title}
         className={styles.mediaImage}
         fill
-        loading="lazy"
+        loading={eagerImage ? "eager" : "lazy"}
         sizes="(max-width: 600px) calc(100vw - 32px), (max-width: 920px) calc(50vw - 36px), (max-width: 1280px) 33vw, 25vw"
         src={image}
       /> : <ProductPhotoPlaceholder />}
@@ -109,9 +111,9 @@ export function ProductCard({
   return (
     <article className={styles.card}>
       {productHref ? (
-        <a className={styles.mediaLink} href={productHref}>
+        <ProductLink className={styles.mediaLink} href={productHref}>
           <div className={styles.media}>{mediaContent}</div>
-        </a>
+        </ProductLink>
       ) : (
         <div className={styles.media}>{mediaContent}</div>
       )}
@@ -119,9 +121,9 @@ export function ProductCard({
       <div className={styles.body}>
         <h3 className={styles.title}>
           {productHref ? (
-            <a className={styles.titleLink} href={productHref}>
+            <ProductLink className={styles.titleLink} href={productHref}>
               {title}
-            </a>
+            </ProductLink>
           ) : (
             title
           )}

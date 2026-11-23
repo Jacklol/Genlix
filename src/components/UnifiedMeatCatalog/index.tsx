@@ -2,6 +2,7 @@
 
 import {
   useId,
+  useCallback,
   useMemo,
   useRef,
   useState,
@@ -12,7 +13,8 @@ import {
 import { useRouter } from "next/navigation";
 
 import homeStyles from "@/app/home.module.css";
-import { ProductCard } from "@/components/ProductCard";
+import { CatalogProductGrid } from "@/components/CatalogProductGrid";
+import { useCatalogFilters } from "@/components/CatalogProductGrid/useCatalogFilters";
 import { CatalogSelect } from "@/components/CatalogSelect";
 import { CatalogCategorySelect, type CatalogCategoryOptions } from "@/components/CatalogCategorySelect";
 import { CatalogFilterFields } from "@/components/CatalogFilterFields";
@@ -28,10 +30,12 @@ import {
   type MeatPackaging,
   type MeatSalesChannel,
   type MeatSpecies,
-} from "@/lib/catalog";
+  normalizeMeatCatalogFilters,
+  parseMeatCatalogFilters,
+} from "@/lib/catalog/meat-filters";
 
 import styles from "./UnifiedMeatCatalog.module.css";
-import { catalogHref, commonFilters, matchesChannel, matchesFilter, productHref } from "@/lib/catalog/filter-engine";
+import { catalogHref, commonFilters, matchesChannel, matchesFilter, type CatalogQuery } from "@/lib/catalog/filter-engine";
 import { countryLabels } from "@/lib/catalog/category-fields";
 
 type CatalogFilters = Pick<
@@ -139,7 +143,6 @@ export function UnifiedMeatCatalog({
   heroClassName,
   categoryOptions,
   products,
-  initialFilters = {},
   speciesPage,
 }: UnifiedMeatCatalogProps) {
   const router = useRouter();
@@ -152,13 +155,10 @@ export function UnifiedMeatCatalog({
   const packagingId = `catalog-packaging-${generatedId}`;
   const channelId = `catalog-channel-${generatedId}`;
 
-  const normalizedInitialFilters: CatalogFilters = {
-    ...initialFilters,
-    ...(speciesPage ? { species: speciesPage } : {}),
-  };
-
-  const [draftFilters, setDraftFilters] = useState<CatalogFilters>(normalizedInitialFilters);
-  const [appliedFilters, setAppliedFilters] = useState<CatalogFilters>(normalizedInitialFilters);
+  const parseFilters = useCallback((query: CatalogQuery) => normalizeMeatCatalogFilters(
+    parseMeatCatalogFilters(query), products, speciesPage,
+  ), [products, speciesPage]);
+  const { filters: appliedFilters, draft: draftFilters, setDraft: setDraftFilters } = useCatalogFilters(parseFilters);
   const isMobileViewport = useSyncExternalStore(
     subscribeToMobileViewport,
     getMobileViewportSnapshot,
@@ -280,17 +280,15 @@ export function UnifiedMeatCatalog({
       return;
     }
 
-    setAppliedFilters({ ...draftFilters });
     if (isMobileViewport) {
       setDisclosureOverride(false);
     }
-    router.replace(
+    window.history.replaceState(null, "",
       buildCatalogHref(
         speciesPage ? `/catalog/meat/${speciesPage}` : "/catalog/meat",
         draftFilters,
         !speciesPage,
       ),
-      { scroll: false },
     );
   };
 
@@ -303,20 +301,18 @@ export function UnifiedMeatCatalog({
     }
 
     setDraftFilters(nextFilters);
-    setAppliedFilters(nextFilters);
 
     if (key === "species" && speciesPage) {
       router.push(buildCatalogHref("/catalog/meat", nextFilters, true));
       return;
     }
 
-    router.replace(
+    window.history.replaceState(null, "",
       buildCatalogHref(
         speciesPage ? `/catalog/meat/${speciesPage}` : "/catalog/meat",
         nextFilters,
         !speciesPage,
       ),
-      { scroll: false },
     );
   };
 
@@ -324,18 +320,14 @@ export function UnifiedMeatCatalog({
     const resetState: CatalogFilters = speciesPage ? { species: speciesPage } : {};
 
     setDraftFilters(resetState);
-    setAppliedFilters(resetState);
 
     if (hasAppliedFilters) {
-      router.replace(speciesPage ? `/catalog/meat/${speciesPage}` : "/catalog/meat", {
-        scroll: false,
-      });
+      window.history.replaceState(null, "", speciesPage ? `/catalog/meat/${speciesPage}` : "/catalog/meat");
     }
   };
 
   const showAllProducts = () => {
     setDraftFilters({});
-    setAppliedFilters({});
     router.push("/catalog/meat");
   };
 
@@ -344,10 +336,7 @@ export function UnifiedMeatCatalog({
 
     const nextFilters: CatalogFilters = { ...appliedFilters, cutId };
     setDraftFilters(nextFilters);
-    setAppliedFilters(nextFilters);
-    router.replace(buildCatalogHref("/catalog/meat/beef", nextFilters, false), {
-      scroll: false,
-    });
+    window.history.replaceState(null, "", buildCatalogHref("/catalog/meat/beef", nextFilters, false));
 
     window.requestAnimationFrame(() => {
       resultsRef.current?.scrollIntoView({
@@ -597,13 +586,9 @@ export function UnifiedMeatCatalog({
           ) : null}
 
           {filteredProducts.length > 0 ? (
-            <div className={styles.grid}>
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.slug} {...product} href={productHref(product.slug, buildCatalogHref(
-                  speciesPage ? `/catalog/meat/${speciesPage}` : "/catalog/meat", appliedFilters, !speciesPage,
-                ))} />
-              ))}
-            </div>
+            <CatalogProductGrid products={filteredProducts} className={styles.grid} returnTo={buildCatalogHref(
+              speciesPage ? `/catalog/meat/${speciesPage}` : "/catalog/meat", appliedFilters, !speciesPage,
+            )} />
           ) : (
             <div className={styles.emptyState} role="status">
               <h3>Товары пока не найдены</h3>

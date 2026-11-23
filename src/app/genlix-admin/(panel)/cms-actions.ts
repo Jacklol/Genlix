@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { invalidatePublicCmsCache } from "@/lib/cms/cache-tags";
 import { redirect } from "next/navigation";
 
 import { requireAdminSession } from "@/lib/admin/auth";
@@ -58,6 +59,7 @@ function getRestoreErrorMessage(error: unknown) {
 }
 
 function revalidateAllContent() {
+  invalidatePublicCmsCache();
   revalidatePath("/");
   revalidatePath("/news");
   revalidatePath("/news/[slug]", "page");

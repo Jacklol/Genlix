@@ -1,4 +1,5 @@
 import { revalidatePath } from "next/cache";
+import { invalidatePublicCmsCache } from "@/lib/cms/cache-tags";
 import { getAdminSession } from "@/lib/admin/auth";
 import { isSameOriginRequest } from "@/lib/admin/request-origin";
 import { applyProductImport, planProductImport, ProductSpreadsheetError } from "@/lib/cms/product-spreadsheet";
@@ -43,8 +44,15 @@ export async function POST(request: Request) {
     if (form.get("fingerprint") !== plan.preview.fingerprint) throw new ProductSpreadsheetError("Файл или режим изменился после проверки. Проверьте файл ещё раз.");
     if (!plan.preview.canApply) return Response.json({ error: "Исправьте ошибки в файле перед импортом.", preview: plan.preview }, { status: 400 });
     if (!plan.preview.counts.create && !plan.preview.counts.update && !plan.preview.counts.publish && !plan.preview.counts.archive) return Response.json({ success: true, revision, unchanged: true, counts: plan.preview.counts });
-    const saved = await mutateCmsContent(revision, session.username, `Импорт Excel: ${mode === "full" ? "полное обновление каталога" : "замена отдельных товаров"} (${file.name.slice(0, 180)})`, content => applyProductImport(content, plan));
+    const saved = await mutateCmsContent(
+      revision,
+      session.username,
+      `Импорт Excel: ${mode === "full" ? "полное обновление каталога" : "замена отдельных товаров"} (${file.name.slice(0, 180)})`,
+      content => applyProductImport(content, plan),
+      loaded,
+    );
     try {
+      invalidatePublicCmsCache();
       for (const route of ["/", "/catalog/meat", "/catalog/meat/beef", "/catalog/meat/lamb", "/catalog/bird", "/catalog/beer", "/catalog/water", "/genlix-admin/products"]) revalidatePath(route);
       revalidatePath("/catalog/meat/[species]", "page");
       // Invalidate newly created product URLs as well as changed and archived ones.

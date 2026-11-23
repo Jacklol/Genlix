@@ -2,8 +2,9 @@ import { notFound } from "next/navigation";
 
 import { AdminProductForm } from "@/components/AdminProductForm";
 import { AdminSiteLink } from "@/components/AdminSiteLink";
-import { loadCmsSnapshot } from "@/lib/cms/store";
+import { loadAdminCmsSnapshot } from "@/lib/cms/store";
 
+import { AdminDataUnavailable } from "../../AdminDataNotice";
 import styles from "../../../admin.module.css";
 
 type EditProductPageProps = {
@@ -12,16 +13,18 @@ type EditProductPageProps = {
 };
 
 export default async function EditProductPage({ params, searchParams }: EditProductPageProps) {
-  const [{ id }, query, { snapshot }] = await Promise.all([
+  const [{ id }, query, cms] = await Promise.all([
     params,
     searchParams,
-    loadCmsSnapshot(),
+    loadAdminCmsSnapshot(),
   ]);
+  if (!cms) return <AdminDataUnavailable title="Товар" />;
+  const { snapshot, writable, warning } = cms;
   const decodedId = decodeURIComponent(id);
   const entity = snapshot.content.products.find((product) => product.id === decodedId);
 
-  if (!entity) notFound();
-  const payload = entity.draft ?? entity.published;
+  if (!entity && writable) notFound();
+  const payload = entity?.draft ?? entity?.published;
 
   return (
     <main className={styles.content}>
@@ -30,16 +33,16 @@ export default async function EditProductPage({ params, searchParams }: EditProd
           <h1>{payload?.catalog.title ?? "Товар"}</h1>
           <p>Редактирование карточки и параметров фильтрации.</p>
         </div>
-        {entity.published && entity.status !== "archived" ? (
+        {entity?.published && entity.status !== "archived" ? (
           <AdminSiteLink href={`/catalog/product/${entity.slug}`} />
         ) : null}
       </header>
-      <AdminProductForm
+      {writable && entity ? <AdminProductForm
         entity={entity}
         error={query.error}
         revision={snapshot.revision}
         saved={query.saved}
-      />
+      /> : <p className={styles.alert}>{warning ?? "Редактирование временно недоступно."}</p>}
     </main>
   );
 }

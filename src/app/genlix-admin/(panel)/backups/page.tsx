@@ -1,5 +1,6 @@
-import { listCmsHistory, loadCmsSnapshot } from "@/lib/cms/store";
+import { listCmsHistory, loadAdminCmsSnapshot } from "@/lib/cms/store";
 
+import { AdminDataUnavailable } from "../AdminDataNotice";
 import { restoreCmsRevision } from "../cms-actions";
 import styles from "../../admin.module.css";
 
@@ -9,10 +10,14 @@ type BackupsPageProps = {
 
 export default async function BackupsPage({ searchParams }: BackupsPageProps) {
   const [history, current, query] = await Promise.all([
-    listCmsHistory(50),
-    loadCmsSnapshot(),
+    listCmsHistory(50).catch((error: unknown) => {
+      console.error("CMS history read failed", error);
+      return null;
+    }),
+    loadAdminCmsSnapshot(),
     searchParams,
   ]);
+  if (!history || !current) return <AdminDataUnavailable title="История и копии" />;
 
   return (
     <main className={styles.content}>

@@ -1,30 +1,29 @@
 "use client";
 
-import { useId, useState, useTransition, type FormEvent, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useId, useState, useTransition, type FormEvent, type ReactNode } from "react";
 import Link from "next/link";
-import { ProductCard } from "@/components/ProductCard";
+import { CatalogProductGrid } from "@/components/CatalogProductGrid";
+import { useCatalogFilters } from "@/components/CatalogProductGrid/useCatalogFilters";
 import { CatalogSelect } from "@/components/CatalogSelect";
 import { CatalogCategorySelect, type CatalogCategoryOptions } from "@/components/CatalogCategorySelect";
 import { CatalogFilterFields } from "@/components/CatalogFilterFields";
 import { CatalogFilterPresentation } from "@/components/CatalogFilterPresentation";
 import { categoryFields, categoryLabels, type FilteredCategory } from "@/lib/catalog/category-fields";
-import { availableFilterOptions, catalogHref, filterCategoryProducts, filterLabel, productHref, type CatalogFilterValues, type CategoryCatalogItem } from "@/lib/catalog/filter-engine";
+import { availableFilterOptions, catalogHref, filterCategoryProducts, filterLabel, parseCategoryFilters, type CatalogQuery, type CatalogFilterValues, type CategoryCatalogItem } from "@/lib/catalog/filter-engine";
 import homeStyles from "@/app/home.module.css";
 import gridStyles from "@/components/ProductCardsSection/ProductCardsSection.module.css";
 import styles from "./CategoryCatalog.module.css";
 
-export function CategoryCatalog({ category, products, initialFilters, categoryOptions, hero, heroClassName, heroTitleId }: {
+export function CategoryCatalog({ category, products, categoryOptions, hero, heroClassName, heroTitleId }: {
   category: FilteredCategory; products: CategoryCatalogItem[]; initialFilters: CatalogFilterValues;
   hero: ReactNode; heroClassName: string; heroTitleId: string;
   categoryOptions: CatalogCategoryOptions;
 }) {
-  const router = useRouter();
   const id = useId();
-  const [draft, setDraft] = useState(initialFilters);
+  const parseFilters = useCallback((query: CatalogQuery) => parseCategoryFilters(category, query, products), [category, products]);
+  const { filters, draft, setDraft } = useCatalogFilters(parseFilters);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [pending, startTransition] = useTransition();
-  const filters = initialFilters;
   const filtered = filterCategoryProducts(products, filters);
   const previewCount = filterCategoryProducts(products, draft).length;
   const fields = [
@@ -38,7 +37,7 @@ export function CategoryCatalog({ category, products, initialFilters, categoryOp
   function apply(next: CatalogFilterValues) {
     setDraft(next);
     setMobileOpen(false);
-    startTransition(() => router.push(catalogHref(path, next), { scroll: false }));
+    startTransition(() => window.history.replaceState(null, "", catalogHref(path, next)));
   }
   function submit(event: FormEvent) { event.preventDefault(); apply(draft); }
   function fieldControl(field: typeof fields[number]) {
@@ -91,9 +90,7 @@ export function CategoryCatalog({ category, products, initialFilters, categoryOp
       <div className={homeStyles.shell}>
         <div className={styles.resultsHeading}><h2 id={`${id}-title`} className={gridStyles.title}>{categoryLabels[category]}</h2>
           <p role="status" aria-live="polite">Найдено: {filtered.length} из {products.length}</p></div>
-        {filtered.length ? <div className={gridStyles.grid}>
-          {filtered.map((product) => <ProductCard key={product.slug} {...product} href={productHref(product.slug, returnTo)} />)}
-        </div> : <div className={styles.empty}>
+        {filtered.length ? <CatalogProductGrid products={filtered} className={gridStyles.grid} returnTo={returnTo} /> : <div className={styles.empty}>
           <h3>{products.length ? "По этим фильтрам товаров не найдено" : "Ассортимент скоро появится"}</h3>
           <p>{products.length ? "Попробуйте убрать часть условий или сбросить фильтры." : "Пока здесь нет опубликованных товаров. Уточните доступные поставки у менеджера."}</p>
           {entries.length ? <button className={styles.apply} onClick={() => apply({})}>Сбросить фильтры</button> : <Link href="/#contacts">Связаться с нами →</Link>}

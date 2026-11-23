@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { getAdminSession, requireAdminSession } from "@/lib/admin/auth";
+import { invalidatePublicCmsCache } from "@/lib/cms/cache-tags";
 import { createProductSlug } from "@/lib/catalog/product-slug";
 import type { ProductEditorState, ProductImageUploadResult } from "@/lib/cms/product-editor";
 import {
@@ -41,6 +42,7 @@ function getErrorMessage(error: unknown) {
 }
 
 function revalidateProductPaths(slug: string) {
+  invalidatePublicCmsCache();
   revalidatePath("/");
   revalidatePath("/catalog/meat");
   revalidatePath("/catalog/meat/beef");
@@ -206,6 +208,7 @@ export async function saveProduct(_state: ProductEditorState, formData: FormData
 
         savedSlug = slug;
       },
+      preflight,
     );
 
     try {

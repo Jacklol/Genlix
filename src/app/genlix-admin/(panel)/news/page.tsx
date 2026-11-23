@@ -1,11 +1,17 @@
 import Link from "next/link";
 
-import { loadCmsSnapshot } from "@/lib/cms/store";
+import { AdminImage } from "@/components/AdminImage";
+import { loadAdminCmsSnapshot } from "@/lib/cms/store";
 
+import { AdminDataUnavailable } from "../AdminDataNotice";
 import styles from "../../admin.module.css";
 
+const dateFormat = new Intl.DateTimeFormat("ru-RU");
+
 export default async function AdminNewsPage() {
-  const { snapshot } = await loadCmsSnapshot();
+  const cms = await loadAdminCmsSnapshot();
+  if (!cms) return <AdminDataUnavailable title="Блог" />;
+  const { snapshot } = cms;
   const articles = [...snapshot.content.news].sort((left, right) => {
     const leftDate = left.draft?.publishedAt ?? left.published?.publishedAt ?? left.updatedAt;
     const rightDate = right.draft?.publishedAt ?? right.published?.publishedAt ?? right.updatedAt;
@@ -44,8 +50,7 @@ export default async function AdminNewsPage() {
                 <tr key={entity.id}>
                   <td>
                     <div className={styles.itemCell}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img alt="" className={styles.thumb} src={payload.image} />
+                      <AdminImage className={styles.thumb} src={payload.image} />
                       <span>
                         <strong>{payload.title}</strong>
                         <small>/{entity.slug}</small>
@@ -64,9 +69,9 @@ export default async function AdminNewsPage() {
                             : "Опубликована"}
                     </span>
                   </td>
-                  <td>{new Intl.DateTimeFormat("ru-RU").format(new Date(payload.publishedAt))}</td>
+                  <td>{dateFormat.format(new Date(payload.publishedAt))}</td>
                   <td>
-                    <Link className={styles.actionLink} href={`/genlix-admin/news/${encodeURIComponent(entity.id)}`}>
+                    <Link className={styles.actionLink} href={`/genlix-admin/news/${encodeURIComponent(entity.id)}`} prefetch={false}>
                       Редактировать
                     </Link>
                   </td>

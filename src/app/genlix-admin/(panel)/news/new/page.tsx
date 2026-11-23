@@ -1,6 +1,7 @@
 import { AdminNewsForm } from "@/components/AdminNewsForm";
-import { loadCmsSnapshot } from "@/lib/cms/store";
+import { loadAdminCmsSnapshot } from "@/lib/cms/store";
 
+import { AdminDataUnavailable } from "../../AdminDataNotice";
 import styles from "../../../admin.module.css";
 
 type NewNewsPageProps = {
@@ -8,7 +9,8 @@ type NewNewsPageProps = {
 };
 
 export default async function NewNewsPage({ searchParams }: NewNewsPageProps) {
-  const [{ snapshot }, query] = await Promise.all([loadCmsSnapshot(), searchParams]);
+  const [cms, query] = await Promise.all([loadAdminCmsSnapshot(), searchParams]);
+  if (!cms) return <AdminDataUnavailable title="Новая статья" />;
 
   return (
     <main className={styles.content}>
@@ -18,7 +20,7 @@ export default async function NewNewsPage({ searchParams }: NewNewsPageProps) {
           <p>Материал можно сохранить черновиком и опубликовать позже.</p>
         </div>
       </header>
-      <AdminNewsForm error={query.error} revision={snapshot.revision} saved={query.saved} />
+      <AdminNewsForm error={query.error} revision={cms.snapshot.revision} saved={query.saved} />
     </main>
   );
 }

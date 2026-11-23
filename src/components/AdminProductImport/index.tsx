@@ -9,7 +9,7 @@ import styles from "./AdminProductImport.module.css";
 
 const changeLabels = { create: "Новый товар", update: "Заменить данные", publish: "Опубликовать", unchanged: "Без изменений", archive: "В архив" };
 
-export function AdminProductImport({ writable, warning }: { writable: boolean; warning?: string }) {
+export function AdminProductImport({ writable }: { writable: boolean }) {
   const router = useRouter(), inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [mode, setMode] = useState<ProductImportMode>("replace");
@@ -55,7 +55,6 @@ export function AdminProductImport({ writable, warning }: { writable: boolean; w
       <p className={admin.helpText}>Выгрузка содержит опубликованные товары с их ID. Черновики и архив в неё не включаются. Для нового товара очистите ID и адрес страницы. В ячейках с фото и видео размещайте каждую ссылку с новой строки.</p>
       <p className={admin.helpText}>Фото необязательно. Если фотографий нет, оставьте ячейки пустыми — на сайте появится заглушка «Фото пока не добавлено».</p>
     </section>
-    {!writable ? <p className={admin.alert} role="alert">{warning ?? "Хранилище доступно только для чтения."}</p> : null}
     <section className={admin.panel}>
       <h2>2. Загрузите и проверьте</h2>
       <fieldset disabled={Boolean(busy) || !writable} className={styles.controls}>

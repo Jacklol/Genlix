@@ -7,7 +7,7 @@ import {
 
 import { saveProduct, uploadProductImage } from "@/app/genlix-admin/(panel)/products/actions";
 import { createProductSlug } from "@/lib/catalog/product-slug";
-import { ProductPhotoPlaceholder } from "@/components/ProductPhotoPlaceholder";
+import { AdminImage } from "@/components/AdminImage";
 import {
   initialProductImages, moveProductImage, MAX_PRODUCT_IMAGES, MAX_PRODUCT_IMAGE_BYTES,
   PRODUCT_IMAGE_TYPES,
@@ -286,9 +286,7 @@ export function ProductImagesEditor() {
                 }}
               >
                 <div className={styles.thumbnailMedia}>
-                  {/* Blob previews must bypass the Next image optimizer. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={item.url} alt={`Фото ${index + 1}${index === 0 ? " — главное" : ""}`} draggable={false} />
+                  <AdminImage src={item.url} alt={`Фото ${index + 1}${index === 0 ? " — главное" : ""}`} width={192} height={115} />
                   <span className={styles.imageNumber}>{index === 0 ? "Главное" : `Фото ${index + 1}`}</span>
                   <span className={styles.dragHandle} aria-hidden="true">⠿</span>
                 </div>
@@ -319,10 +317,7 @@ export function ProductImagesEditor() {
           <p className={styles.previewLabel}>Предпросмотр главного фото</p>
           <div className={cardStyles.card}>
             <div className={cardStyles.media}>
-              {main ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={main.url} alt="Главное фото в карточке каталога" className={styles.previewImage} />
-              ) : <ProductPhotoPlaceholder />}
+              <AdminImage src={main?.url ?? ""} alt="Главное фото в карточке каталога" width={300} height={260} compact={false} />
               {brand ? <span className={cardStyles.brand}>{brand}</span> : null}
             </div>
             <div className={cardStyles.body}><h3 className={cardStyles.title}>{title || "Название товара"}</h3></div>

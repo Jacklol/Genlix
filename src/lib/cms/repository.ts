@@ -10,7 +10,7 @@ import { categoryDetailSpecs, categoryFields, countryLabels, hasSpecValue, unman
 import { availableFilterOptions, commonFilterKeys, productFilterValues, type CategoryCatalogItem, type FilterOption } from "@/lib/catalog/filter-engine";
 import type { NewsArticle } from "@/lib/news";
 
-import { loadCmsSnapshot } from "./store";
+import { loadPublicCmsSnapshot } from "./public-cache";
 import type {
   CmsNewsEntity,
   CmsNewsPayload,
@@ -18,12 +18,9 @@ import type {
   CmsProductPayload,
 } from "./types";
 
-// Public pages often ask for the same snapshot from generateMetadata and the
-// page render (or from several repository helpers). React clears this cache for
-// every server request, so it deduplicates Supabase reads without serving stale
-// CMS content to later requests. Admin mutations continue to call the store
-// directly and are deliberately outside this cache.
-const loadPublishedCmsSnapshot = cache(loadCmsSnapshot);
+// The tagged data cache is shared across requests; React also deduplicates the
+// reads from metadata, page content and related products in a single render.
+const loadPublishedCmsSnapshot = cache(loadPublicCmsSnapshot);
 
 function isPublicEntity<
   TEntity extends { published?: unknown; status: string },
@@ -105,13 +102,13 @@ function newsArticleFromEntity(entity: CmsNewsEntity): NewsArticle {
   };
 }
 
-async function getPublishedProductEntities() {
+const getPublishedProductEntities = cache(async () => {
   const { snapshot } = await loadPublishedCmsSnapshot();
 
   return snapshot.content.products
     .filter(isPublicEntity)
     .sort((left, right) => left.sortOrder - right.sortOrder);
-}
+});
 
 export async function getPublishedNewsArticles() {
   const { snapshot } = await loadPublishedCmsSnapshot();

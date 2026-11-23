@@ -3,6 +3,7 @@
 import { randomUUID } from "node:crypto";
 
 import { revalidatePath } from "next/cache";
+import { invalidatePublicCmsCache } from "@/lib/cms/cache-tags";
 import { redirect } from "next/navigation";
 
 import { getAdminSession, requireAdminSession } from "@/lib/admin/auth";
@@ -41,6 +42,7 @@ function getErrorMessage(error: unknown) {
 }
 
 function revalidateNewsPaths(slug: string) {
+  invalidatePublicCmsCache();
   revalidatePath("/");
   revalidatePath("/news");
   revalidatePath(`/news/${slug}`);
@@ -187,6 +189,7 @@ export async function saveNews(_state: NewsEditorState, formData: FormData): Pro
 
         savedSlug = slug;
       },
+      preflight,
     );
     try {
       revalidateNewsPaths(savedSlug);

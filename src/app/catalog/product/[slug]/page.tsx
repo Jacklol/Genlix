@@ -9,7 +9,6 @@ import { ProductCardsSection } from "@/components/ProductCardsSection";
 import { SubscribeSection } from "@/components/SubscribeSection";
 import {
   getPublishedProductBySlug,
-  getPublishedProductSlugs,
   getPublishedSimilarProducts,
 } from "@/lib/cms/repository";
 import { getAbsoluteSiteUrl, serializeJsonLd } from "@/lib/seo";
@@ -24,10 +23,6 @@ type ProductPageProps = {
 };
 
 export const dynamic = "force-dynamic";
-
-export async function generateStaticParams() {
-  return (await getPublishedProductSlugs()).map((slug) => ({ slug }));
-}
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;

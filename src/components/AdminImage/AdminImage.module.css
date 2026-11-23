@@ -1,0 +1,15 @@
+.frame {
+  display: block;
+  overflow: hidden;
+}
+
+.fill,
+.image {
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  display: block;
+  object-fit: cover;
+}

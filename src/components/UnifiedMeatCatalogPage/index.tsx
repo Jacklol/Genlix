@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { preload } from "react-dom";
 
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
@@ -10,11 +11,10 @@ import {
   type MeatSpecies,
 } from "@/lib/catalog";
 import { getCatalogCommonOptions, getPublishedMeatItems } from "@/lib/cms/repository";
-import { findCatalogMeatCut } from "@/lib/catalog/meat-catalog-artwork";
+import { normalizeMeatCatalogFilters } from "@/lib/catalog/meat-filters";
 import homeStyles from "@/app/home.module.css";
 
 import styles from "./UnifiedMeatCatalogPage.module.css";
-import { matchesChannel } from "@/lib/catalog/filter-engine";
 
 type DedicatedSpecies = Extract<MeatSpecies, "beef" | "lamb">;
 
@@ -23,59 +23,6 @@ type UnifiedMeatCatalogPageProps = {
   speciesPage?: DedicatedSpecies;
 };
 
-function normalizeInitialFilters(
-  filters: MeatCatalogFilters,
-  products: Awaited<ReturnType<typeof getPublishedMeatItems>>,
-  speciesPage?: DedicatedSpecies,
-): MeatCatalogFilters {
-  const availableSpecies = new Set(products.map((product) => product.meat.species));
-  const species =
-    speciesPage ??
-    (filters.species && availableSpecies.has(filters.species)
-      ? filters.species
-      : undefined);
-  const candidates = species
-    ? products.filter((product) => product.meat.species === species)
-    : products;
-  const normalized: MeatCatalogFilters = species ? { species } : {};
-
-  if (
-    filters.manufacturer &&
-    candidates.some((product) => product.brand === filters.manufacturer)
-  ) {
-    normalized.manufacturer = filters.manufacturer;
-  }
-
-  if (
-    filters.country &&
-    candidates.some((product) => product.meat.country === filters.country)
-  ) {
-    normalized.country = filters.country;
-  }
-
-  if (
-    filters.packaging &&
-    candidates.some((product) => product.meat.packaging === filters.packaging)
-  ) {
-    normalized.packaging = filters.packaging;
-  }
-
-  if (
-    filters.channel &&
-    candidates.some((product) => matchesChannel(product.meat.channel, filters.channel))
-  ) {
-    normalized.channel = filters.channel;
-  }
-
-  if (
-    speciesPage === "beef" &&
-    findCatalogMeatCut(filters.cutId)
-  ) {
-    normalized.cutId = filters.cutId;
-  }
-
-  return normalized;
-}
 
 const pageContent = {
   all: {
@@ -107,6 +54,9 @@ export async function UnifiedMeatCatalogPage({
   initialFilters = {},
   speciesPage,
 }: UnifiedMeatCatalogPageProps) {
+  if (speciesPage !== "beef") {
+    preload("/assets/catalog/meat/primebeef/hero.webp", { as: "image", fetchPriority: "high" });
+  }
   const [products, categoryOptions] = await Promise.all([getPublishedMeatItems(), getCatalogCommonOptions()]);
 
   if (
@@ -118,7 +68,7 @@ export async function UnifiedMeatCatalogPage({
 
   const content = speciesPage ? pageContent[speciesPage] : pageContent.all;
   const bullHero = speciesPage === "beef";
-  const filters = normalizeInitialFilters(initialFilters, products, speciesPage);
+  const filters = normalizeMeatCatalogFilters(initialFilters, products, speciesPage);
   const filterStateKey = [
     filters.species,
     filters.manufacturer,
