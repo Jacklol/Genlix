@@ -1,0 +1,66 @@
+name: Genlix on Contabo
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: genlix-contabo-main
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Genlix
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Build tagged Docker image
+        run: |
+          set -euo pipefail
+          docker build --build-arg GENLIX_REVISION="$GITHUB_SHA" --build-arg BUILD_HEAP_MB=4096 \
+            --build-arg SITE_URL=https://vmi3708522.contaboserver.net:8446 \
+            -t "genlix:git-$GITHUB_SHA" .
+      - name: Check homepage and revision
+        run: |
+          set -euo pipefail
+          id=$(docker run -d --rm -p 127.0.0.1:3100:3000 "genlix:git-$GITHUB_SHA")
+          trap 'docker stop "$id" >/dev/null' EXIT
+          curl --retry 10 --retry-all-errors --retry-delay 1 -fsS http://127.0.0.1:3100/_genlix_release.json | jq -e --arg sha "$GITHUB_SHA" '.sha == $sha'
+          curl -fsS http://127.0.0.1:3100/ -o /tmp/genlix-home.html
+          grep -Fq '<title>Genlix' /tmp/genlix-home.html
+
+  verify:
+    name: Verify Contabo
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      SITE: https://vmi3708522.contaboserver.net:8446
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Wait for the tested commit on the public site
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 180); do
+            if curl -fsS --max-time 5 "$SITE/_genlix_release.json?run=$GITHUB_RUN_ID-$attempt" 2>/dev/null |
+                 jq -e --arg sha "$GITHUB_SHA" '.sha == $sha' >/dev/null; then
+              curl -fsS "$SITE/" -o /tmp/genlix-live.html
+              grep -Fq '<title>Genlix' /tmp/genlix-live.html
+              echo "Verified $GITHUB_SHA at $SITE/"
+              exit 0
+            fi
+            if (( attempt % 6 == 0 )); then
+              latest=$(gh api repos/Jacklol/Genlix/commits/main --jq .sha)
+              if [[ "$latest" != "$GITHUB_SHA" ]]; then echo 'Superseded by a newer main commit'; exit 0; fi
+            fi
+            sleep 12
+          done
+          echo '::error::Contabo did not confirm the new version'
+          exit 1

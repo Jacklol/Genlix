@@ -1,0 +1,15 @@
+**
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!next.config.ts
+!postcss.config.mjs
+!tsconfig.json
+!src
+!src/**
+!public
+!public/**
+public/uploads/**
+!assets
+!assets/templates
+!assets/templates/*.xlsx
