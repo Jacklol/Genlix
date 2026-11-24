@@ -1,0 +1,38 @@
+.control, .mobileFilter {
+  height: 64px;
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .1);
+}
+
+.desktopFilters > :last-child .control { width: 120px; }
+.mobileFilter { display: none; }
+
+.card {
+  min-height: 420px;
+  overflow: hidden;
+  border: 1px solid rgba(5, 32, 76, .14);
+  border-radius: 12px;
+}
+
+.image, .line, .shortLine {
+  background-color: rgba(5, 32, 76, .08);
+}
+
+.image { height: 260px; }
+.line, .shortLine {
+  height: 16px;
+  margin: 24px 24px 0;
+  border-radius: 4px;
+}
+.shortLine { width: 54%; margin-top: 12px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .image { animation: breathe 1.5s ease-in-out infinite alternate; }
+  @keyframes breathe { to { background-color: rgba(5, 32, 76, .14); } }
+}
+
+@media (max-width: 600px) {
+  .mobileFilter { display: block; height: 44px; border-radius: 8px; }
+  .desktopFilters { display: none; }
+}

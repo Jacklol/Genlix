@@ -1,3 +1,4 @@
+import { SiteLink } from "@/components/SiteLink";
 import styles from "./Brand.module.css";
 
 type BrandProps = {
@@ -6,8 +7,8 @@ type BrandProps = {
 
 export function Brand({ href = "/" }: BrandProps) {
   return (
-    <a className={styles.brand} href={href} aria-label="Genlix — на главную">
+    <SiteLink className={styles.brand} href={href} aria-label="Genlix — на главную">
       <strong>Genlix</strong>
-    </a>
+    </SiteLink>
   );
 }

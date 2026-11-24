@@ -5,7 +5,7 @@ import Image from "next/image";
 
 import { DeferredAdvantages, DeferredTestimonials } from "@/components/HomeDeferredSliders";
 import { Footer } from "@/components/Footer";
-import { HomeExperience } from "@/components/HomeExperience";
+import { SiteLink } from "@/components/SiteLink";
 import { PhilosophyStat } from "@/components/PhilosophyStat";
 import { Reveal } from "@/components/Reveal";
 import { ContactEmailIcon } from "@/components/icons/ContactEmailIcon";
@@ -16,7 +16,7 @@ import { ContactRequestForm } from "@/components/ContactRequestForm";
 import { getContactProductContext } from "@/lib/contact-requests/context";
 import { contactDetails, officeLocation } from "@/lib/site-data";
 import { HomeBlog, HomeBlogPlaceholder } from "@/components/HomeBlog";
-import styles from "./home.module.css";
+import styles from "@/app/home.module.css";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { alternates: { canonical: "/" } };
@@ -64,8 +64,7 @@ async function HomeContactForm({ searchParams }: HomeProps) {
 
 export default function Home({ searchParams }: HomeProps) {
   return (
-    <main className={styles.page} id="top">
-      <HomeExperience />
+    <>
 
       <section className={styles.catalogSection} id="catalog" aria-labelledby="catalog-title">
         <div className={styles.shell}>
@@ -76,7 +75,7 @@ export default function Home({ searchParams }: HomeProps) {
           <div className={styles.categoryGrid}>
             {categories.map((category, index) => (
               <Reveal contents delay={index * 90} key={category.name} variant="fade-up">
-                <a
+                <SiteLink
                   className={styles.categoryCard}
                   href={category.href}
                 >
@@ -93,7 +92,7 @@ export default function Home({ searchParams }: HomeProps) {
                     {category.name}
                     <i />
                   </span>
-                </a>
+                </SiteLink>
               </Reveal>
             ))}
           </div>
@@ -206,6 +205,6 @@ export default function Home({ searchParams }: HomeProps) {
       </section>
 
       <Footer />
-    </main>
+    </>
   );
 }

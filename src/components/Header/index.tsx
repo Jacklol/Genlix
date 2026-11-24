@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState, type TransitionEvent } from "react";
 
 import type { HomeHeroVariant } from "@/components/HomeHero";
+import { SiteLink } from "@/components/SiteLink";
 import { catalogSections, contactDetails, navItems } from "@/lib/site-data";
 
 import styles from "./Header.module.css";
@@ -113,15 +113,15 @@ export function Header({
                 </span>
                 <div className={styles.dropdownMenu} role="menu">
                   {catalogSections.map((section) => (
-                    <Link href={section.href} key={section.href} role="menuitem" prefetch={false}>
+                    <SiteLink href={section.href} key={section.href} role="menuitem">
                       {section.label}
-                    </Link>
+                    </SiteLink>
                   ))}
                 </div>
               </div>
             ) : (
-              <Link
-                prefetch={false}
+              <SiteLink
+                prefetch={label === "Главная" ? undefined : false}
                 className={[
                   label === activeLink ? styles.activeLink : "",
                   label === "Главная" ? styles.homeLink : "",
@@ -133,7 +133,7 @@ export function Header({
                 key={label}
               >
                 {label === "Главная" ? "Genlix" : label}
-              </Link>
+              </SiteLink>
             ),
           )}
         </nav>
@@ -158,9 +158,9 @@ export function Header({
           <a className={styles.phone} href={contactDetails.phoneHref}>
             {contactDetails.phone}
           </a>
-          <Link className={styles.cta} href={activeLink === "Контакты" ? "#request" : "/#contacts"}>
+          <SiteLink className={styles.cta} href={activeLink === "Контакты" ? "#request" : "/#contacts"}>
             Стать партнёром
-          </Link>
+          </SiteLink>
         </div>
         <div className={styles.mobileMenu}>
           <button
@@ -215,15 +215,15 @@ export function Header({
                     <details className={styles.mobileCatalog} key={label}>
                       <summary>{label}</summary>
                       {catalogSections.map((section) => (
-                        <Link href={section.href} key={section.href} onClick={closeMenu} prefetch={false}>
+                        <SiteLink href={section.href} key={section.href} onClick={closeMenu}>
                           {section.label}
-                        </Link>
+                        </SiteLink>
                       ))}
                     </details>
                   ) : (
-                    <Link href={href} key={label} onClick={closeMenu} prefetch={false}>
+                    <SiteLink href={href} key={label} onClick={closeMenu} prefetch={false}>
                       {label}
-                    </Link>
+                    </SiteLink>
                   ),
                 )}
                 <a className={styles.mobilePhone} href={contactDetails.phoneHref} onClick={closeMenu}>

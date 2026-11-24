@@ -557,7 +557,7 @@ function JourneySequence({ onReplay }: { onReplay: () => void }) {
               </div>
             ))}
           </div>
-          <HeroActions />
+          <HeroActions immediate />
         </div>
       </div>
 

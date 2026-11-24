@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
-import { UnifiedMeatCatalogPage } from "@/components/UnifiedMeatCatalogPage";
-import { parseMeatCatalogFilters } from "@/lib/catalog";
+import { MeatCatalogContents } from "@/components/UnifiedMeatCatalogPage";
+import { parseMeatCatalogFilters } from "@/lib/catalog/meat-filters";
 
 export const dynamic = "force-dynamic";
 
@@ -18,5 +18,5 @@ type MeatCatalogPageProps = {
 export default async function MeatCatalogPage({ searchParams }: MeatCatalogPageProps) {
   const initialFilters = parseMeatCatalogFilters(await searchParams);
 
-  return <UnifiedMeatCatalogPage initialFilters={initialFilters} />;
+  return <MeatCatalogContents initialFilters={initialFilters} />;
 }

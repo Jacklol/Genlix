@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import Image from "next/image";
 
 import homeStyles from "@/app/home.module.css";
+import { SiteLink } from "@/components/SiteLink";
 
 import styles from "./Breadcrumbs.module.css";
 
@@ -28,7 +29,7 @@ export function Breadcrumbs({ items, variant = "default" }: BreadcrumbsProps) {
                 </span>
               ) : null}
               {item.href ? (
-                <a href={item.href}>{item.label}</a>
+                <SiteLink href={item.href}>{item.label}</SiteLink>
               ) : (
                 <strong className={styles.current}>{item.label}</strong>
               )}

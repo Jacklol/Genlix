@@ -1,5 +1,6 @@
 import homeStyles from "@/app/home.module.css";
 import { Brand } from "@/components/Brand";
+import { SiteLink } from "@/components/SiteLink";
 import { FooterFacebookIcon } from "@/components/icons/FooterFacebookIcon";
 import { FooterInstagramIcon } from "@/components/icons/FooterInstagramIcon";
 import { FooterYoutubeIcon } from "@/components/icons/FooterYoutubeIcon";
@@ -19,24 +20,24 @@ export function Footer() {
             ))}
           </p>
           <div className={styles.social} aria-label="Социальные сети">
-            <a href="/#contacts" aria-label="Instagram">
+            <SiteLink href="/#contacts" aria-label="Instagram">
               <FooterInstagramIcon />
-            </a>
-            <a href="/#contacts" aria-label="Facebook">
+            </SiteLink>
+            <SiteLink href="/#contacts" aria-label="Facebook">
               <FooterFacebookIcon />
-            </a>
-            <a href="/#contacts" aria-label="YouTube">
+            </SiteLink>
+            <SiteLink href="/#contacts" aria-label="YouTube">
               <FooterYoutubeIcon />
-            </a>
+            </SiteLink>
           </div>
         </div>
         {footerColumns.map((column) => (
           <div className={styles.column} key={column.title}>
             <h3>{column.title}</h3>
             {column.links.map(({ label, href }) => (
-              <a href={href} key={label}>
+              <SiteLink href={href} key={label} prefetch={column.title === "Каталог" ? undefined : false}>
                 {label}
-              </a>
+              </SiteLink>
             ))}
           </div>
         ))}
@@ -45,7 +46,7 @@ export function Footer() {
         <div className={styles.legal}>
           <span>© 2026 «Genlix». Все права защищены.</span>
         </div>
-        <a href="/privacy">Политика конфиденциальности</a>
+        <SiteLink href="/privacy" prefetch={false}>Политика конфиденциальности</SiteLink>
         <p className={styles.credit}>
           <span>Developed by</span>{" "}
           <a href="https://localmindstudio.site/" target="_blank" rel="noopener">
