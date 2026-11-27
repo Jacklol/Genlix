@@ -8,13 +8,6 @@ import styles from "./AboutVariants.module.css";
 
 export type AboutVariant = "original" | "1" | "2" | "3";
 
-const variants: { value: AboutVariant; label: string }[] = [
-  { value: "original", label: "Исходный" },
-  { value: "1", label: "1 Светлый" },
-  { value: "2", label: "2 Синий" },
-  { value: "3", label: "3 Минимум" },
-];
-
 const intro = "Genlix — поставщик продуктов питания для ресторанов, гостиниц и розничных сетей в Беларуси.";
 const company = "Работаем с 2012 года. Подбираем мясо, птицу и напитки под формат бизнеса и сопровождаем поставки — от выбора продукции до отгрузки.";
 const social = "Genlix участвует в социальных проектах и оказывает помощь детским домам, пенсионерам и ветеранам Великой Отечественной войны.";
@@ -25,29 +18,6 @@ const services = [
   { title: "Условия поставки", text: "Согласовываем объём заказа, сроки и условия доставки." },
   { title: "Сопровождение", text: "Помогаем с подбором продукции и сопроводительными документами." },
 ];
-
-export function AboutVariantSwitcher({ variant }: { variant: AboutVariant }) {
-  return (
-    <nav className={styles.switcher} aria-label="Варианты страницы о компании">
-      <div className={styles.switcherInner}>
-        <span className={styles.switcherLabel}>Вариант страницы</span>
-        <div className={styles.options}>
-          {variants.map(({ value, label }) => (
-            <Link
-              key={value}
-              href={`/about?variant=${value}`}
-              className={variant === value ? styles.selected : undefined}
-              aria-current={variant === value ? "page" : undefined}
-              prefetch={false}
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
-      </div>
-    </nav>
-  );
-}
 
 function Breadcrumb() {
   return (

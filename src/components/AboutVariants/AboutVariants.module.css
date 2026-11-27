@@ -1,23 +1,16 @@
 .brandPage { --red: #416a9e; --red-bright: #527fb6; }
 .experience { color: var(--ink-deep); }
-.shell, .switcherInner { width: min(1440px, calc(100% - 96px)); margin-inline: auto; }
+.shell { width: min(1440px, calc(100% - 96px)); margin-inline: auto; }
 .experience h1, .experience h2 { margin: 0; font-family: var(--font-display); font-weight: 400; line-height: 1.04; }
 .experience h1 { font-size: clamp(64px, 6.9vw, 108px); }
 .experience h2 { font-size: clamp(38px, 3.8vw, 58px); }
 .experience p { margin: 0; }
 .experience section { scroll-margin-top: 170px; }
-.experience :is(a, button):focus-visible, .switcher a:focus-visible { outline: 2px solid #729bd0; outline-offset: 5px; }
+.experience :is(a, button):focus-visible { outline: 2px solid #729bd0; outline-offset: 5px; }
 .experience .bodyCopy { color: #566a83; font-size: 15px; line-height: 1.85; }
 .photo { position: relative; min-width: 0; overflow: hidden; background: #d8e0e9; }
 .photo img { object-fit: cover; }
 
-.switcher { position: sticky; top: 88px; z-index: 40; border-bottom: 1px solid #dfe5ed; background: #f5f7fa; color: var(--ink-deep); }
-.switcherInner { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 58px; }
-.switcherLabel { font-size: 11px; color: #64748b; }
-.options { display: flex; align-items: center; gap: 4px; padding-block: 8px; }
-.options a { padding: 11px 16px; font-size: 11px; font-weight: 500; white-space: nowrap; transition: background 160ms, color 160ms; }
-.options a:hover { background: #e3eaf3; }
-.options a.selected { background: var(--ink-deep); color: white; }
 .breadcrumb { display: flex; align-items: center; gap: 12px; padding: 28px 0 42px; color: #64748b; font-size: 11px; }
 .breadcrumb [aria-current] { color: var(--ink-deep); }
 .experience .eyebrow { margin-bottom: 18px; color: #5778a0; font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
@@ -93,13 +86,12 @@
 .minimal .partnershipInner { border-top: 1px solid #dfe5ed; padding-top: 48px; }
 
 @media (max-width: 1240px) {
-  .shell, .switcherInner { width: calc(100% - 56px); }
+  .shell { width: calc(100% - 56px); }
   .lightHeading, .lightWork, .socialInner, .blueHeroGrid, .workHeading, .minimalHeading, .editorialRow { gap: 48px; }
   .workPhoto { min-height: 520px; }
 }
 
 @media (max-width: 920px) {
-  .switcher { top: 74px; }
   .experience section { scroll-margin-top: 152px; }
   .lightHeading { gap: 32px; }
   .lightHeading h1 { font-size: 70px; }
@@ -117,11 +109,7 @@
 }
 
 @media (max-width: 720px) {
-  .shell, .switcherInner { width: calc(100% - 36px); }
-  .switcherInner { min-height: 54px; justify-content: center; gap: 0; }
-  .switcherLabel { display: none; }
-  .options { width: 100%; justify-content: space-between; gap: 0; }
-  .options a { padding: 10px 9px; font-size: 10px; }
+  .shell { width: calc(100% - 36px); }
   .breadcrumb { padding: 24px 0 30px; font-size: 10px; }
   .experience h1 { font-size: 64px; }
   .experience h2 { font-size: 40px; }
@@ -169,5 +157,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .options a, .primaryButton { transition: none; }
+  .primaryButton { transition: none; }
 }
